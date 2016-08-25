@@ -1,4 +1,12 @@
+import json
+import os, os.path
+import re
+from time import sleep
+from urllib2 import urlopen, HTTPError
+from urllib import quote_plus, urlencode
+import xml.etree.ElementTree as ET
 
+import requests
 
 
 def metadata(id, sleep_time=1):
