@@ -1,0 +1,13 @@
+*.pyc
+sandbox
+config.*
+
+*.ini
+
+logs/*
+
+build/
+dist/
+htrc.egg-info
+
+*~
