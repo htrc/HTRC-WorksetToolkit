@@ -4,8 +4,7 @@ import os
 import platform
 __version__ = '0.0.1'
 
-install_requires = [
-        ]
+install_requires = [ 'PyLD' ]
 
 setup(
     name='htrc',

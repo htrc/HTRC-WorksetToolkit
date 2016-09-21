@@ -1,0 +1,28 @@
+{
+    "@context": "http://emblematica.library.illinois.edu/test/worksetcontext.jsonld",
+    "@graph" : [
+    {
+        "@id": "https://babel.hathitrust.org/shcgi/mb?a=listis;c=548413090",
+        "@type": "Workset",
+        "title": "Sample",
+        "curator": "jammurdo",
+        "numItems": 5,
+        "gathers": [
+        {
+            "@id": "http://hdl.handle.net/2027/mdp.39015050817181"
+        },
+        {
+            "@id": "http://hdl.handle.net/2027/mdp.39015055436151"
+        },
+        {
+            "@id": "http://hdl.handle.net/2027/mdp.39015056169157"
+        },
+        {
+            "@id": "http://hdl.handle.net/2027/mdp.39015050161697"
+        },
+        {
+            "@id": "http://hdl.handle.net/2027/mdp.39015042791874"
+        }
+    ]
+  }]
+}
