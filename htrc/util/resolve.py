@@ -49,6 +49,7 @@ ORG_CODES = {
     "caia" : "Clark Art Institute Library"
 }
 
+
 def parse_record_id(string):
     # type: (str) -> str
     '''
@@ -70,7 +71,6 @@ def parse_record_id(string):
         return re.search(REGEX, string).group(1)
     except AttributeError:
         return None
-
 
 
 def parse_volume_id(string):
@@ -107,6 +107,7 @@ def parse_volume_id(string):
     else: 
         return None
 
+
 def volume_id_to_record_id(volume_id):
     # type: (str) -> str
     """
@@ -118,4 +119,28 @@ def volume_id_to_record_id(volume_id):
     record_url = urlopen(URL).geturl()
     return parse_record_id(record_url)
 
+
 def record_id_to_volume_ids(record_id):
+    """
+    Takes a record id and returns a list of corresponding volume ids.
+    One commmonly misunderstood aspect of the HT library is that volumes
+    """
+
+    base_url = "http://catalog.hathitrust.org/api/volumes/brief/recordnumber/{0}.json"
+    vols = []
+    regex = re.compile('\W')
+    
+    record_data = dict()
+    for id in record_ids:
+    url = base_url.format(id)
+    r = requests.get(url)
+    data = r.json()
+    data = data['records'][id]
+    items = [(regex.sub('', item['enumcron']), item['htid']) 
+            for item in data['items']]
+    items = dict(items)
+    for item in items.values():
+        print item
+    vols.append(items.values())
+    time.sleep(0.05)
+    record_data[id] = data
