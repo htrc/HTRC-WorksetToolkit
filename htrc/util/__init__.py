@@ -1,1 +1,1 @@
-from resolve.py import ORG_CODES
+from resolve import ORG_CODES

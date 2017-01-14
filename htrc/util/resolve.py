@@ -1,4 +1,6 @@
+import json
 import re
+from pprint import pprint
 from urllib2 import urlopen
 from urlparse import urlparse, parse_qs
 
@@ -123,24 +125,45 @@ def volume_id_to_record_id(volume_id):
 def record_id_to_volume_ids(record_id):
     """
     Takes a record id and returns a list of corresponding volume ids.
-    One commmonly misunderstood aspect of the HT library is that volumes
-    """
 
-    base_url = "http://catalog.hathitrust.org/api/volumes/brief/recordnumber/{0}.json"
-    vols = []
-    regex = re.compile('\W')
+    HathiTrust is a Digital Library, but is composed of scans of physical
+    artifacts. A single catalog record may correspond to multiple volumes 
+    in print, especially among pre-20th century texts. Additionally, a single
+    catalog record may correspond to  multiple scans from multiple libraries.
     
-    record_data = dict()
-    for id in record_ids:
-    url = base_url.format(id)
-    r = requests.get(url)
-    data = r.json()
-    data = data['records'][id]
-    items = [(regex.sub('', item['enumcron']), item['htid']) 
-            for item in data['items']]
+    This function resolves these ambiguities by selecting only a single copy per
+    unique volume label. For example, if a book was printed as three volumes
+    labeled in the catalog record as 'v. 1', 'v. 2', and 'v. 3', and contained
+    scans from four different libraries of each, this function would return a
+    list of 3 volume ids.
+
+    Future iterations of this function may take a list of preferred sources
+    based on ORG_CODE and attempt to use same-source volumes for consistency.
+    """
+    # Get record from BibAPI
+    URL = "http://catalog.hathitrust.org/api/volumes/brief/recordnumber/{0}.json"
+    URL = URL.format(record_id)
+    data = urlopen(URL)
+    data = json.load(data)
+    data = data['items']
+
+    if not data:
+        raise KeyError("No items found for record ID: {}".format(record_id))
+    
+    # Normalize volume labels
+    REGEX = re.compile('\W')
+    items = [('DEFAULT' if not item['enumcron']
+                        else REGEX.sub('', item['enumcron']), 
+                 item['htid']) for item in data]
+
+    # Cast to a dictionary, which removes duplicates as each dictionary key may
+    # only have a single value.
     items = dict(items)
-    for item in items.values():
-        print item
-    vols.append(items.values())
-    time.sleep(0.05)
-    record_data[id] = data
+    
+    if not items:
+        raise KeyError("No items found for record ID: {}".format(record_id))
+    
+    # Return the list of volume ids
+    return items.values()
+
+
