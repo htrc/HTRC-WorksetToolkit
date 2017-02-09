@@ -29,7 +29,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     entry_points={
-        'console_scripts' : ['htutils = htrc.__main__:main']
+        'console_scripts' : ['htrc = htrc.__main__:main']
     }
 )
 
