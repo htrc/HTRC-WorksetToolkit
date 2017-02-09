@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 import os
 import platform
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
 install_requires = [ 'PyLD' ]
 
