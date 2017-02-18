@@ -7,6 +7,7 @@ representation.
 Will eventually be expanded to allow for querying based on arbitrary
 ID and for update and removal of volumes from Workset.
 """
+from __future__ import print_function
 
 
 from pyld import jsonld
@@ -62,5 +63,5 @@ if __name__ == '__main__':
     volumes = get_volumes(data)
 
     for vol in volumes:
-        print vol
+        print(vol)
 

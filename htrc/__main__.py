@@ -1,15 +1,18 @@
 #!/usr/bin/env python
-from __future__ import absolute_import
-from ConfigParser import RawConfigParser as ConfigParser
-import httplib
+from __future__ import absolute_import, division, print_function
+from future import standard_library
+standard_library.install_aliases()
+from configparser import RawConfigParser as ConfigParser
+import http.client
 import ssl
 import json
 import os.path
-from StringIO import StringIO  # used to stream http response into zipfile.
+from io import StringIO  # used to stream http response into zipfile.
 import sys
 from time import sleep
-from urllib2 import urlopen, HTTPError
-from urllib import quote_plus, urlencode
+from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 import requests
