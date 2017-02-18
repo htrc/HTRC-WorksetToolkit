@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
+from __future__ import print_function
 
 
-from ConfigParser import RawConfigParser as ConfigParser
-import httplib
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from configparser import RawConfigParser as ConfigParser
+import http.client
 import ssl
 import json
 import os.path
-from StringIO import StringIO  # used to stream http response into zipfile.
+from io import StringIO  # used to stream http response into zipfile.
 import sys
 from time import sleep
-from urllib2 import urlopen, HTTPError
-from urllib import quote_plus, urlencode
+from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 import requests
@@ -48,7 +53,7 @@ def getVolumesFromDataAPI(token, volumeIDs, concat=False):
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
-    httpsConnection = httplib.HTTPSConnection(host, port,
+    httpsConnection = http.client.HTTPSConnection(host, port,
                                               context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -57,9 +62,9 @@ def getVolumesFromDataAPI(token, volumeIDs, concat=False):
     if response.status is 200:
         data = response.read()
     else:
-        print "Unable to get volumes"
-        print "Response Code: ", response.status
-        print "Response: ", response.reason
+        print("Unable to get volumes")
+        print("Response Code: ", response.status)
+        print("Response: ", response.reason)
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -79,12 +84,12 @@ def getPagesFromDataAPI(token, pageIDs, concat):
     if (concat):
         url = url + "&concat=true"
 
-    print "data api URL: ", url
+    print("data api URL: ", url)
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
-    httpsConnection = httplib.HTTPSConnection(host, port, context=ctx)
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
     httpsConnection.request("GET", url, headers=headers)
@@ -94,9 +99,9 @@ def getPagesFromDataAPI(token, pageIDs, concat):
     if response.status is 200:
         data = response.read()
     else:
-        print "Unable to get pages"
-        print "Response Code: ", response.status
-        print "Response: ", response.reason
+        print("Unable to get pages")
+        print("Response Code: ", response.status)
+        print("Response: ", response.reason)
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -112,7 +117,7 @@ def obtainOAuth2Token(username, password):
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-    httpsConnection = httplib.HTTPSConnection(host, oauth2port, context=ctx)
+    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
 
     url = oauth2EPRurl
     # make sure to set the request content-type as application/x-www-form-urlencoded
@@ -123,7 +128,7 @@ def obtainOAuth2Token(username, password):
         "client_id": username
     }
     data = urlencode(data)
-    print data
+    print(data)
 
     # make sure the request method is POST
     httpsConnection.request("POST", url + "?" + data, "", headers)
@@ -135,16 +140,16 @@ def obtainOAuth2Token(username, password):
         data = response.read()
 
         jsonData = json.loads(data)
-        print"*** JSON: ", jsonData
+        print("*** JSON: ", jsonData)
 
         token = jsonData["access_token"]
-        print "*** parsed token: ", token
+        print("*** parsed token: ", token)
 
     else:
-        print "Unable to get token"
-        print "Response Code: ", response.status
-        print "Response: ", response.reason
-        print response.read()
+        print("Unable to get token")
+        print("Response Code: ", response.status)
+        print("Response: ", response.reason)
+        print(response.read())
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -158,9 +163,9 @@ def printZipStream(data):
 
     # iterate over all items in the data stream
     for name in myzip.namelist():
-        print "Zip Entry: ", name
+        print("Zip Entry: ", name)
         # print the file contents
-        print myzip.read(name)
+        print(myzip.read(name))
 
     myzip.close()
 
@@ -182,9 +187,9 @@ def download_vols(volumeIDs, output, username=None, password=None):
 
         # If config file is blank, still prompt!
         if not username and not password:
-            print "Please enter your HathiTrust credentials."
-            username = raw_input("Token: ")
-            password = raw_input("Password: ")
+            print("Please enter your HathiTrust credentials.")
+            username = input("Token: ")
+            password = input("Password: ")
             save = bool_prompt("Save credentials?", default=True)
             if save:
                 with open(path, 'w') as credential_file:
@@ -196,7 +201,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
 
     token = obtainOAuth2Token(username, password)
     if token is not None:
-        print "obtained token: %s\n" % token
+        print("obtained token: %s\n" % token)
         # to get volumes, uncomment next line
         data = getVolumesFromDataAPI(token, volumeIDs, False)
 
@@ -207,7 +212,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
         myzip.extractall(output)
         myzip.close()
     else:
-        print "Failed to obtain oauth token."
+        print("Failed to obtain oauth token.")
         sys.exit(1)
 
 
