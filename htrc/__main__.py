@@ -44,7 +44,7 @@ def main():
     parser_download.add_argument("-p", "--password", help="HTRC password")
     parser_download.add_argument("file", help="input file of ids",
                                  type=lambda x: is_valid_filepath(parser_download, x))
-    parser_download.add_argument("-o", "--output", required=True, help="output directory")
+    parser_download.add_argument("-o", "--output", help="output directory", default='ht_data')
     parser_download.set_defaults(func='download')
 
     args = parser.parse_args()
