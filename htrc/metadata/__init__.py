@@ -1,9 +1,14 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import json
 import os, os.path
 import re
 from time import sleep
-from urllib2 import urlopen, HTTPError
-from urllib import quote_plus, urlencode
+from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 
 import requests
@@ -17,10 +22,10 @@ def metadata(id, sleep_time=1):
         sleep(sleep_time)  # JUST TO MAKE SURE WE ARE THROTTLED
     try:
         data = json.load(urlopen(solr))
-        print id
+        print(id)
         return data['response']['docs'][0]
     except (ValueError, IndexError, HTTPError):
-        print "No result found for " + id
+        print("No result found for " + id)
         return dict()
 
 

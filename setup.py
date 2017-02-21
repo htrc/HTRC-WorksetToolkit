@@ -2,7 +2,8 @@
 from setuptools import setup, find_packages
 import os
 import platform
-__version__ = '0.1.0'
+
+__version__ = '0.1.1'
 
 install_requires = [ 'PyLD' ]
 
@@ -18,6 +19,7 @@ setup(
     classifiers = [
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",

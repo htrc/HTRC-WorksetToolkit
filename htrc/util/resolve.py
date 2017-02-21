@@ -1,8 +1,10 @@
+from future import standard_library
+standard_library.install_aliases()
 import json
 import re
 from pprint import pprint
-from urllib2 import urlopen
-from urlparse import urlparse, parse_qs
+from urllib.request import urlopen
+from urllib.parse import urlparse, parse_qs
 
 # List of organization codes in HathiTrust Digital Library
 # Derived from https://github.com/Bookworm-project/Bookworm-MARC/issues/1
@@ -164,6 +166,6 @@ def record_id_to_volume_ids(record_id):
         raise KeyError("No items found for record ID: {}".format(record_id))
     
     # Return the list of volume ids
-    return items.values()
+    return list(items.values())
 
 
