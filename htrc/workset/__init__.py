@@ -45,6 +45,15 @@ def get_volumes(data):
     # return the list representation, maintains a more consistent interface
     return list(volumes)
 
+
+def load(filename):
+    with open(filename) as infile:
+        data = json.load(infile)
+
+    # Retrieve and print the volumes
+    return get_volumes(data)
+
+
 # Support for testing `get_volumes` using the module: 
 # `python -m htrc.workset WORKSET_FILE.json`
 if __name__ == '__main__':
@@ -55,12 +64,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
    
-    # open the JSON-LD file
-    with open(args.filename) as infile:
-        data = json.load(infile)
-
-    # Retrieve and print the volumes
-    volumes = get_volumes(data)
+    volumes = load(args.filename)
 
     for vol in volumes:
         print(vol)

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-from __future__ import absolute_import
-from __future__ import print_function
-
-
+from __future__ import absolute_import, print_function
 from future import standard_library
 standard_library.install_aliases()
+
 from builtins import input
+
 from configparser import RawConfigParser as ConfigParser
 import http.client
 import ssl
@@ -21,6 +20,8 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 import requests
 import re
+
+from htrc.lib.cli import bool_prompt
 
 """
 DOWNLOAD VOLUMES
@@ -212,8 +213,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
         myzip.extractall(output)
         myzip.close()
     else:
-        print("Failed to obtain oauth token.")
-        sys.exit(1)
+        raise RuntimeError("Failed to obtain oauth token.")
 
 
 def download(args):
