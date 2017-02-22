@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, print_function
+from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 
@@ -18,7 +18,6 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
-import requests
 import re
 
 from htrc.lib.cli import bool_prompt

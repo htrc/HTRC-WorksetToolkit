@@ -36,7 +36,10 @@ def main():
     if args.func == 'getmd':
         get_metadata(args.folder)
     if args.func == 'download':
-        if args.file.endswith('json'):
+        if (args.file.endswith('json')
+            or args.file.endswith('jsonld')
+            or args.file.startswith('http://')
+            or args.file.startswith('https://')):
             volumes = htrc.workset.load(args.file)
             f = NamedTemporaryFile()
             for volume in volumes:

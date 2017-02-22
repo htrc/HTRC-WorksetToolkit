@@ -2,10 +2,13 @@
 from setuptools import setup, find_packages
 import os
 import platform
+import sys
 
 __version__ = '0.1.1'
 
-install_requires = [ 'PyLD' ]
+install_requires = [ 'PyLD', 'future' ]
+if sys.version_info.major == 2:
+    install_requires.append('configparser')
 
 setup(
     name='htrc',
