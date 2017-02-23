@@ -11,6 +11,8 @@ from __future__ import absolute_import, print_function
 from future import standard_library
 standard_library.install_aliases()
 
+import csv
+from io import StringIO
 import json
 from pprint import pprint
 from urllib.request import urlopen
@@ -64,13 +66,16 @@ def load(filename):
     # Retrieve and print the volumes
     return get_volumes(data)
 
+
 def load_url(url):
     """
     Takes a workset URL, parses it, and uses the workset retrieval API to fetch
     the data and return the volumes..
     """
     url_components = urlparse(url)
-    if (url_components.netloc.startswith('htrc.hathitrust.org')
+    if url_components.netloc.startswith('babel.hathitrust.org'):
+        return load_hathitrust_collection(url)
+    elif (url_components.netloc.startswith('htrc.hathitrust.org')
         and url_components.path.startswith('/wsid/')):
         base_url = 'http://acbres224.ischool.illinois.edu:8080'
         base_url += '/dcWSfetch/getDescription?id='
@@ -88,6 +93,43 @@ def load_url(url):
     data = json.loads(response.read())
 
     return get_volumes(data)
+
+
+def get_volumes_fromn_csv(collection_id):
+    """
+    Retrieves the volume list for a given HathiTrust collection.
+    """
+    url = "https://babel.hathitrust.org/shcgi/mb"
+    data = "a=download&c={}&format=text".format(collection_id)
+
+    response = urlopen(url, data)
+    data = response.read().decode('utf8')
+
+    csvfile = StringIO(data)
+    reader = csv.DictReader(csvfile, delimiter='\t')
+    volumes = [row['htitem_id'] for row in reader] 
+    csvfile.close()
+
+    return volumes 
+
+
+def load_hathitrust_collection(url):
+    """
+    Retrieves the volume list for a given HathiTrust Collection URL.
+    In contrast to `get_volumes_csv`, which makes the request and handles data,
+    this function parses out the collection ID from a variety of canonical URL
+    schemes for collections:
+    - https://babel.hathitrust.org/shcgi/mb?a=listis;c=548413090
+    - https://babel.hathitrust.org/cgi/mb?a=listis&c=548413090
+    """
+    if not url.startswith('https://babel.hathitrust.org/'):
+        raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
+    try:
+        collection_id = re.search('c=(\d+)').group(1)
+        return get_volumes_from_csv(collection_id)
+    except AttributeError:
+        raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
+
 
 # Support for testing `get_volumes` using the module: 
 # `python -m htrc.workset WORKSET_FILE.json`
