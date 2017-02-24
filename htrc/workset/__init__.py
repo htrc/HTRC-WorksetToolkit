@@ -91,7 +91,7 @@ def load_url(url):
 
     print("Opening {}".format(url))
     response = urlopen(url)
-    data = json.loads(response.read())
+    data = json.loads(response.read().decode('utf-8'))
 
     return get_volumes(data)
 
