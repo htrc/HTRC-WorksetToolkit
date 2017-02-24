@@ -96,7 +96,7 @@ def load_url(url):
     return get_volumes(data)
 
 
-def get_volumes_fromn_csv(collection_id):
+def get_volumes_from_csv(collection_id):
     """
     Retrieves the volume list for a given HathiTrust collection.
     """
