@@ -7,12 +7,12 @@ representation.
 Will eventually be expanded to allow for querying based on arbitrary
 ID and for update and removal of volumes from Workset.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 
-import csv
-from io import StringIO
+import unicodecsv as csv
+from io import BytesIO
 import json
 from pprint import pprint
 import re
@@ -103,11 +103,11 @@ def get_volumes_from_csv(collection_id):
     url = "https://babel.hathitrust.org/shcgi/mb"
     data = "a=download&c={}&format=text".format(collection_id)
 
-    response = urlopen(url, data)
-    data = response.read().decode('utf8')
+    response = urlopen(url, bytes(data))
+    data = response.read()
 
-    csvfile = StringIO(data)
-    reader = csv.DictReader(csvfile, delimiter='\t')
+    csvfile = BytesIO(data)
+    reader = csv.DictReader(csvfile, delimiter=b'\t')
     volumes = [row['htitem_id'] for row in reader] 
     csvfile.close()
 
@@ -125,25 +125,9 @@ def load_hathitrust_collection(url):
     """
     if not url.startswith('https://babel.hathitrust.org/'):
         raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
-    try:
-        collection_id = re.search('c=(\d+)', url).group(1)
-        return get_volumes_from_csv(collection_id)
-    except AttributeError:
-        raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
-
-
-# Support for testing `get_volumes` using the module: 
-# `python -m htrc.workset WORKSET_FILE.json`
-if __name__ == '__main__':
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    parser.add_argument('filename')
-
-    args = parser.parse_args()
-
-    volumes = load(args.filename)
-
-    for vol in volumes:
-        print(vol)
+    #try:
+    collection_id = re.search('c=(\d+)', url).group(1)
+    return get_volumes_from_csv(collection_id)
+    #except AttributeError:
+    #    raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
 

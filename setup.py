@@ -4,9 +4,9 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
-install_requires = [ 'PyLD', 'future', 'prov' ]
+install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
 
