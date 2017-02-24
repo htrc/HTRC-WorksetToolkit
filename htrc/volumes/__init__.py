@@ -7,11 +7,12 @@ from builtins import input
 
 from configparser import RawConfigParser as ConfigParser
 import http.client
-from io import StringIO  # used to stream http response into zipfile.
+from io import BytesIO  # used to stream http response into zipfile.
 import json
 import logging
 import os.path
 import re
+import socket
 import ssl
 import sys
 from time import sleep
@@ -164,7 +165,7 @@ def obtainOAuth2Token(username, password):
 
 def printZipStream(data):
     # create a zipfile from the data stream
-    myzip = ZipFile(StringIO(data))
+    myzip = ZipFile(BytesIO(data))
 
     # iterate over all items in the data stream
     for name in myzip.namelist():
@@ -214,7 +215,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
             # to get pages, uncomment next line
             # data = getPagesFromDataAPI(token, pageIDs, False)
 
-            myzip = ZipFile(StringIO(data))
+            myzip = ZipFile(BytesIO(data))
             myzip.extractall(output)
             myzip.close()
         except socket.error:
