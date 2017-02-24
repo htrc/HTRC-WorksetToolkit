@@ -7,7 +7,7 @@ representation.
 Will eventually be expanded to allow for querying based on arbitrary
 ID and for update and removal of volumes from Workset.
 """
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import absolute_import, print_function
 from future import standard_library
 standard_library.install_aliases()
 
@@ -17,7 +17,7 @@ import json
 from pprint import pprint
 import re
 from urllib.request import urlopen
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from pyld import jsonld
 
@@ -103,11 +103,11 @@ def get_volumes_from_csv(collection_id):
     url = "https://babel.hathitrust.org/shcgi/mb"
     data = "a=download&c={}&format=text".format(collection_id)
 
-    response = urlopen(url, bytes(data))
+    response = urlopen(url, bytes(data.encode('utf-8')))
     data = response.read()
 
     csvfile = BytesIO(data)
-    reader = csv.DictReader(csvfile, delimiter=b'\t')
+    reader = csv.DictReader(csvfile, delimiter='\t')
     volumes = [row['htitem_id'] for row in reader] 
     csvfile.close()
 
