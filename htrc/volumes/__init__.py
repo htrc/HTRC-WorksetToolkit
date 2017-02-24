@@ -7,10 +7,12 @@ from builtins import input
 
 from configparser import RawConfigParser as ConfigParser
 import http.client
-import ssl
-import json
-import os.path
 from io import StringIO  # used to stream http response into zipfile.
+import json
+import logging
+import os.path
+import re
+import ssl
 import sys
 from time import sleep
 from urllib.request import urlopen
@@ -18,9 +20,12 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
-import re
 
 from htrc.lib.cli import bool_prompt
+
+import logging
+from logging import NullHandler
+logging.getLogger(__name__).addHandler(NullHandler())
 
 """
 DOWNLOAD VOLUMES
@@ -62,9 +67,9 @@ def getVolumesFromDataAPI(token, volumeIDs, concat=False):
     if response.status is 200:
         data = response.read()
     else:
-        print("Unable to get volumes")
-        print("Response Code: ", response.status)
-        print("Response: ", response.reason)
+        logging.warning("Unable to get volumes")
+        logging.warning("Response Code: ", response.status)
+        logging.warning("Response: ", response.reason)
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -203,14 +208,18 @@ def download_vols(volumeIDs, output, username=None, password=None):
     if token is not None:
         print("obtained token: %s\n" % token)
         # to get volumes, uncomment next line
-        data = getVolumesFromDataAPI(token, volumeIDs, False)
+        try:
+            data = getVolumesFromDataAPI(token, volumeIDs, False)
 
-        # to get pages, uncomment next line
-        # data = getPagesFromDataAPI(token, pageIDs, False)
+            # to get pages, uncomment next line
+            # data = getPagesFromDataAPI(token, pageIDs, False)
 
-        myzip = ZipFile(StringIO(data))
-        myzip.extractall(output)
-        myzip.close()
+            myzip = ZipFile(StringIO(data))
+            myzip.extractall(output)
+            myzip.close()
+        except socket.error:
+            raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
+
     else:
         raise RuntimeError("Failed to obtain oauth token.")
 
