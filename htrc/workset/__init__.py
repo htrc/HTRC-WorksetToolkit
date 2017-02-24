@@ -15,6 +15,7 @@ import csv
 from io import StringIO
 import json
 from pprint import pprint
+import re
 from urllib.request import urlopen
 from urlparse import urlparse
 

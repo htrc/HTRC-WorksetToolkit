@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 install_requires = [ 'PyLD', 'future', 'prov' ]
 if sys.version_info.major == 2:
