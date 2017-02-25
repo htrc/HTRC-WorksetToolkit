@@ -143,7 +143,7 @@ def obtainOAuth2Token(username, password):
 
     # if response status is OK
     if response.status is 200:
-        data = response.read()
+        data = response.read().decode('utf8')
 
         jsonData = json.loads(data)
         print("*** JSON: ", jsonData)
