@@ -1,24 +1,32 @@
 import subprocess
 
 def main(path, topics, iterations):
+    if path.endswith('/'):
+        path = path[:-1]
+
     subprocess.check_call([
         'topicexplorer', 'init', path,
         '--name', '"HathiTrust Workset"',
-        '--rebuild', '--htrc'
+        '--rebuild', '--htrc', '-q'
     ])
     subprocess.check_call([
         'topicexplorer', 'prep', path, 
-        '-q', '--lang'
+        '-q',
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
         '-k', topics,
         '--iter', iterations,
-        '--context-type', 'book'
+        '--context-type', 'book',
+        '-q'
+    ])
+    subprocess.check_call([
+        'topicexplorer', 'launch', path 
     ])
 
 def populate_parser(parser):
-    parser.add_argument('-k', help="number of topics", required=True)
+    parser.add_argument('-k', type=int, nargs='+', required=True,
+        help="number of topics")
     parser.add_argument('--iter', help="number of iterations", default=200)
     parser.add_argument('path', default='/media/secure_volume/workset/',
         nargs='?')

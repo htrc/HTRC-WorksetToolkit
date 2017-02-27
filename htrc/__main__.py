@@ -10,6 +10,7 @@ from htrc.metadata import *
 import htrc.volumes
 import htrc.workset
 import htrc.tools.mallet
+import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
 
 
@@ -44,6 +45,7 @@ def main():
     parser_mallet.set_defaults(run='mallet')
     
     parser_topicexplorer = run_parsers.add_parser('topicexplorer')
+    htrc.tools.topicexplorer.populate_parser(parser_topicexplorer)
     parser_topicexplorer.set_defaults(run='topicexplorer')
     
     parser_run.set_defaults(func='run')
