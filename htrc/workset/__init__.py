@@ -125,9 +125,10 @@ def load_hathitrust_collection(url):
     """
     if not url.startswith('https://babel.hathitrust.org/'):
         raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
-    #try:
-    collection_id = re.search('c=(\d+)', url).group(1)
+    try:
+        collection_id = re.search('c=(\d+)', url).group(1)
+    except AttributeError:
+        raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
+
     return get_volumes_from_csv(collection_id)
-    #except AttributeError:
-    #    raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
 

@@ -9,6 +9,7 @@ from tempfile import NamedTemporaryFile
 from htrc.metadata import *
 import htrc.volumes
 import htrc.workset
+import htrc.tools.mallet
 from htrc.lib.cli import bool_prompt
 
 
@@ -34,10 +35,19 @@ def main():
         default='/media/secure_volume/workset/')
     parser_download.set_defaults(func='download')
 
+    parser_run = parsers.add_parser('run', help="Run a built-in algorithm.")
+    parser_mallet = parser_run.add_parser('mallet')
+    htrc.tools.mallet.populate_parser(parser_mallet)
+    parser_mallet.set_defaults(run='mallet')
+    parser_run.set_defaults(func='run')
+
     args = parser.parse_args()
 
     if args.func == 'getmd':
         get_metadata(args.folder)
+    if args.func == 'run':
+        if args.run == 'mallet':
+            htrc.tools.mallet.main(args.path, args.k, args.iter)
     if args.func == 'download':
         if os.path.exists(args.output):
             if bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):

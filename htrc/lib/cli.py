@@ -1,5 +1,4 @@
-
-
+from builtins import input
 def bool_prompt(prompt_str, default=None):
     if default is True:
         default = 'y'
@@ -25,7 +24,7 @@ def prompt(prompt, options=None, default=None):
             choices[default_idx] = choices[default_idx].upper()
         prompt += " [{0}]".format('/'.join(choices))
     elif default:
-        if isinstance(default,basestring):
+        if isinstance(default,str):
             prompt += " [Default: {0}]".format(default.encode('utf-8'))
         else:
             prompt += " [Default: {0}]".format(default)
@@ -34,7 +33,7 @@ def prompt(prompt, options=None, default=None):
     # Wait for valid response
     result = None
     while result is None or (options and result not in options):
-        result = raw_input(prompt)
+        result = input(prompt)
         result = result.lower().strip()
         if default and result == '':
             result = default
