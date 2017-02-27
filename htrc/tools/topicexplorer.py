@@ -11,7 +11,7 @@ def main(path, topics, iterations):
     ])
     subprocess.check_call([
         'topicexplorer', 'prep', path, 
-        '-q', '--lang', 'en'
+        '-q', '--min-word-len', '3', '--lang', 'en'
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
