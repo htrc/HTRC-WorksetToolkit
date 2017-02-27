@@ -4,23 +4,23 @@ import tarfile
 import wget
 
 # Mallet is downloaded and intalled in users current directory
-if not os.path.exists("~/mallet"):
-    os.makedirs('~/mallet')
+if not os.path.exists("/home/dcuser/mallet"):
+    os.makedirs('/home/dcuser/mallet')
     mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
     mallet_dir = tarfile.open(mallet_zip, "r:gz")
-    mallet_dir.extractall(path="~/mallet")
+    mallet_dir.extractall(path="/home/dcuser/mallet")
     mallet_dir.close()
 
 def main(path, topics, iterations):
     # import the workset to MALLET format.
-    subprocess.check_output([
+    subprocess.check_call([
         './mallet-2.0.8RC3/bin/mallet',
         'import-dir',
         '--input', path,
         '--output', 'corpus.mallet',
     #   '--keep-sequence',
         '--remove-stopwords'
-        ], stderr=subprocess.STDOUT)
+        ], output=stdprocess.STDOUT, stderr=subprocess.STDOUT)
     subprocess.check_output([
         './mallet-2.0.8RC3/bin/mallet',
         'train-topics',
@@ -30,7 +30,7 @@ def main(path, topics, iterations):
         '--output-topic-keys', 'mallet_topic-keys.txt',
         '--output-doc-topics', 'mallet_doc-topics.txt',
         '--num-iterations', iterations
-        ], stderr=subprocess.STDOUT)
+        ], output=stdprocess.STDOUT, stderr=subprocess.STDOUT)
 
 def populate_parser(parser):
     parser.add_argument('-k', help="number of topics", required=True)
