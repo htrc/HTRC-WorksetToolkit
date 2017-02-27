@@ -13,16 +13,16 @@ if not os.path.exists("/home/dcuser/mallet"):
 
 def main(path, topics, iterations):
     # import the workset to MALLET format.
-    subprocess.check_output([
+    subprocess.check_call([
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
         'import-dir',
         '--input', path,
         '--output', 'corpus.mallet',
     #   '--keep-sequence',
         '--remove-stopwords'
-        ], output=stdprocess.STDOUT, stderr=subprocess.STDOUT)
+        ], stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
 
-    subprocess.check_output([
+    subprocess.check_call([
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
         'train-topics',
         '--input', 'corpus.mallet',
@@ -31,7 +31,7 @@ def main(path, topics, iterations):
         '--output-topic-keys', 'mallet_topic-keys.txt',
         '--output-doc-topics', 'mallet_doc-topics.txt',
         '--num-iterations', iterations
-        ], output=stdprocess.STDOUT, stderr=subprocess.STDOUT)
+        ], stdout=stdprocess.STDOUT, stderr=subprocess.STDOUT)
 
 def populate_parser(parser):
     parser.add_argument('-k', help="number of topics", required=True)
