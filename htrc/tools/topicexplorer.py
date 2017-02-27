@@ -11,11 +11,11 @@ def main(path, topics, iterations):
     ])
     subprocess.check_call([
         'topicexplorer', 'prep', path, 
-        '-q',
+        '-q', '--lang', 'en'
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
-        '-k', topics,
+        '-k'] + map(str,topics) + [
         '--iter', iterations,
         '--context-type', 'book',
         '-q'
