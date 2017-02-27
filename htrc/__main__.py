@@ -36,7 +36,8 @@ def main():
     parser_download.set_defaults(func='download')
 
     parser_run = parsers.add_parser('run', help="Run a built-in algorithm.")
-    parser_mallet = parser_run.add_parser('mallet')
+    run_parsers = parser_run.add_subparsers(help="select a command")
+    parser_mallet = run_parsers.add_parser('mallet')
     htrc.tools.mallet.populate_parser(parser_mallet)
     parser_mallet.set_defaults(run='mallet')
     parser_run.set_defaults(func='run')
