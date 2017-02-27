@@ -4,6 +4,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 import os, os.path
+import shutil
 from tempfile import NamedTemporaryFile
 
 from htrc.metadata import *
@@ -62,7 +63,7 @@ def main():
     if args.func == 'download':
         if os.path.exists(args.output):
             if bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
-                os.rmdir(args.output)
+                shutils.rmtree(args.output)
                 os.makedirs(args.output)
             else:
                 print("Please choose another output folder and try again.")
