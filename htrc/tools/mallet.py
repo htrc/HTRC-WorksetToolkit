@@ -20,7 +20,7 @@ def main(path, topics, iterations):
         '--output', path + '../corpus.mallet',
         '--keep-sequence',
         '--remove-stopwords'
-        ], stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
+        ])
 
     subprocess.check_call([
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
@@ -31,7 +31,7 @@ def main(path, topics, iterations):
         '--output-topic-keys', path + '../mallet_topic-keys.txt',
         '--output-doc-topics', path + '../mallet_doc-topics.txt',
         '--num-iterations', iterations
-        ], stdout=stdprocess.STDOUT, stderr=subprocess.STDOUT)
+        ])
 
 def populate_parser(parser):
     parser.add_argument('-k', help="number of topics", required=True)
