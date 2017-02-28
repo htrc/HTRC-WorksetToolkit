@@ -2,6 +2,8 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 from builtins import str
+
+import codecs
 import json
 import os, os.path
 import re
@@ -21,7 +23,8 @@ def metadata(id, sleep_time=1):
     if sleep_time:
         sleep(sleep_time)  # JUST TO MAKE SURE WE ARE THROTTLED
     try:
-        data = json.load(urlopen(solr))
+        reader = codecs.getreader('utf-8')
+        data = json.load(reader(urlopen(solr)))
         print(id)
         return data['response']['docs'][0]
     except (ValueError, IndexError, HTTPError):
@@ -34,7 +37,7 @@ def get_metadata(folder):
     data = [(id.strip(), metadata(id.strip())) for id in ids
             if not id.endswith('.log')]
     data = dict(data)
-    with open(os.path.join(folder, '../metadata.json'), 'wb') as outfile:
+    with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
         json.dump(data, outfile)
 
 
