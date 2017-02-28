@@ -63,7 +63,7 @@ def main():
     if args.func == 'download':
         if os.path.exists(args.output):
             if bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
-                shutils.rmtree(args.output)
+                shutil.rmtree(args.output)
                 os.makedirs(args.output)
             else:
                 print("Please choose another output folder and try again.")
