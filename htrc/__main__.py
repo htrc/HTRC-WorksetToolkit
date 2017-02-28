@@ -22,10 +22,10 @@ def main():
     parsers = parser.add_subparsers(help="select a command")
 
     # Metadata Helpers
-    parser_getmd = parsers.add_parser('get-md',
+    parser_getmd = parsers.add_parser('metadata',
                                       help="Get metadata for a folder of HathiTrust volumes")
     parser_getmd.add_argument("folder", help="Path to HathiTrust Volumes")
-    parser_getmd.set_defaults(func='getmd')
+    parser_getmd.set_defaults(func='metadata')
 
     # Download Helper
     parser_download = parsers.add_parser('download',
@@ -53,7 +53,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.func == 'getmd':
+    if args.func == 'metadata':
         get_metadata(args.folder)
     if args.func == 'run':
         if args.run == 'mallet':
