@@ -4,14 +4,17 @@ import tarfile
 import wget
 
 # Mallet is downloaded and intalled in users current directory
-if not os.path.exists("/home/dcuser/mallet"):
-    os.makedirs('/home/dcuser/mallet')
-    mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
-    mallet_dir = tarfile.open(mallet_zip, "r:gz")
-    mallet_dir.extractall(path="/home/dcuser/mallet")
-    mallet_dir.close()
+def install_mallet():
+    if not os.path.exists("/home/dcuser/mallet"):
+        os.makedirs('/home/dcuser/mallet')
+        mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
+        mallet_dir = tarfile.open(mallet_zip, "r:gz")
+        mallet_dir.extractall(path="/home/dcuser/mallet")
+        mallet_dir.close()
 
 def main(path, topics, iterations):
+    install_mallet()
+
     # import the workset to MALLET format.
     subprocess.check_call([
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
