@@ -84,8 +84,8 @@ def get_volumes(token, volume_ids, concat=False):
         data = response.read()
     else:
         logging.warning("Unable to get volumes")
-        logging.warning("Response Code: ", response.status)
-        logging.warning("Response: ", response.reason)
+        logging.warning("Response Code: {}".format(response.status))
+        logging.warning("Response: {}".format(response.reason))
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -93,23 +93,33 @@ def get_volumes(token, volume_ids, concat=False):
     return data
 
 
-def getPagesFromDataAPI(token, pageIDs, concat):
-    data = None
-
-    assert pageIDs is not None, "pageIDs is None"
-    assert len(pageIDs) > 0, "pageIDs is less than one"
+def get_pages(token, page_ids, concat=False):
+    """
+    Returns a ZIP file containing specfic pages.
+    
+    Parameters:
+    :token: An OAuth2 token for the app.
+    :volume_ids: A list of volume_ids
+    :concat: If True, return a single file per volume. If False, return a single
+    file per page (default).
+    """
+    if not page_ids:
+        raise ValueError("page_ids is empty.")
 
     url = dataapiEPR
-    url = url + "pages?pageIDs=" + quote_plus('|'.join(pageIDs))
+    url += "pages?page_ids=" + quote_plus('|'.join(page_ids))
+    if concat:
+        url += "&concat=true"
 
-    if (concat):
-        url = url + "&concat=true"
-
-    print("data api URL: ", url)
+    logging.info("data api URL: ", url)
+    
+    # Create SSL lookup
+    # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
+    # Create connection
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
@@ -120,9 +130,9 @@ def getPagesFromDataAPI(token, pageIDs, concat):
     if response.status is 200:
         data = response.read()
     else:
-        print("Unable to get pages")
-        print("Response Code: ", response.status)
-        print("Response: ", response.reason)
+        logging.warning("Unable to get pages")
+        logging.warning("Response Code: ".format(response.status))
+        logging.warning("Response: ".format(response.reason))
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -228,7 +238,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
             data = get_volumes(token, volumeIDs, False)
 
             # to get pages, uncomment next line
-            # data = getPagesFromDataAPI(token, pageIDs, False)
+            # data = get_pages(token, pageIDs, False)
 
             myzip = ZipFile(BytesIO(data))
             myzip.extractall(output)
