@@ -140,7 +140,7 @@ def get_pages(token, page_ids, concat=False):
     return data
 
 
-def obtainOAuth2Token(username, password):
+def get_oauth2_token(username, password):
     token = None
     url = None
     httpsConnection = None
@@ -159,7 +159,6 @@ def obtainOAuth2Token(username, password):
         "client_id": username
     }
     data = urlencode(data)
-    print(data)
 
     # make sure the request method is POST
     httpsConnection.request("POST", url + "?" + data, "", headers)
@@ -171,16 +170,16 @@ def obtainOAuth2Token(username, password):
         data = response.read().decode('utf8')
 
         jsonData = json.loads(data)
-        print("*** JSON: ", jsonData)
+        logging.info("*** JSON: {}".format(jsonData))
 
         token = jsonData["access_token"]
-        print("*** parsed token: ", token)
+        logging.info("*** parsed token: {}".format(token))
 
     else:
-        print("Unable to get token")
-        print("Response Code: ", response.status)
-        print("Response: ", response.reason)
-        print(response.read())
+        logging.warning("Unable to get token")
+        logging.warning("Response Code: {}".format(response.status))
+        logging.warning("Response: {}".format(response.reason))
+        logging.warning(response.read())
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -230,7 +229,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
                     config.set('main', 'password', password)
                     config.write(credential_file)
 
-    token = obtainOAuth2Token(username, password)
+    token = get_oauth2_token(username, password)
     if token is not None:
         print("obtained token: %s\n" % token)
         # to get volumes, uncomment next line
