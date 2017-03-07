@@ -83,28 +83,22 @@ def load_url(url):
         base_url += url
         url = base_url
     elif (url_components.netloc.startswith('acbres224.ischool.illinois.edu')
-        and url_components.path.startswith('/dcWSfetch/getDescription')):
+        and url_components.path.startswith('/dcWSfetch/')):
         # copied from direct call to WS fetch, a-ok.
         pass
     else:
         raise ValueError("Invalid workset URL: {}".format(url))
 
-    print("Opening {}".format(url))
     response = urlopen(url)
     data = json.loads(response.read().decode('utf-8'))
 
     return get_volumes(data)
 
 
-def get_volumes_from_csv(collection_id):
+def get_volumes_from_csv(data):
     """
     Retrieves the volume list for a given HathiTrust collection.
     """
-    url = "https://babel.hathitrust.org/shcgi/mb"
-    data = "a=download&c={}&format=text".format(collection_id)
-
-    response = urlopen(url, bytes(data.encode('utf-8')))
-    data = response.read()
 
     csvfile = BytesIO(data)
     reader = csv.DictReader(csvfile, delimiter='\t')
@@ -129,6 +123,12 @@ def load_hathitrust_collection(url):
         collection_id = re.search('c=(\d+)', url).group(1)
     except AttributeError:
         raise ValueError('Invalid HathiTrust Collection URL: {}'.format(url))
+    
+    url = "https://babel.hathitrust.org/shcgi/mb"
+    data = "a=download&c={}&format=text".format(collection_id)
 
-    return get_volumes_from_csv(collection_id)
+    response = urlopen(url, bytes(data.encode('utf-8')))
+    data = response.read()
+
+    return get_volumes_from_csv(data)
 
