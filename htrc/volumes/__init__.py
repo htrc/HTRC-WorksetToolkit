@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+`htrc.volumes`
+
+Contains functions to retrieve volumes from the HTRC Data API. 
+
+The functions in this package will not operate unless they are 
+executed from an HTRC Data Capsule in Secure Mode. The module 
+`htrc.mock.volumes` contains Patch objects for testing workflows.
+"""
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()

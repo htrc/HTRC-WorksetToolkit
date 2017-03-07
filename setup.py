@@ -35,6 +35,8 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts' : ['htrc = htrc.__main__:main']
-    }
+    },
+    test_suite="unittest2.collector",
+    tests_require=['unittest2']
 )
 
