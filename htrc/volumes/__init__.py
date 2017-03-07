@@ -37,10 +37,7 @@ import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-"""
-DOWNLOAD VOLUMES
-Code to download volumes
-"""
+# Global information to connect to the data API
 host = "silvermaple.pti.indiana.edu"  # use over HTTPS
 port = 25443
 oauth2EPRurl = "/oauth2/token"
@@ -48,28 +45,37 @@ oauth2port = 443
 dataapiEPR = "/data-api/"
 
 
-# getVolumesFromDataAPI : String, String[], boolean ==> inputStream
-def getVolumesFromDataAPI(token, volumeIDs, concat=False):
-    data = None
+def get_volumes(token, volume_ids, concat=False):
+    """
+    Returns volumes from the Data API as a raw zip stream.
 
-    assert volumeIDs is not None, "volumeIDs is None"
-    assert len(volumeIDs) > 0, "volumeIDs is less than one"
+    Parameters:
+    :token: An OAuth2 token for the app.
+    :volume_ids: A list of volume_ids
+    :concat: If True, return a single file per volume. If False, return a single
+    file per page (default).
+    """
+    if not volume_ids:
+        raise ValueError("volume_ids is empty.")
 
     url = dataapiEPR + "volumes"
-    data = {'volumeIDs': '|'.join(
-        [id.replace('+', ':').replace('=', '/') for id in volumeIDs])}
+    data = {'volume_ids': '|'.join(
+        [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
         data['concat'] = 'true'
 
+    # Authorization
     headers = {"Authorization": "Bearer " + token,
                "Content-type": "application/x-www-form-urlencoded"}
 
+    # Create SSL lookup
+    # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
-    httpsConnection = http.client.HTTPSConnection(host, port,
-                                              context=ctx)
+    # Retrieve the volumes
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
     response = httpsConnection.getresponse()
@@ -219,7 +225,7 @@ def download_vols(volumeIDs, output, username=None, password=None):
         print("obtained token: %s\n" % token)
         # to get volumes, uncomment next line
         try:
-            data = getVolumesFromDataAPI(token, volumeIDs, False)
+            data = get_volumes(token, volumeIDs, False)
 
             # to get pages, uncomment next line
             # data = getPagesFromDataAPI(token, pageIDs, False)
