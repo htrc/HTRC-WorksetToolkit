@@ -187,19 +187,6 @@ def get_oauth2_token(username, password):
     return token
 
 
-def printZipStream(data):
-    # create a zipfile from the data stream
-    myzip = ZipFile(BytesIO(data))
-
-    # iterate over all items in the data stream
-    for name in myzip.namelist():
-        print("Zip Entry: ", name)
-        # print the file contents
-        print(myzip.read(name))
-
-    myzip.close()
-
-
 def download_vols(volumeIDs, output, username=None, password=None):
     # create output folder, if nonexistant
     if not os.path.isdir(output):
