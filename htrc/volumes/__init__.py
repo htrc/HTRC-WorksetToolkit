@@ -141,32 +141,26 @@ def get_pages(token, page_ids, concat=False):
 
 
 def get_oauth2_token(username, password):
-    token = None
-    url = None
-    httpsConnection = None
+    # make sure to set the request content-type as application/x-www-form-urlencoded
+    headers = {"Content-type": "application/x-www-form-urlencoded"}
+    data = { "grant_type": "client_credentials",
+             "client_secret": password,
+             "client_id": username }
+    data = urlencode(data)
 
+    # create an SSL context
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
-
-    url = oauth2EPRurl
-    # make sure to set the request content-type as application/x-www-form-urlencoded
-    headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = {
-        "grant_type": "client_credentials",
-        "client_secret": password,
-        "client_id": username
-    }
-    data = urlencode(data)
 
     # make sure the request method is POST
-    httpsConnection.request("POST", url + "?" + data, "", headers)
+    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
+    httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
 
     response = httpsConnection.getresponse()
 
     # if response status is OK
-    if response.status is 200:
+    if response.status == 200:
         data = response.read().decode('utf8')
 
         jsonData = json.loads(data)
@@ -180,6 +174,7 @@ def get_oauth2_token(username, password):
         logging.warning("Response Code: {}".format(response.status))
         logging.warning("Response: {}".format(response.reason))
         logging.warning(response.read())
+        raise EnvironmentError("Unable to get token.")
 
     if httpsConnection is not None:
         httpsConnection.close()
