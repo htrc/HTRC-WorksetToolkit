@@ -187,47 +187,69 @@ def get_oauth2_token(username, password):
     return token
 
 
-def download_volumes(volumeIDs, output, username=None, password=None):
-    # create output folder, if nonexistant
-    if not os.path.isdir(output):
-        os.makedirs(output)
+def credential_prompt(save_path=None):
+    """
+    A prompt for entering HathiTrust credentials.
+    """
+    print("Please enter your HathiTrust credentials.")
+    username = input("Token: ")
+    password = input("Password: ")
+    save = bool_prompt("Save credentials?", default=True)
 
+    # Save credentials, if possible
+    if save_path and save:
+        with open(save_path, 'w') as credential_file:
+            if not config.has_section('main'):
+                config.add_section('main')
+            config.set('main', 'username', username)
+            config.set('main', 'password', password)
+            config.write(credential_file)
+
+    return (username, password)
+
+def credentials_from_config(path):
+    """
+    Retrieves the username and password from a config file for the Data API.
+    Raises an EnvironmentError if not specified.
+    See also: credential_prompt
+    """
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(path):
+        config.read(path)
+        if config.has_section('main'):
+            username = config.get("main", "username")
+            password = config.get("main", "password")
+
+    if not username and not password:
+        logging.error("Config path: {}".format(path))
+        raise EnvironmentError("No username and password stored in config file.")
+
+    return (username, password)
+
+def download_volumes(volume_ids, output_dir, username=None, password=None):
+    # create output_dir folder, if nonexistant
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    # get credentials if not specified
     if not username and not password:
         path = os.path.expanduser('~')
         path = os.path.join(path, '.htrc')
-        config = ConfigParser(allow_no_value=True)
-        if os.path.exists(path):
-            config.read(path)
-            if config.has_section('main'):
-                username = config.get("main", "username")
-                password = config.get("main", "password")
-
-        # If config file is blank, still prompt!
-        if not username and not password:
-            print("Please enter your HathiTrust credentials.")
-            username = input("Token: ")
-            password = input("Password: ")
-            save = bool_prompt("Save credentials?", default=True)
-            if save:
-                with open(path, 'w') as credential_file:
-                    if not config.has_section('main'):
-                        config.add_section('main')
-                    config.set('main', 'username', username)
-                    config.set('main', 'password', password)
-                    config.write(credential_file)
-
+        try:
+            username, password = credentials_from_config(path)
+        except EnvironmentError:
+            username, password = credential_prompt(path)
+    
+    # Retrieve token and download volumes
     token = get_oauth2_token(username, password)
     if token is not None:
-        print("obtained token: %s\n" % token)
-        # to get volumes, uncomment next line
-        try:
-            data = get_volumes(token, volumeIDs, False)
+        logging.info("obtained token: %s\n" % token)
 
-            # to get pages, uncomment next line
-            # data = get_pages(token, pageIDs, False)
+        try:
+            data = get_volumes(token, volume_ids, False)
 
             myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output)
+            myzip.extractall(output_dir)
             myzip.close()
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
