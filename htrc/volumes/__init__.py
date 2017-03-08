@@ -187,7 +187,7 @@ def get_oauth2_token(username, password):
     return token
 
 
-def download_vols(volumeIDs, output, username=None, password=None):
+def download_volumes(volumeIDs, output, username=None, password=None):
     # create output folder, if nonexistant
     if not os.path.isdir(output):
         os.makedirs(output)
@@ -241,5 +241,5 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_vols(volumeIDs, args.output, args.username, args.password)
+    return download_volumes(volumeIDs, args.output, args.username, args.password)
 
