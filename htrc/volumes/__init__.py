@@ -198,11 +198,14 @@ def credential_prompt(save_path=None):
 
     # Save credentials, if possible
     if save_path and save:
+        config = ConfigParser(allow_no_value=True)
+        if os.path.exists(save_path):
+            config.read(save_path)
+        if not config.has_section('main'):
+            config.add_section('main')
+        config.set('main', 'username', username)
+        config.set('main', 'password', password)
         with open(save_path, 'w') as credential_file:
-            if not config.has_section('main'):
-                config.add_section('main')
-            config.set('main', 'username', username)
-            config.set('main', 'password', password)
             config.write(credential_file)
 
     return (username, password)
@@ -213,6 +216,9 @@ def credentials_from_config(path):
     Raises an EnvironmentError if not specified.
     See also: credential_prompt
     """
+    username = None
+    password = None
+
     config = ConfigParser(allow_no_value=True)
     if os.path.exists(path):
         config.read(path)
