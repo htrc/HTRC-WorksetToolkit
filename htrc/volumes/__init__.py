@@ -86,6 +86,7 @@ def get_volumes(token, volume_ids, concat=False):
         logging.warning("Unable to get volumes")
         logging.warning("Response Code: {}".format(response.status))
         logging.warning("Response: {}".format(response.reason))
+        raise EnvironmentError("Unable to get volumes.")
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -133,6 +134,7 @@ def get_pages(token, page_ids, concat=False):
         logging.warning("Unable to get pages")
         logging.warning("Response Code: ".format(response.status))
         logging.warning("Response: ".format(response.reason))
+        raise EnvironmentError("Unable to get pages.")
 
     if httpsConnection is not None:
         httpsConnection.close()

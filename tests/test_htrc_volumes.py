@@ -4,7 +4,7 @@ standard_library.install_aliases()
 
 from io import BytesIO  # used to stream http response into zipfile.
 from mock import Mock, patch, PropertyMock
-import tempfile
+from tempfile import NamedTemporaryFile, mkdtemp
 import unittest2 as unittest
 
 import htrc.volumes
@@ -16,12 +16,18 @@ class MockResponse(BytesIO):
 
 class TestVolumes(unittest.TestCase):
     def setUp(self):
-        self.config_path = tempfile.NamedTemporaryFile(delete=False).name
-        self.empty_config_path = tempfile.NamedTemporaryFile(delete=False).name
+        self.test_vols = ['mdp.39015050817181', 'mdp.39015055436151',
+            'mdp.39015056169157', 'mdp.39015050161697', 'mdp.39015042791874']
+
+        self.config_path = NamedTemporaryFile(delete=False).name
+        self.empty_config_path = NamedTemporaryFile(delete=False).name
+
+        self.output_path = mkdtemp()
 
     def tearDown(self):
-        import os
+        import os, shutil
         os.remove(self.config_path)
+        shutil.rmtree(self.output_path)
 
     @patch('htrc.volumes.bool_prompt')
     @patch('htrc.volumes.input')
@@ -55,28 +61,62 @@ class TestVolumes(unittest.TestCase):
         self.assertEqual(token, 'a1b2c3d4e5f6')
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
-    def test_get_oauth2_token_fail(self, https_mock):
+    def test_get_oauth2_token_error(self, https_mock):
         response_mock = Mock(status=500)
-        response_mock.read.return_value = '{"access_token": "a1b2c3d4e5f6"}'
         https_mock.return_value.getresponse.return_value = response_mock
 
         with self.assertRaises(EnvironmentError):
             token = htrc.volumes.get_oauth2_token('1234','1234')
 
-    def test_get_volumes(self):
-        pass
+    @patch('htrc.volumes.http.client.HTTPSConnection')
+    def test_get_volumes_and_pages(self, https_mock):
+        response_mock = Mock(status=200)
+        https_mock.return_value.getresponse.return_value = response_mock
 
-    def test_get_pages(self):
-        pass
+        htrc.volumes.get_volumes('1234', self.test_vols)
+        htrc.volumes.get_pages('1234', self.test_vols)
 
-    def test_get_token(self):
-        pass
+    @patch('htrc.volumes.http.client.HTTPSConnection')
+    def test_get_volumes_and_pages_error(self, https_mock):
+        response_mock = Mock(status=500)
+        https_mock.return_value.getresponse.return_value = response_mock
 
-    def test_print_zip(self):
-        pass
+        with self.assertRaises(EnvironmentError):
+            htrc.volumes.get_volumes('1234', self.test_vols)
 
-    def test_download_volumes(self):
-        pass
+        with self.assertRaises(EnvironmentError):
+            htrc.volumes.get_pages('1234', self.test_vols)
+
+    def test_get_volumes_and_pages_empty(self):
+        with self.assertRaises(ValueError):
+            htrc.volumes.get_volumes('1234', [])
+
+        with self.assertRaises(ValueError):
+            htrc.volumes.get_pages('1234', [])
+
+    @patch('htrc.volumes.ZipFile')
+    @patch('htrc.volumes.get_volumes')
+    @patch('htrc.volumes.get_oauth2_token')
+    @patch('htrc.volumes.http.client.HTTPSConnection')
+    def test_download_volumes(self, https_mock, oauth2_mock, volumes_mock,
+                              zip_mock):
+        response_mock = Mock(status=200)
+        https_mock.return_value.getresponse.return_value = response_mock
+        oauth2_mock.return_value = 'a1b2c3d4e5'
+        volumes_mock.return_value = ''
+
+        htrc.volumes.download_volumes(self.test_vols, self.output_path,
+            username='1234', password='1234')
+
+        # test directory creation
+        import shutil
+        shutil.rmtree(self.output_path)
+        htrc.volumes.download_volumes(self.test_vols, self.output_path,
+            username='1234', password='1234')
+
+        # test config-based auth
+        self.test_credential_store()
+        htrc.volumes.download_volumes(self.test_vols, self.output_path)
 
     def test_download(self):
         pass
