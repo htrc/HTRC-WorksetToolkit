@@ -31,7 +31,7 @@ class TestVolumes(unittest.TestCase):
 
     @patch('htrc.volumes.bool_prompt')
     @patch('htrc.volumes.input')
-    def test_credential_store(self, input_mock, bool_mock):
+    def test_credential_prompt(self, input_mock, bool_mock):
         # configure mocks
         input_mock.return_value = '1234'
         bool_mock.return_value = True
@@ -114,9 +114,29 @@ class TestVolumes(unittest.TestCase):
         htrc.volumes.download_volumes(self.test_vols, self.output_path,
             username='1234', password='1234')
 
+    @patch('htrc.volumes.ZipFile')
+    @patch('htrc.volumes.get_volumes')
+    @patch('htrc.volumes.get_oauth2_token')
+    @patch('htrc.volumes.http.client.HTTPSConnection')
+    def test_download_volumes_saved_creds(self, https_mock, oauth2_mock, volumes_mock,
+                              zip_mock):
+        response_mock = Mock(status=200)
+        https_mock.return_value.getresponse.return_value = response_mock
+        oauth2_mock.return_value = 'a1b2c3d4e5'
+        volumes_mock.return_value = ''
+
         # test config-based auth
-        self.test_credential_store()
+        import os, os.path
+        config_path = os.path.expanduser('~')
+        config_path = os.path.join(config_path, '.htrc')
+        preexisting_config = os.path.exists(config_path)
+        if not preexisting_config:
+            htrc.volumes.save_credentials('1234', '1234')
+
         htrc.volumes.download_volumes(self.test_vols, self.output_path)
+
+        if not preexisting_config:
+            os.remove(config_path)
 
     def test_download(self):
         pass

@@ -193,17 +193,30 @@ def credential_prompt(save_path=None):
     password = input("Password: ")
     save = bool_prompt("Save credentials?", default=True)
 
-    # Save credentials, if possible
     if save_path and save:
-        config = ConfigParser(allow_no_value=True)
-        if os.path.exists(save_path):
-            config.read(save_path)
-        if not config.has_section('main'):
-            config.add_section('main')
-        config.set('main', 'username', username)
-        config.set('main', 'password', password)
-        with open(save_path, 'w') as credential_file:
-            config.write(credential_file)
+        save_credentials(username, password, save_path)
+
+    return (username, password)
+
+def save_credentials(username, password, save_path=None):
+    """
+    Saves credentials in the config file.
+    """
+    # Default to ~/.htrc
+    if save_path is None:
+        save_path = os.path.expanduser('~')
+        save_path = os.path.join(save_path, '.htrc')
+
+    # Open and modify existing config file, if it exists.
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(save_path):
+        config.read(save_path)
+    if not config.has_section('main'):
+        config.add_section('main')
+    config.set('main', 'username', username)
+    config.set('main', 'password', password)
+    with open(save_path, 'w') as credential_file:
+        config.write(credential_file)
 
     return (username, password)
 
