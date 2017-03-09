@@ -59,7 +59,8 @@ class TestVolumes(unittest.TestCase):
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_oauth2_token(self, https_mock):
         response_mock = Mock(status=200)
-        response_mock.read.return_value = '{"access_token": "a1b2c3d4e5f6"}'
+        response_mock.read.return_value =\
+            '{"access_token": "a1b2c3d4e5f6"}'.encode('utf8')
         https_mock.return_value.getresponse.return_value = response_mock
         
         token = htrc.volumes.get_oauth2_token('1234','1234')
@@ -108,7 +109,7 @@ class TestVolumes(unittest.TestCase):
         response_mock = Mock(status=200)
         https_mock.return_value.getresponse.return_value = response_mock
         oauth2_mock.return_value = 'a1b2c3d4e5'
-        volumes_mock.return_value = ''
+        volumes_mock.return_value = b''
 
         htrc.volumes.download_volumes(self.test_vols, self.output_path,
             username='1234', password='1234')
@@ -128,7 +129,7 @@ class TestVolumes(unittest.TestCase):
         response_mock = Mock(status=200)
         https_mock.return_value.getresponse.return_value = response_mock
         oauth2_mock.return_value = 'a1b2c3d4e5'
-        volumes_mock.return_value = ''
+        volumes_mock.return_value = b''
 
         # test config-based auth
         import os, os.path
