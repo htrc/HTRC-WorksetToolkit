@@ -9,6 +9,7 @@ __version__ = '0.1.7'
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
+    install_requires.append('mock')
 
 setup(
     name='htrc',
@@ -37,6 +38,6 @@ setup(
         'console_scripts' : ['htrc = htrc.__main__:main']
     },
     test_suite="unittest2.collector",
-    tests_require=['unittest2', 'mock']
+    tests_require=['unittest2']
 )
 
