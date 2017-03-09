@@ -37,6 +37,6 @@ setup(
         'console_scripts' : ['htrc = htrc.__main__:main']
     },
     test_suite="unittest2.collector",
-    tests_require=['unittest2']
+    tests_require=['unittest2', 'mock']
 )
 
