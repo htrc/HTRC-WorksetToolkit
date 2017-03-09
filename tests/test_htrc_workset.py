@@ -22,7 +22,7 @@ class TestWorkset(unittest.TestCase):
 
         self.example_csv = os.path.join(dirname, 'data/example.csv')
         with open(self.example_csv, 'r') as infile:
-            self.csv = infile.read()
+            self.csv = infile.read().encode('utf-8')
 
     def test_get_volumes(self):
         """
