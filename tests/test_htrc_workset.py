@@ -17,11 +17,11 @@ class TestWorkset(unittest.TestCase):
 
         dirname = os.path.dirname(__file__)
         self.example_file = os.path.join(dirname, 'data/example.jsonld')
-        with open(self.example_file, 'rb') as infile:
+        with open(self.example_file, 'r') as infile:
             self.json = json.load(infile)
 
         self.example_csv = os.path.join(dirname, 'data/example.csv')
-        with open(self.example_csv, 'rb') as infile:
+        with open(self.example_csv, 'r') as infile:
             self.csv = infile.read()
 
     def test_get_volumes(self):
