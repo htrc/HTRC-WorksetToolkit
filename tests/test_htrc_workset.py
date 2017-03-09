@@ -72,7 +72,7 @@ class TestWorkset(unittest.TestCase):
         # test the default URL with a mock
         response_mock = Mock()
         urlopen_mock.return_value = response_mock
-        response_mock.read.return_value = json.dumps(self.json)
+        response_mock.read.return_value = json.dumps(self.json).encode('utf-8')
 
         vols = htrc.workset.load_url(htrc_url)
 
