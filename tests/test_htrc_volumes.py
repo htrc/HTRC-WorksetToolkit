@@ -2,8 +2,13 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 
+import sys
+if sys.version_info.major == 2:
+    from mock import Mock, patch, PropertyMock
+elif sys.version_info.major == 3:
+    from unittest.mock import Mock, patch, PropertyMock
+
 from io import BytesIO  # used to stream http response into zipfile.
-from mock import Mock, patch, PropertyMock
 from tempfile import NamedTemporaryFile, mkdtemp
 import unittest2 as unittest
 

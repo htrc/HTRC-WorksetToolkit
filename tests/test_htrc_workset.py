@@ -1,9 +1,14 @@
+import sys
+if sys.version_info.major == 2:
+    from mock import Mock, patch
+elif sys.version_info.major == 3:
+    from unittest.mock import Mock, patch
+
 import unittest2 as unittest
 import json
 import os.path
 
 import htrc.workset
-from mock import Mock, patch
 
 class TestWorkset(unittest.TestCase):
     def setUp(self):
