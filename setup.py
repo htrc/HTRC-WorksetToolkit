@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.7'
+__version__ = '0.1.9'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv']
 if sys.version_info.major == 2:
@@ -22,12 +22,14 @@ setup(
     keywords = [],
     classifiers = [
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Unix",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: Linguistic",
         ],
     packages=find_packages(),
