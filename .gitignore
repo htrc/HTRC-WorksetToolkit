@@ -11,3 +11,7 @@ dist/
 htrc.egg-info
 
 *~
+
+.coverage
+htmlcov/
+.eggs

@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+`htrc.volumes`
+
+Contains functions to retrieve volumes from the HTRC Data API. 
+
+The functions in this package will not operate unless they are 
+executed from an HTRC Data Capsule in Secure Mode. The module 
+`htrc.mock.volumes` contains Patch objects for testing workflows.
+"""
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
@@ -28,10 +37,7 @@ import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-"""
-DOWNLOAD VOLUMES
-Code to download volumes
-"""
+# Global information to connect to the data API
 host = "silvermaple.pti.indiana.edu"  # use over HTTPS
 port = 25443
 oauth2EPRurl = "/oauth2/token"
@@ -39,28 +45,37 @@ oauth2port = 443
 dataapiEPR = "/data-api/"
 
 
-# getVolumesFromDataAPI : String, String[], boolean ==> inputStream
-def getVolumesFromDataAPI(token, volumeIDs, concat=False):
-    data = None
+def get_volumes(token, volume_ids, concat=False):
+    """
+    Returns volumes from the Data API as a raw zip stream.
 
-    assert volumeIDs is not None, "volumeIDs is None"
-    assert len(volumeIDs) > 0, "volumeIDs is less than one"
+    Parameters:
+    :token: An OAuth2 token for the app.
+    :volume_ids: A list of volume_ids
+    :concat: If True, return a single file per volume. If False, return a single
+    file per page (default).
+    """
+    if not volume_ids:
+        raise ValueError("volume_ids is empty.")
 
     url = dataapiEPR + "volumes"
-    data = {'volumeIDs': '|'.join(
-        [id.replace('+', ':').replace('=', '/') for id in volumeIDs])}
+    data = {'volume_ids': '|'.join(
+        [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
         data['concat'] = 'true'
 
+    # Authorization
     headers = {"Authorization": "Bearer " + token,
                "Content-type": "application/x-www-form-urlencoded"}
 
+    # Create SSL lookup
+    # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
-    httpsConnection = http.client.HTTPSConnection(host, port,
-                                              context=ctx)
+    # Retrieve the volumes
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
     response = httpsConnection.getresponse()
@@ -69,8 +84,9 @@ def getVolumesFromDataAPI(token, volumeIDs, concat=False):
         data = response.read()
     else:
         logging.warning("Unable to get volumes")
-        logging.warning("Response Code: ", response.status)
-        logging.warning("Response: ", response.reason)
+        logging.warning("Response Code: {}".format(response.status))
+        logging.warning("Response: {}".format(response.reason))
+        raise EnvironmentError("Unable to get volumes.")
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -78,23 +94,33 @@ def getVolumesFromDataAPI(token, volumeIDs, concat=False):
     return data
 
 
-def getPagesFromDataAPI(token, pageIDs, concat):
-    data = None
-
-    assert pageIDs is not None, "pageIDs is None"
-    assert len(pageIDs) > 0, "pageIDs is less than one"
+def get_pages(token, page_ids, concat=False):
+    """
+    Returns a ZIP file containing specfic pages.
+    
+    Parameters:
+    :token: An OAuth2 token for the app.
+    :volume_ids: A list of volume_ids
+    :concat: If True, return a single file per volume. If False, return a single
+    file per page (default).
+    """
+    if not page_ids:
+        raise ValueError("page_ids is empty.")
 
     url = dataapiEPR
-    url = url + "pages?pageIDs=" + quote_plus('|'.join(pageIDs))
+    url += "pages?page_ids=" + quote_plus('|'.join(page_ids))
+    if concat:
+        url += "&concat=true"
 
-    if (concat):
-        url = url + "&concat=true"
-
-    print("data api URL: ", url)
+    logging.info("data api URL: ", url)
+    
+    # Create SSL lookup
+    # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
+    # Create connection
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
@@ -105,9 +131,10 @@ def getPagesFromDataAPI(token, pageIDs, concat):
     if response.status is 200:
         data = response.read()
     else:
-        print("Unable to get pages")
-        print("Response Code: ", response.status)
-        print("Response: ", response.reason)
+        logging.warning("Unable to get pages")
+        logging.warning("Response Code: ".format(response.status))
+        logging.warning("Response: ".format(response.reason))
+        raise EnvironmentError("Unable to get pages.")
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -115,47 +142,41 @@ def getPagesFromDataAPI(token, pageIDs, concat):
     return data
 
 
-def obtainOAuth2Token(username, password):
-    token = None
-    url = None
-    httpsConnection = None
+def get_oauth2_token(username, password):
+    # make sure to set the request content-type as application/x-www-form-urlencoded
+    headers = {"Content-type": "application/x-www-form-urlencoded"}
+    data = { "grant_type": "client_credentials",
+             "client_secret": password,
+             "client_id": username }
+    data = urlencode(data)
 
+    # create an SSL context
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
-
-    url = oauth2EPRurl
-    # make sure to set the request content-type as application/x-www-form-urlencoded
-    headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = {
-        "grant_type": "client_credentials",
-        "client_secret": password,
-        "client_id": username
-    }
-    data = urlencode(data)
-    print(data)
 
     # make sure the request method is POST
-    httpsConnection.request("POST", url + "?" + data, "", headers)
+    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
+    httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
 
     response = httpsConnection.getresponse()
 
     # if response status is OK
-    if response.status is 200:
+    if response.status == 200:
         data = response.read().decode('utf8')
 
         jsonData = json.loads(data)
-        print("*** JSON: ", jsonData)
+        logging.info("*** JSON: {}".format(jsonData))
 
         token = jsonData["access_token"]
-        print("*** parsed token: ", token)
+        logging.info("*** parsed token: {}".format(token))
 
     else:
-        print("Unable to get token")
-        print("Response Code: ", response.status)
-        print("Response: ", response.reason)
-        print(response.read())
+        logging.warning("Unable to get token")
+        logging.warning("Response Code: {}".format(response.status))
+        logging.warning("Response: {}".format(response.reason))
+        logging.warning(response.read())
+        raise EnvironmentError("Unable to get token.")
 
     if httpsConnection is not None:
         httpsConnection.close()
@@ -163,60 +184,88 @@ def obtainOAuth2Token(username, password):
     return token
 
 
-def printZipStream(data):
-    # create a zipfile from the data stream
-    myzip = ZipFile(BytesIO(data))
+def credential_prompt(save_path=None):
+    """
+    A prompt for entering HathiTrust credentials.
+    """
+    print("Please enter your HathiTrust credentials.")
+    username = input("Token: ")
+    password = input("Password: ")
+    save = bool_prompt("Save credentials?", default=True)
 
-    # iterate over all items in the data stream
-    for name in myzip.namelist():
-        print("Zip Entry: ", name)
-        # print the file contents
-        print(myzip.read(name))
+    if save_path and save:
+        save_credentials(username, password, save_path)
 
-    myzip.close()
+    return (username, password)
 
+def save_credentials(username, password, save_path=None):
+    """
+    Saves credentials in the config file.
+    """
+    # Default to ~/.htrc
+    if save_path is None:
+        save_path = os.path.expanduser('~')
+        save_path = os.path.join(save_path, '.htrc')
 
-def download_vols(volumeIDs, output, username=None, password=None):
-    # create output folder, if nonexistant
-    if not os.path.isdir(output):
-        os.makedirs(output)
+    # Open and modify existing config file, if it exists.
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(save_path):
+        config.read(save_path)
+    if not config.has_section('main'):
+        config.add_section('main')
+    config.set('main', 'username', username)
+    config.set('main', 'password', password)
+    with open(save_path, 'w') as credential_file:
+        config.write(credential_file)
 
+    return (username, password)
+
+def credentials_from_config(path):
+    """
+    Retrieves the username and password from a config file for the Data API.
+    Raises an EnvironmentError if not specified.
+    See also: credential_prompt
+    """
+    username = None
+    password = None
+
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(path):
+        config.read(path)
+        if config.has_section('main'):
+            username = config.get("main", "username")
+            password = config.get("main", "password")
+
+    if not username and not password:
+        logging.error("Config path: {}".format(path))
+        raise EnvironmentError("No username and password stored in config file.")
+
+    return (username, password)
+
+def download_volumes(volume_ids, output_dir, username=None, password=None):
+    # create output_dir folder, if nonexistant
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    # get credentials if not specified
     if not username and not password:
         path = os.path.expanduser('~')
         path = os.path.join(path, '.htrc')
-        config = ConfigParser(allow_no_value=True)
-        if os.path.exists(path):
-            config.read(path)
-            if config.has_section('main'):
-                username = config.get("main", "username")
-                password = config.get("main", "password")
-
-        # If config file is blank, still prompt!
-        if not username and not password:
-            print("Please enter your HathiTrust credentials.")
-            username = input("Token: ")
-            password = input("Password: ")
-            save = bool_prompt("Save credentials?", default=True)
-            if save:
-                with open(path, 'w') as credential_file:
-                    if not config.has_section('main'):
-                        config.add_section('main')
-                    config.set('main', 'username', username)
-                    config.set('main', 'password', password)
-                    config.write(credential_file)
-
-    token = obtainOAuth2Token(username, password)
-    if token is not None:
-        print("obtained token: %s\n" % token)
-        # to get volumes, uncomment next line
         try:
-            data = getVolumesFromDataAPI(token, volumeIDs, False)
+            username, password = credentials_from_config(path)
+        except EnvironmentError:
+            username, password = credential_prompt(path)
+    
+    # Retrieve token and download volumes
+    token = get_oauth2_token(username, password)
+    if token is not None:
+        logging.info("obtained token: %s\n" % token)
 
-            # to get pages, uncomment next line
-            # data = getPagesFromDataAPI(token, pageIDs, False)
+        try:
+            data = get_volumes(token, volume_ids, False)
 
             myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output)
+            myzip.extractall(output_dir)
             myzip.close()
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
@@ -230,5 +279,5 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_vols(volumeIDs, args.output, args.username, args.password)
+    return download_volumes(volumeIDs, args.output, args.username, args.password)
 

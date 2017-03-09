@@ -15,20 +15,50 @@ import xml.etree.ElementTree as ET
 
 import requests
 
+def metadata(id, marc=False):
+    """
+    Retrieve item metadata `from the HathiTrust Bibliographic API`_.
 
-def metadata(id, sleep_time=1):
+    Params:
+    :param id: HTID for the volume to be retrieved
+    :param marc: Retrieve MARC-XML within JSON return value.
+
+    _ https://www.hathitrust.org/bib_api
+    """
+    biblio_api = "https://catalog.hathitrust.org/api/volumes"
+    
+    if marc:
+        biblio_api += '/full'
+    else:
+        biblio_api += '/brief'
+
+    url = biblio_api + '/htid/{}.json'.format(id)
+
+    try:
+        reader = codecs.getreader('utf-8')
+        data = json.load(reader(urlopen(url)))
+        if len(data['records']) == 1 and len(data['items']) == 1:
+            md = data['records'].values()[0]
+            md.update(data['items'][0])
+        return md
+    except (ValueError, IndexError, HTTPError):
+        logging.error("No result found for " + id)
+        return dict()
+        
+
+
+
+def solr_metadata(id, sleep_time=0.1):
     solr = "http://chinkapin.pti.indiana.edu:9994/solr/meta/select/?q=id:%s" % id
     solr += "&wt=json"  # retrieve JSON results
-    # TODO: exception handling
     if sleep_time:
         sleep(sleep_time)  # JUST TO MAKE SURE WE ARE THROTTLED
     try:
         reader = codecs.getreader('utf-8')
         data = json.load(reader(urlopen(solr)))
-        print(id)
         return data['response']['docs'][0]
     except (ValueError, IndexError, HTTPError):
-        print("No result found for " + id)
+        logging.error("No result found for " + id)
         return dict()
 
 
