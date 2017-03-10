@@ -14,7 +14,7 @@ from htrc.lib.cli import *
 
 class TestVolumes(unittest.TestCase):
     @patch('htrc.lib.cli.input')
-    def test_credential_prompt(self, input_mock):
+    def test_bool_prompt(self, input_mock):
         # test True
         input_mock.return_value = 'y'
         return_value = bool_prompt("Enter yes")
@@ -31,4 +31,9 @@ class TestVolumes(unittest.TestCase):
         return_value = bool_prompt("Enter nothing for true", default=True)
         self.assertEqual(return_value, True)
 
+    @patch('htrc.lib.cli.input')
+    def test_prompt_default(self, input_mock):
+        input_mock.return_value = ''
+        return_value = prompt("Enter nothing for 3", default='3')
+        self.assertEqual(return_value, '3')
 
