@@ -33,6 +33,8 @@ def main():
     parser_download.add_argument("-u", "--username", help="HTRC username")
     parser_download.add_argument("-p", "--password", help="HTRC password")
     parser_download.add_argument("file", help="input file of ids")
+    parser_download.add_argument("-f", "--force", 
+        help="remove folder if exists")
     parser_download.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
     parser_download.set_defaults(func='download')
@@ -62,7 +64,7 @@ def main():
             htrc.tools.topicexplorer.main(args.path, args.k, args.iter)
     if args.func == 'download':
         if os.path.exists(args.output):
-            if bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
+            if args.force or bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
                 shutil.rmtree(args.output)
                 os.makedirs(args.output)
             else:
