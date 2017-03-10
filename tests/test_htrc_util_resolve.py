@@ -12,7 +12,7 @@ import unittest2 as unittest
 
 import htrc.util.resolve as resolve
 
-class TestVolumes(unittest.TestCase):
+class TestResolve(unittest.TestCase):
     def test_parse_record_id(self):
         id = resolve.parse_record_id('https://catalog.hathitrust.org/Record/000234911')
         self.assertEqual(id, '000234911')
