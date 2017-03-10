@@ -54,7 +54,7 @@ ORG_CODES = {
 }
 
 
-def parse_record_id(string):
+def parse_record_id(string, fix_truncated_id=False):
     # type: (str) -> str
     '''
     Takes either a record ID or a HT URL for a record. 
@@ -64,17 +64,25 @@ def parse_record_id(string):
     '000234911'
     >>> parse_record_id('001022499')
     '001022499'
-    >>> # Example without a valid record ID
-    >>> parse_record_id('https://hdl.handle.net/2027/hvd.hn3t2m')
-    >>> parse_record_id('this is not a valid URL or volume ID')
-    >>> # The lack of return is an implicit None value.
+    >>> parse_record_id('1022499', fix_truncated_id=True)
+    '001022499'
     '''
     REGEX = r'(?:http[s]?://catalog.hathitrust.org/Record/)?([\d]+)'
     
     try:
-        return re.search(REGEX, string).group(1)
+        record = re.search(REGEX, string).group(1)
     except AttributeError:
-        return None
+        raise ValueError("No record ID found in string: {}".format(string))
+
+    # Correct truncated IDs or raise error.
+    if len(record) != 9:
+        if fix_truncated_id:
+            record = '0'*(9-len(record)) + record
+        else:
+            raise ValueError("Invalid record ID. Valid record IDs are 9 digits. " +
+            "Call parse_record_id(string, fix_truncated_id=True) to correct.")
+
+    return record
 
 
 def parse_volume_id(string):
@@ -98,18 +106,18 @@ def parse_volume_id(string):
         # Parse the HT Digital Library URL, ex:
         # https://babel.hathitrust.org/cgi/pt?id=uc2.ark:/13960/fk92805m1s;view=1up;seq=7
         if parsed_url.query:
-            id = parse_qs(parsed_url.query).get('id', None)
+            id = parse_qs(parsed_url.query).get('id', None)[0]
         # TODO: Determine if there are alternate babel.hathitrust.org URLs.
 
     else:
-        id = parsed_url.path
+        id = string
 
     # Validate ID against ORG_CODES. 
     # Won't guarantee volume existance, but is a sanity check.
     if id and any(id.startswith(org) for org in ORG_CODES):
         return id
     else: 
-        return None
+        raise ValueError("Invalid Organization Code in HathiTrust ID")
 
 
 def volume_id_to_record_id(volume_id):
