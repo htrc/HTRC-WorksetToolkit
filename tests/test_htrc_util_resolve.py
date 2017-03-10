@@ -52,7 +52,7 @@ class TestVolumes(unittest.TestCase):
     @patch('htrc.util.resolve.urlopen')
     def test_volume_id_to_record_id(self, urlopen_mock):
         urlopen_mock.return_value.geturl.return_value =\
-            b'https://catalog.hathitrust.org/Record/000850926'
+            'https://catalog.hathitrust.org/Record/000850926'.encode('utf-8')
         record_id = resolve.volume_id_to_record_id('uc2.ark:/13960/fk92805m1s')
 
         self.assertEqual(record_id, '000850926')
@@ -61,6 +61,6 @@ class TestVolumes(unittest.TestCase):
     @patch('htrc.util.resolve.urlopen')
     def test_record_id_to_volume_ids(self, urlopen_mock):
         urlopen_mock.return_value.read.return_value =\
-            b'{"items":[{"orig":"Harvard University","fromRecord":"000850926","htid":"hvd.hn3t2m","itemURL":"https:\/\/hdl.handle.net\/2027\/hvd.hn3t2m","rightsCode":"pd","lastUpdate":"20130803","enumcron":false,"usRightsString":"Full view"}]}'
+            '{"items":[{"orig":"Harvard University","fromRecord":"000850926","htid":"hvd.hn3t2m","itemURL":"https:\/\/hdl.handle.net\/2027\/hvd.hn3t2m","rightsCode":"pd","lastUpdate":"20130803","enumcron":false,"usRightsString":"Full view"}]}'.encode('utf-8')
         ids = resolve.record_id_to_volume_ids('000234911')
         self.assertEqual(ids, ['hvd.hn3t2m'])
