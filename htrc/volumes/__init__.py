@@ -59,7 +59,7 @@ def get_volumes(token, volume_ids, concat=False):
         raise ValueError("volume_ids is empty.")
 
     url = dataapiEPR + "volumes"
-    data = {'volume_ids': '|'.join(
+    data = {'volumeIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
         data['concat'] = 'true'
@@ -108,7 +108,7 @@ def get_pages(token, page_ids, concat=False):
         raise ValueError("page_ids is empty.")
 
     url = dataapiEPR
-    url += "pages?page_ids=" + quote_plus('|'.join(page_ids))
+    url += "pages?pageIDs=" + quote_plus('|'.join(page_ids))
     if concat:
         url += "&concat=true"
 
