@@ -10,7 +10,7 @@ HTRC-PythonSDK is a translation layer between Python code and the HTRC Data API 
 The only supported HTRC Python SDK testing environment is on the Data Capsule. 
 
 1. Register and configure a data capsule by following the [HTRC Data Capsule Tutorial](https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+Capsule+Tutorial)
-2. Open a terminal and type `pip install --pre htrc` to install the SDK.
+2. Open a terminal and type `pip install htrc` to install the SDK.
 
 ## Usage instructions
 Download volumes by creating a file with 1 HathiTrust ID per line. For example:
