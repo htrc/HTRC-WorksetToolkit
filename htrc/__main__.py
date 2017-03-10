@@ -33,7 +33,7 @@ def main():
     parser_download.add_argument("-u", "--username", help="HTRC username")
     parser_download.add_argument("-p", "--password", help="HTRC password")
     parser_download.add_argument("file", help="input file of ids")
-    parser_download.add_argument("-f", "--force", 
+    parser_download.add_argument("-f", "--force", action='store_true', 
         help="remove folder if exists")
     parser_download.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
