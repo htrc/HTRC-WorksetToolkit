@@ -85,13 +85,18 @@ def get_volumes(token, volume_ids, concat=False):
         body = True
         data = BytesIO()
         bytes_downloaded = 0
-        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength,
+            widgets=[progressbar.AnimatedMarker(), '    ',
+                     progressbar.DataSize(),
+                     ' (', progressbar.FileTransferSpeed(), ')'])
 
         while body:
             body = response.read(128)
             data.write(body)
             bytes_downloaded += len(body)
             bar.update(bytes_downloaded)
+
+        data = data.getvalue()
     else:
         logging.warning("Unable to get volumes")
         logging.warning("Response Code: {}".format(response.status))
