@@ -1,6 +1,6 @@
 # HTRC-PythonSDK
-[![PyPI Version](https://img.shields.io/pypi/v/htrc.svg)](https://pypi.python.org/pypi/htrc)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/htrc.svg)](https://pypi.python.org/pypi/htrc)
+[![PyPI Version](https://img.shields.io/pypi/v/htrc.svg)](https://pypi.python.org/pypi/htrc)
 [![Build Status](https://travis-ci.org/htrc/HTRC-PythonSDK.svg?branch=master)](https://travis-ci.org/htrc/HTRC-PythonSDK)
 [![Coverage Status](https://coveralls.io/repos/github/htrc/HTRC-PythonSDK/badge.svg?branch=master)](https://coveralls.io/github/htrc/HTRC-PythonSDK?branch=master)
 
