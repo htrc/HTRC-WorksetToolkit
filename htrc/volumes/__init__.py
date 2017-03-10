@@ -20,6 +20,7 @@ from io import BytesIO  # used to stream http response into zipfile.
 import json
 import logging
 import os.path
+import progressbar
 import re
 import socket
 import ssl
@@ -81,7 +82,16 @@ def get_volumes(token, volume_ids, concat=False):
     response = httpsConnection.getresponse()
 
     if response.status is 200:
-        data = response.read()
+        body = True
+        data = BytesIO()
+        bytes_downloaded = 0
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
+
+        while body:
+            body = response.read(128)
+            data.write(body)
+            bytes_downloaded += len(body)
+            bar.update(bytes_downloaded)
     else:
         logging.warning("Unable to get volumes")
         logging.warning("Response Code: {}".format(response.status))
