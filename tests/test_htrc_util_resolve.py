@@ -58,10 +58,9 @@ class TestVolumes(unittest.TestCase):
         self.assertEqual(record_id, '000850926')
 
 
-    """
     @patch('htrc.util.resolve.urlopen')
     def test_record_id_to_volume_ids(self, urlopen_mock):
-        urlopen_mock.return_value.geturl.return_value =\
-            b'https://hdl.handle.net/2027/uc2.ark:/13960/fk92805m1s'
-        resolve.record_id_to_volume_ids('000234911')
-    """ 
+        urlopen_mock.return_value.read.return_value =\
+            b'{"items":[{"orig":"Harvard University","fromRecord":"000850926","htid":"hvd.hn3t2m","itemURL":"https:\/\/hdl.handle.net\/2027\/hvd.hn3t2m","rightsCode":"pd","lastUpdate":"20130803","enumcron":false,"usRightsString":"Full view"}]}'
+        ids = resolve.record_id_to_volume_ids('000234911')
+        self.assertEqual(ids, ['hvd.hn3t2m'])
