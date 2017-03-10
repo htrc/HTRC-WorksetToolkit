@@ -2,6 +2,12 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 
+import sys
+if sys.version_info.major == 2:
+    from mock import Mock, patch
+elif sys.version_info.major == 3:
+    from unittest.mock import Mock, patch
+
 import unittest2 as unittest
 
 import htrc.util.resolve as resolve
@@ -43,3 +49,19 @@ class TestVolumes(unittest.TestCase):
             # check if incorrect institution ID raises error
             resolve.parse_volume_id('uc42.ark:/13960/fk92805m1s')
         
+    @patch('htrc.util.resolve.urlopen')
+    def test_volume_id_to_record_id(self, urlopen_mock):
+        urlopen_mock.return_value.geturl.return_value =\
+            b'https://catalog.hathitrust.org/Record/000850926'
+        record_id = resolve.volume_id_to_record_id('uc2.ark:/13960/fk92805m1s')
+
+        self.assertEqual(record_id, '000850926')
+
+
+    """
+    @patch('htrc.util.resolve.urlopen')
+    def test_record_id_to_volume_ids(self, urlopen_mock):
+        urlopen_mock.return_value.geturl.return_value =\
+            b'https://hdl.handle.net/2027/uc2.ark:/13960/fk92805m1s'
+        resolve.record_id_to_volume_ids('000234911')
+    """ 
