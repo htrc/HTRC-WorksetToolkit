@@ -7,13 +7,15 @@ install:
   - python --version
   - pip --version
   # command to install dependencies
-  - pip install coveralls coverage
+  - pip install coveralls coverage codeclimate-test-reporter
   - pip install .
 # command to run tests
 script:
   - coverage run --include=htrc/* setup.py test
   - coverage report
-after_success: coveralls
+after_success:
+  - coveralls
+  - codeclimate-test-reporter
 addons:
   code_climate:
     repo_token: 0299da27c6ac280129992725e48ee5ff71ea668b755a0301ebd8374c6900b80e
