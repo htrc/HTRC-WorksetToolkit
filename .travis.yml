@@ -14,3 +14,6 @@ script:
   - coverage run --include=htrc/* setup.py test
   - coverage report
 after_success: coveralls
+addons:
+  code_climate:
+    repo_token: 0299da27c6ac280129992725e48ee5ff71ea668b755a0301ebd8374c6900b80e
