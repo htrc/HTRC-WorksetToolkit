@@ -34,7 +34,7 @@ def populate_parser(parser):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
-    parser = ArgumentParser(description="MALLET tools for the HTRC")
+    parser = ArgumentParser(description="Topic Explorer tools for the HTRC")
     populate_parser(parser)
     args = parser.parse_args()
 
