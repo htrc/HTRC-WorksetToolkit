@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.11'
+__version__ = '0.1.13'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2']
 if sys.version_info.major == 2:
@@ -35,6 +35,7 @@ setup(
     packages=find_packages(),
     install_requires=install_requires,
     include_package_data=True,
+    data_files=['htrc/mock/volumes/example.zip'],
     zip_safe=False,
     entry_points={
         'console_scripts' : ['htrc = htrc.__main__:main']
