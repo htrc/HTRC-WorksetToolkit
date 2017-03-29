@@ -47,8 +47,8 @@ class TestVolumes(unittest.TestCase):
         # test read
         username, password = htrc.mock.volumes.credentials_from_config(
             self.config_path)
-        self.assertEqual(username, '1234')
-        self.assertEqual(password, '1234')
+        self.assertEqual(username, None)
+        self.assertEqual(password, None)
 
     def test_get_oauth2_token(self):
         token = htrc.mock.volumes.get_oauth2_token('1234','1234')
@@ -65,12 +65,12 @@ class TestVolumes(unittest.TestCase):
         with self.assertRaises(ValueError):
             htrc.mock.volumes.get_pages('1234', [])
 
-    @patch('volumes.ZipFile')
-    @patch('volumes.get_volumes')
-    @patch('volumes.get_oauth2_token')
+    @patch('htrc.mock.volumes.ZipFile')
+    @patch('htrc.mock.volumes.get_volumes')
+    @patch('htrc.mock.volumes.get_oauth2_token')
     def test_download_volumes(self, oauth2_mock, volumes_mock, zip_mock):
         oauth2_mock.return_value = 'a1b2c3d4e5'
-        htrc.mock.volumes_mock.return_value = b''
+        volumes_mock.return_value = b''
 
         htrc.mock.volumes.download_volumes(self.test_vols, self.output_path,
             username='1234', password='1234')
@@ -81,12 +81,12 @@ class TestVolumes(unittest.TestCase):
         htrc.mock.volumes.download_volumes(self.test_vols, self.output_path,
             username='1234', password='1234')
 
-    @patch('volumes.ZipFile')
-    @patch('volumes.get_volumes')
-    @patch('volumes.get_oauth2_token')
+    @patch('htrc.mock.volumes.ZipFile')
+    @patch('htrc.mock.volumes.get_volumes')
+    @patch('htrc.mock.volumes.get_oauth2_token')
     def test_download_volumes_saved_creds(self, oauth2_mock, volumes_mock, zip_mock):
         oauth2_mock.return_value = 'a1b2c3d4e5'
-        htrc.mock.volumes_mock.return_value = b''
+        volumes_mock.return_value = b''
 
         # test config-based auth
         import os, os.path

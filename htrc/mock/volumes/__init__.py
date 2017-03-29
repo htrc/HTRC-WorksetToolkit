@@ -39,6 +39,8 @@ from zipfile import ZipFile  # used to decompress requested zip archives.
 from htrc.lib.cli import bool_prompt
 from htrc.volumes import credential_prompt
 
+EXAMPLE_FILE = os.path.join(os.path.dirname(__file__), 'example.zip')
+
 def get_volumes(token, volume_ids, concat=False):
     """
     Returns volumes from the Data API as a raw zip stream.
@@ -52,7 +54,7 @@ def get_volumes(token, volume_ids, concat=False):
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
 
-    with open('example.zip', 'b') as infile:
+    with open(EXAMPLE_FILE, 'rb') as infile:
         data = infile.read()
 
     return data
@@ -70,7 +72,7 @@ def get_pages(token, page_ids, concat=False):
     if not page_ids:
         raise ValueError("page_ids is empty.")
     
-    with open('example.zip', 'b') as infile:
+    with open(EXAMPLE_FILE, 'rb') as infile:
         data = infile.read()
 
     return data
@@ -110,8 +112,8 @@ def download_volumes(volume_ids, output_dir, username=None, password=None):
     token = get_oauth2_token(username, password)
     data = get_volumes(token, volume_ids, False)
 
-    with open('example.zip', 'b') as infile:
-        myzip = Zipfile(infile)
+    with open(EXAMPLE_FILE, 'rb') as infile:
+        myzip = ZipFile(infile)
         myzip.extractall(output_dir)
         myzip.close()
 
