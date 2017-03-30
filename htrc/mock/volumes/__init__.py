@@ -37,7 +37,7 @@ import os, os.path
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
-from htrc.volumes import credential_prompt
+from htrc.volumes import credential_prompt, save_credentials
 
 EXAMPLE_FILE = os.path.join(os.path.dirname(__file__), 'example.zip')
 
@@ -82,13 +82,6 @@ def get_oauth2_token(username, password):
     Returns a sample token for oauth2
     """
     return 'a1b2c3d4e5f6'
-
-
-def save_credentials(username, password, save_path=None):
-    """
-    Does not save credentials in the config file, but just mocks the process.
-    """
-    return None
 
 
 def credentials_from_config(path):
