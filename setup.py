@@ -6,7 +6,8 @@ import sys
 
 __version__ = '0.1.15'
 
-install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2']
+install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
+    'requests', 'wget']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
     install_requires.append('mock')
