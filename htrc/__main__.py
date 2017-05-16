@@ -3,11 +3,12 @@ from __future__ import absolute_import, division, print_function
 from future import standard_library
 standard_library.install_aliases()
 
+import json
 import os, os.path
 import shutil
 from tempfile import NamedTemporaryFile
 
-from htrc.metadata import folder_volume_metadata
+from htrc.metadata import get_metadata, get_volume_metadata
 import htrc.volumes
 import htrc.workset
 import htrc.tools.mallet
@@ -24,7 +25,7 @@ def main():
     # Metadata Helpers
     parser_getmd = parsers.add_parser('metadata',
                                       help="Get metadata for a folder of HathiTrust volumes")
-    parser_getmd.add_argument("folder", help="Path to HathiTrust Volumes")
+    parser_getmd.add_argument("path", help="Workset path or HathiTrust ID", nargs='+')
     parser_getmd.set_defaults(func='metadata')
 
     # Download Helper
@@ -56,9 +57,14 @@ def main():
     args = parser.parse_args()
 
     if args.func == 'metadata':
-        metadata = folder_volume_metadata(args.folder)
-        import json
-        print(json.dumps(data))
+        volumes = []
+        for path in args.path:
+            try:
+                volumes.extend(htrc.workset.path_to_volumes(path))
+            except ValueError:
+                volumes.append(path)
+        metadata = get_metadata(volumes)
+        print(json.dumps(metadata))
     elif args.func == 'run':
         if args.run == 'mallet':
             htrc.tools.mallet.main(args.path, args.k, args.iter)
@@ -96,6 +102,7 @@ def main():
             print("Not a valid ID file or workset identifier: {}".format(
                 args.file))
             sys.exit(1)
+
 
 def download(args):
     try:

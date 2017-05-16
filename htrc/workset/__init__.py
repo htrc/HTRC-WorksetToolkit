@@ -14,6 +14,7 @@ standard_library.install_aliases()
 import unicodecsv as csv
 from io import BytesIO
 import json
+import os.path
 from pprint import pprint
 import re
 from urllib.request import urlopen
@@ -153,3 +154,28 @@ def load_hathitrust_collection(url):
 
     return get_volumes_from_csv(data)
 
+
+def path_to_volumes(path):
+    """
+    Takes a path and resolves to a list of volumes.
+
+    Accepts:
+    - Plaintext file, each line is an ID
+    - Directory with subfolders that are volume pages
+    - JSON or JSONLD workset representation
+    - HT CB or HTRC WCSA URL.
+    """
+    if os.path.isdir(path):
+        volumes = [id for id in os.listdir(path) if not id.endswith('.log')]
+    elif (path.endswith('json')
+        or path.endswith('jsonld')
+        or path.startswith('http://')
+        or path.startswith('https://')):
+        volumes = load(args.file)
+    elif os.path.isfile(path):
+        with open(path) as infile:
+            volumes = [line.strip() for line in infile]
+    else:
+        raise ValueError("invalid workset path")
+
+    return volumes

@@ -5,6 +5,7 @@ from builtins import str
 
 import codecs
 import json
+import logging
 import os, os.path
 import re
 from time import sleep
@@ -14,7 +15,7 @@ from urllib.parse import quote_plus, urlencode
 
 import requests
 
-def volume_metadata(id, marc=False):
+def get_volume_metadata(id, marc=False):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
 
@@ -37,14 +38,15 @@ def volume_metadata(id, marc=False):
         reader = codecs.getreader('utf-8')
         data = json.load(reader(urlopen(url)))
         if len(data['records']) == 1 and len(data['items']) == 1:
-            md = data['records'].values()[0]
-            md.update(data['items'][0])
-        return md
+            md = data['items'][0]
+            return md
+        else:
+            raise ValueError
     except (ValueError, IndexError, HTTPError):
         raise ValueError("No result found for " + id)
 
 
-def safe_volume_metadata(id, marc=False):
+def safe_volume_metadata(id, marc=False, sleep_time=1):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
     
@@ -58,11 +60,29 @@ def safe_volume_metadata(id, marc=False):
     _ https://www.hathitrust.org/bib_api
     """
     try:
-        return volume_metadata
+        metadata = get_volume_metadata(id, marc)
+        if sleep_time:
+            sleep(sleep_time)
+        return metadata
     except ValueError as err:
         logging.error(err)
         return dict()
 
+
+def get_metadata(ids, output_file=None):
+    """
+    Retrieves metadata for a folder of folders, where each subfolder is named
+    for a HathiTrust ID. This structure is the default structure extracted from
+    a Data API request (:method htrc.volumes.get_volumes:). 
+    """
+    data = [(id.strip(), safe_volume_metadata(id.strip())) for id in ids]
+    data = dict(data)
+
+    if output_file:
+        with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
+            json.dump(data, outfile)
+    
+    return data
 
 def record_metadata(id, sleep_time=1):
     """
@@ -111,21 +131,4 @@ def volume_solr_metadata(id, sleep_time=0.1):
         logging.error("No result found for " + id)
         return dict()
 
-
-def folder_volume_metadata(folder, output_file=None):
-    """
-    Retrieves metadata for a folder of folders, where each subfolder is named
-    for a HathiTrust ID. This structure is the default structure extracted from
-    a Data API request (:method htrc.volumes.get_volumes:). 
-    """
-    ids = os.listdir(folder)
-    data = [(id.strip(), volume_metadata(id.strip())) for id in ids
-                if not id.endswith('.log')]
-    data = dict(data)
-
-    if output_file:
-        with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
-            json.dump(data, outfile)
-    else:
-        return data
 
