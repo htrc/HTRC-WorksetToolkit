@@ -79,7 +79,7 @@ def get_metadata(ids, output_file=None):
     data = dict(data)
 
     if output_file:
-        with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
+        with open(os.path.join(folder, output_file), 'w') as outfile:
             json.dump(data, outfile)
     
     return data
