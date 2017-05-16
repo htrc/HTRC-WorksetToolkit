@@ -14,7 +14,7 @@ from urllib.parse import quote_plus, urlencode
 
 import requests
 
-def metadata(id, marc=False):
+def volume_metadata(id, marc=False):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
 
@@ -41,36 +41,33 @@ def metadata(id, marc=False):
             md.update(data['items'][0])
         return md
     except (ValueError, IndexError, HTTPError):
-        logging.error("No result found for " + id)
-        return dict()
-        
+        raise ValueError("No result found for " + id)
 
 
+def safe_volume_metadata(id, marc=False):
+    """
+    Retrieve item metadata `from the HathiTrust Bibliographic API`_.
+    
+    Unlike :method volume_metadata:, this function returns an empty dictionary,
+    rather than an error when metadata is missing.
 
-def solr_metadata(id, sleep_time=0.1):
-    solr = "http://chinkapin.pti.indiana.edu:9994/solr/meta/select/?q=id:%s" % id
-    solr += "&wt=json"  # retrieve JSON results
-    if sleep_time:
-        sleep(sleep_time)  # JUST TO MAKE SURE WE ARE THROTTLED
+    Params:
+    :param id: HTID for the volume to be retrieved
+    :param marc: Retrieve MARC-XML within JSON return value.
+
+    _ https://www.hathitrust.org/bib_api
+    """
     try:
-        reader = codecs.getreader('utf-8')
-        data = json.load(reader(urlopen(solr)))
-        return data['response']['docs'][0]
-    except (ValueError, IndexError, HTTPError):
-        logging.error("No result found for " + id)
+        return volume_metadata
+    except ValueError as err:
+        logging.error(err)
         return dict()
 
 
-def get_metadata(folder):
-    ids = os.listdir(folder)
-    data = [(id.strip(), metadata(id.strip())) for id in ids
-            if not id.endswith('.log')]
-    data = dict(data)
-    with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
-        json.dump(data, outfile)
-
-
-def record_data(id, sleep_time=1):
+def record_metadata(id, sleep_time=1):
+    """
+    Retrieve metadata for a HathiTrust Record.
+    """
     regex = re.compile('\W')
     url = "http://catalog.hathitrust.org/api/volumes/brief/recordnumber/{0}.json"
 
@@ -90,5 +87,31 @@ def record_data(id, sleep_time=1):
 
     sleep(sleep_time)
     return items
+
+
+
+def solr_metadata(id, sleep_time=0.1):
+    solr = "http://chinkapin.pti.indiana.edu:9994/solr/meta/select/?q=id:%s" % id
+    solr += "&wt=json"  # retrieve JSON results
+    if sleep_time:
+        sleep(sleep_time)  # JUST TO MAKE SURE WE ARE THROTTLED
+    try:
+        reader = codecs.getreader('utf-8')
+        data = json.load(reader(urlopen(solr)))
+        return data['response']['docs'][0]
+    except (ValueError, IndexError, HTTPError):
+        logging.error("No result found for " + id)
+        return dict()
+
+
+def folder_volume_metadata(folder):
+    ids = os.listdir(folder)
+    data = [(id.strip(), metadata(id.strip())) for id in ids
+                if not id.endswith('.log')]
+    data = dict(data)
+    with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
+        json.dump(data, outfile)
+
+
 
 
