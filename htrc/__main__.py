@@ -7,7 +7,7 @@ import os, os.path
 import shutil
 from tempfile import NamedTemporaryFile
 
-from htrc.metadata import *
+from htrc.metadata import folder_volume_metadata
 import htrc.volumes
 import htrc.workset
 import htrc.tools.mallet
@@ -56,13 +56,15 @@ def main():
     args = parser.parse_args()
 
     if args.func == 'metadata':
-        get_metadata(args.folder)
-    if args.func == 'run':
+        metadata = folder_volume_metadata(args.folder)
+        import json
+        print(json.dumps(data))
+    elif args.func == 'run':
         if args.run == 'mallet':
             htrc.tools.mallet.main(args.path, args.k, args.iter)
         if args.run == 'topicexplorer':
             htrc.tools.topicexplorer.main(args.path, args.k, args.iter)
-    if args.func == 'download':
+    elif args.func == 'download':
         if os.path.exists(args.output):
             if args.force or bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
                 shutil.rmtree(args.output)

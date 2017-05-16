@@ -90,7 +90,15 @@ def record_metadata(id, sleep_time=1):
 
 
 
-def solr_metadata(id, sleep_time=0.1):
+def volume_solr_metadata(id, sleep_time=0.1):
+    """
+    Retrieve metadata from HTRC Solr API.
+
+    :method volume_metadata: returns much more up-to-date information. The HTRC
+    Solr instance is used only for certain extracted features unavailable in the
+    main HathiTrust Bibliographic API. If you are a recipient of a HTRC Advanced
+    Collaborative Support (ACS) grant, then you may have to use this function.
+    """
     solr = "http://chinkapin.pti.indiana.edu:9994/solr/meta/select/?q=id:%s" % id
     solr += "&wt=json"  # retrieve JSON results
     if sleep_time:
@@ -104,14 +112,20 @@ def solr_metadata(id, sleep_time=0.1):
         return dict()
 
 
-def folder_volume_metadata(folder):
+def folder_volume_metadata(folder, output_file=None):
+    """
+    Retrieves metadata for a folder of folders, where each subfolder is named
+    for a HathiTrust ID. This structure is the default structure extracted from
+    a Data API request (:method htrc.volumes.get_volumes:). 
+    """
     ids = os.listdir(folder)
-    data = [(id.strip(), metadata(id.strip())) for id in ids
+    data = [(id.strip(), volume_metadata(id.strip())) for id in ids
                 if not id.endswith('.log')]
     data = dict(data)
-    with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
-        json.dump(data, outfile)
 
-
-
+    if output_file:
+        with open(os.path.join(folder, '../metadata.json'), 'w') as outfile:
+            json.dump(data, outfile)
+    else:
+        return data
 
