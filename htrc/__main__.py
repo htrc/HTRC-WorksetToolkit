@@ -6,6 +6,7 @@ standard_library.install_aliases()
 import json
 import os, os.path
 import shutil
+import sys
 from tempfile import NamedTemporaryFile
 
 from htrc.metadata import get_metadata, get_volume_metadata
