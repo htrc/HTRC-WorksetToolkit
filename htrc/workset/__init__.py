@@ -52,6 +52,27 @@ def get_volumes(data):
     # return the list representation, maintains a more consistent interface
     return list(volumes)
 
+def create_jsonld(volumes, title=None, curator=None):
+    """
+    Takes a list of volumes and exports a JSON-LD formated workset
+    """
+    if curator is None:
+        import getpass
+        curator = getpass.getuser()
+    
+    context = "http://emblematica.library.illinois.edu/test/worksetcontext.jsonld"
+
+    graph = {'@type':'http://wcsa.htrc.illinois.edu/Workset'}
+    GATHERS = "http://www.europeana.eu/schemas/edm/gathers"
+    graph[GATHERS] = [{'@id' : "http://hdl.handle.net/2027/" + vol} 
+                          for vol in volumes]
+    graph['numItems'] = len(volumes)
+    if curator:
+        graph['curator'] = curator
+    if title:
+        graph['title'] = title
+
+    return jsonld.compact(graph, context)
 
 def load(filename):
     """
