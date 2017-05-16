@@ -25,8 +25,15 @@ def main():
     # Metadata Helpers
     parser_getmd = parsers.add_parser('metadata',
                                       help="Get metadata for a folder of HathiTrust volumes")
-    parser_getmd.add_argument("path", help="Workset path or HathiTrust ID", nargs='+')
+    parser_getmd.add_argument("path", nargs='*',
+                              help="Workset path or HathiTrust ID")
     parser_getmd.set_defaults(func='metadata')
+
+    # Export Helpers
+    parser_getmd = parsers.add_parser('export',
+                                      help="Export the list of HathiTrust volumes")
+    parser_getmd.add_argument("path", help="Workset path or HathiTrust ID", nargs='+')
+    parser_getmd.set_defaults(func='export')
 
     # Download Helper
     parser_download = parsers.add_parser('download',
@@ -56,15 +63,23 @@ def main():
 
     args = parser.parse_args()
 
-    if args.func == 'metadata':
+    if args.func in ['metadata', 'export']:
         volumes = []
-        for path in args.path:
-            try:
-                volumes.extend(htrc.workset.path_to_volumes(path))
-            except ValueError:
-                volumes.append(path)
-        metadata = get_metadata(volumes)
-        print(json.dumps(metadata))
+        if not args.path:
+            for line in sys.stdin:
+                volumes.append(line)
+        else:
+            for path in args.path:
+                try:
+                    volumes.extend(htrc.workset.path_to_volumes(path))
+                except ValueError:
+                    volumes.append(path)
+        if args.func == 'export':
+            for volume in volumes:
+                print(volume)
+        if args.func == 'metadata':
+            metadata = get_metadata(volumes)
+            print(json.dumps(metadata))
     elif args.func == 'run':
         if args.run == 'mallet':
             htrc.tools.mallet.main(args.path, args.k, args.iter)
