@@ -37,11 +37,14 @@ def get_volume_metadata(id, marc=False):
     try:
         reader = codecs.getreader('utf-8')
         data = json.load(reader(urlopen(url)))
-        if len(data['records']) == 1 and len(data['items']) == 1:
-            md = data['items'][0]
-            return md
-        else:
-            raise ValueError
+        if len(data['records']) == 1:
+            for item in data['items']:
+                if item['htid'] == id:
+                    md = data['records'][item['fromRecord']]
+                    md.update(item)
+                    return md
+            else:
+                raise ValueError
     except (ValueError, IndexError, HTTPError):
         raise ValueError("No result found for " + id)
 
@@ -81,7 +84,7 @@ def get_metadata(ids, output_file=None):
     if output_file:
         with open(os.path.join(folder, output_file), 'w') as outfile:
             json.dump(data, outfile)
-    
+
     return data
 
 def record_metadata(id, sleep_time=1):
