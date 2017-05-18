@@ -119,7 +119,7 @@ def main():
 
             f = NamedTemporaryFile()
             for volume in volumes:
-                f.write(volume + '\n')
+                f.write((volume + '\n').encode('utf-8'))
             f.flush()
             args.file = f.name
 
