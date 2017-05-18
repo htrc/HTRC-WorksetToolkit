@@ -96,10 +96,12 @@ def main():
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
 
+
         if args.file == sys.stdin:
             f = NamedTemporaryFile()
             for volume in sys.stdin:
                 f.write((volume + '\n').encode('utf-8'))
+            f.flush()
             args.file = f.name
 
             try:
@@ -118,6 +120,7 @@ def main():
             f = NamedTemporaryFile()
             for volume in volumes:
                 f.write(volume + '\n')
+            f.flush()
             args.file = f.name
 
             try:
