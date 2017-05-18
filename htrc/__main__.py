@@ -41,7 +41,8 @@ def main():
         help="Download HathiTrust volumes to disk [requires auth]")
     parser_download.add_argument("-u", "--username", help="HTRC username")
     parser_download.add_argument("-p", "--password", help="HTRC password")
-    parser_download.add_argument("file", help="input file of ids")
+    parser_download.add_argument("file", nargs='?', default=sys.stdin,
+        help="input file of ids")
     parser_download.add_argument("-f", "--force", action='store_true', 
         help="remove folder if exists")
     parser_download.add_argument("-o", "--output", help="output directory",
@@ -95,7 +96,20 @@ def main():
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
 
-        if (args.file.endswith('json')
+        if args.file == sys.stdin:
+            f = NamedTemporaryFile()
+            for volume in sys.stdin:
+                f.write((volume + '\n').encode('utf-8'))
+            args.file = f.name
+
+            try:
+                download(args)
+            finally:
+                print("Closing temporary file: " + f.name)
+                f.close()
+        
+
+        elif (args.file.endswith('json')
             or args.file.endswith('jsonld')
             or args.file.startswith('http://')
             or args.file.startswith('https://')):

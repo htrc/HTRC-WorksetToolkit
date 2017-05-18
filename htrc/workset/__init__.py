@@ -171,7 +171,7 @@ def path_to_volumes(path):
         or path.endswith('jsonld')
         or path.startswith('http://')
         or path.startswith('https://')):
-        volumes = load(args.file)
+        volumes = load(path)
     elif os.path.isfile(path):
         with open(path) as infile:
             volumes = [line.strip() for line in infile]
