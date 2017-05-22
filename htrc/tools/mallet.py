@@ -1,3 +1,4 @@
+from builtins import str
 import os, os.path
 import subprocess
 import tarfile
@@ -20,7 +21,7 @@ def main(path, topics, iterations):
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
         'import-dir',
         '--input', path,
-        '--output', path + '../corpus.mallet',
+        '--output', os.path.join(path, '../corpus.mallet'),
         '--keep-sequence',
         '--remove-stopwords'
         ])
@@ -28,12 +29,12 @@ def main(path, topics, iterations):
     subprocess.check_call([
         '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
         'train-topics',
-        '--input', path + '../corpus.mallet',
-        '--num-topics', topics,
-        '--output-state', path + '../mallet_state.gz',
-        '--output-topic-keys', path + '../mallet_topic-keys.txt',
-        '--output-doc-topics', path + '../mallet_doc-topics.txt',
-        '--num-iterations', iterations
+        '--input', os.path.join(path, '../corpus.mallet'),
+        '--num-topics', str(topics),
+        '--output-state', os.path.join(path, '../mallet_state.gz'),
+        '--output-topic-keys', os.path.join(path, '../mallet_topic-keys.txt'),
+        '--output-doc-topics', os.path.join(path, '../mallet_doc-topics.txt'),
+        '--num-iterations', str(iterations)
         ])
 
 def populate_parser(parser):

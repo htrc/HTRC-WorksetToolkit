@@ -1,3 +1,4 @@
+from builtins import map
 import subprocess
 
 def main(path, topics, iterations):
@@ -15,7 +16,7 @@ def main(path, topics, iterations):
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
-        '-k'] + map(str,topics) + [
+        '-k'] + list(map(str,topics)) + [
         '--iter', iterations,
         '--context-type', 'book',
         '-q'
