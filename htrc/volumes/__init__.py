@@ -257,11 +257,7 @@ def credentials_from_config(path):
 
     return (username, password)
 
-def download_volumes(volume_ids, output_dir, username=None, password=None):
-    # create output_dir folder, if nonexistant
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
-
+def get_token_from_local_credential(username=None, password=None):
     # get credentials if not specified
     if not username and not password:
         path = os.path.expanduser('~')
@@ -275,19 +271,40 @@ def download_volumes(volume_ids, output_dir, username=None, password=None):
     token = get_oauth2_token(username, password)
     if token is not None:
         logging.info("obtained token: %s\n" % token)
-
-        try:
-            data = get_volumes(token, volume_ids, False)
-
-            myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output_dir)
-            myzip.close()
-        except socket.error:
-            raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
-
+        return token
     else:
         raise RuntimeError("Failed to obtain oauth token.")
 
+def download_pages(page_ids, output_dir, username=None, password=None):
+    # create output_dir folder, if nonexistant
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    try:
+        data = get_pages(get_token_from_local_credential(username, password),\
+                page_ids, False)
+        unzip(data, output_dir)
+
+    except socket.error:
+        raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
+
+def download_volumes(volume_ids, output_dir, username=None, password=None):
+    # create output_dir folder, if nonexistant
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    try:
+        data = get_volumes(get_token_from_local_credential(username, password),\
+                volume_ids, False)
+
+        unzip(data, output_dir)
+    except socket.error:
+        raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
+
+def unzip(data, output_dir):
+    myzip = ZipFile(BytesIO(data))
+    myzip.extractall(output_dir)
+    myzip.close()
 
 def download(args):
     # extract files
