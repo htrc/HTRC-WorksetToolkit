@@ -23,7 +23,7 @@ def get_volume_metadata(id, marc=False):
     :param id: HTID for the volume to be retrieved
     :param marc: Retrieve MARC-XML within JSON return value.
 
-    _ https://www.hathitrust.org/bib_api
+    .. _from the HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
     """
     biblio_api = "https://catalog.hathitrust.org/api/volumes"
     
@@ -117,10 +117,11 @@ def volume_solr_metadata(id, sleep_time=0.1):
     """
     Retrieve metadata from HTRC Solr API.
 
-    :method volume_metadata: returns much more up-to-date information. The HTRC
-    Solr instance is used only for certain extracted features unavailable in the
-    main HathiTrust Bibliographic API. If you are a recipient of a HTRC Advanced
-    Collaborative Support (ACS) grant, then you may have to use this function.
+    The HTRC Solr instance is used only for certain extracted features 
+    unavailable in the main HathiTrust Bibliographic API. If you are a
+    recipient of a HTRC Advanced Collaborative Support (ACS) grant,
+    then you may have to use this function.
+
     """
     solr = "http://chinkapin.pti.indiana.edu:9994/solr/meta/select/?q=id:%s" % id
     solr += "&wt=json"  # retrieve JSON results

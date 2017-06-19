@@ -5,25 +5,7 @@
 Contains functions to test the volume retrieval from the HTRC Data API.
 The download functions will return a sample zip file.
 
-Example usage:
-```
-#!/usr/bin/env python
-
-if __debug__:
-    # This code will execute when running `python script.py`
-    import htrc.mock.volumes as volumes
-else:
-    # This code will execute when running `python -O script.py`
-    # The -O argument turns on optimizations, setting __debug__ = False.
-    import htrc.volumes as volumes
-
-# The following is just to make a running script
-volume_ids = ['htrc.testid']    # any list will do
-output_dir = 'data'             # any path will do
-
-# download volumes
-volumes.download(volume_ids, output_dir)
-```
+See the core documentation for an example of how to use this library.
 """
 from __future__ import print_function
 from future import standard_library

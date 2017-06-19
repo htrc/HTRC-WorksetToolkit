@@ -8,6 +8,7 @@ logs/*
 
 build/
 dist/
+docs/build/
 htrc.egg-info
 
 *~
