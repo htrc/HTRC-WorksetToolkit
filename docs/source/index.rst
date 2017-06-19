@@ -5,9 +5,71 @@
 
 Welcome to the HTRC Python SDK's documentation!
 =================================================
-The HTRC Python SDK (`GitHub`_) provides a standard interface for writing and testing
-scientific workflows for the HTRC Data Capsule Service. It provides the
-following functionality:
+The HTRC Python SDK provides a command line interface for interacting with 
+and analyzing volumes in the HathiTrust Digital Library:
+
+- Volume Download (``htrc download``)
+- Metadata Download (``htrc metadata``)
+- Pre-built Analysis Workflows (``htrc run``)
+
+Each of these commands takes a *workset path* (described below).
+
+In addition, it provides a software development kit (SDK) for working with the
+HathiTrust Digital Library materials. It was designed for use in the HTRC Data
+Capsule service, which is the target distribution.
+
+All source code for the HTRC Python SDK is available on `GitHub`_ under an
+`Apache 2.0 License`_.
+
+.. _GitHub: https://github.com/htrc/HTRC-PythonSDK/
+.. _Apache 2.0 License: https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md
+
+Workset paths
+---------------
+Each of these commands takes a *HathiTrust ID (HTID)* or *workset path*. Valid
+identifier types and examples of each are:
+
+==================================  ==============================================================================
+Identifier Type                     Example
+==================================  ==============================================================================
+HathiTrust ID                       mdp.39015078560078
+HathiTrust Catalog ID               001423370
+HathiTrust URL                      https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13
+Handle.org Volume URL               https://hdl.handle.net/2027/mdp.39015078560078
+HathiTrust Catalog URL              https://catalog.hathitrust.org/Record/001423370
+HathiTrust Collection Builder URL   https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727
+Local volumes file                  ``/home/dcuser/Downloads/collections.txt``
+==================================  ==============================================================================
+
+For example, to download the metadata associated with volume 1 of `The Works of
+Jonathan Swift`_, the command would be: 
+
+    ``htrc metadata mdp.39015078560078``
+
+Note that this would only retrieve the first volume. If you want to download
+metadata for all 8 volumes, the catalog identifier would be used:
+    
+    ``htrc metadata 001423370``
+
+Each command can be used with the URL as well (*note the quote marks around each
+URL*):
+
+    ``htrc metadata "https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13"``
+
+    ``htrc metadata "https://catalog.hathitrust.org/Record/001423370"``
+
+This URL support makes it easy to browse `hathitrust.org`_ and copy links
+for computational analysis using the SDK.
+
+.. _The Works of Jonathan Swift: https://hdl.handle.net/2027/mdp.39015078560078
+.. _hathitrust.org: https://www.hathitrust.org/
+
+
+
+Software Development Kit
+==========================
+In addition to the CLI, this library provides a software development kit (SDK) for
+users of HTRC services:
 
 - An access layer for the Bibliographic API (`htrc.metadata`_)
 - An access layer for the Data API (`htrc.volumes`_)
@@ -15,13 +77,6 @@ following functionality:
 - Provenance tracking for verification of non-consumptive exports (`htrc.prov`_)
 - Mock testing interface for user-machine or maintenance-mode testing (`htrc.mock`_)
 - Utilities for record and volume resolution (`htrc.util`_)
-
-- Volume Download (``htrc download``)
-- Metadata Download (``htrc metadata``)
-- Pre-built Analysis Workflows (``htrc run``)
-- Provenance tracking
-- Development test framework
-- Entity resolution
 
 The *HTRC Data Capsule Service* provisions virtual machines (VMs) to researchers
 within the HTRC secure environment. The VM and software environment (including
@@ -60,12 +115,12 @@ Bibliographic API Access
 
 Analysis Workflows
 --------------------
-The Python SDK also provides the command line tool ``htrc run``.
-
+The Python SDK also provides the command line tool ``htrc run``. Like `volume
+download`_, the
 
 Topic Modeling
-----------------
-
+''''''''''''''''
+There are two implementations of LDA topic modeling supported by the 
 
 
 
