@@ -43,16 +43,79 @@
             
   <div class="section" id="welcome-to-the-htrc-python-sdk-s-documentation">
 <h1>Welcome to the HTRC Python SDK&#8217;s documentation!<a class="headerlink" href="#welcome-to-the-htrc-python-sdk-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The HTRC Python SDK (<a class="reference external" href="http://github.com/htrc/HTRC-PythonSDK">GitHub</a>) provides a standard interface for users of the
-HTRC Data Capsule service:</p>
+<p>The HTRC Python SDK provides a command line interface for interacting with
+and analyzing volumes in the HathiTrust Digital Library:</p>
 <ul class="simple">
 <li>Volume Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code>)</li>
 <li>Metadata Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code>)</li>
 <li>Pre-built Analysis Workflows (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>)</li>
-<li>Provenance tracking</li>
 </ul>
-<p>It also provides a software development kit (SDK) for developers using the HTRC
-Data Capsule:</p>
+<p>Each of these commands takes a <em>workset path</em> (described below).</p>
+<p>In addition, it provides a software development kit (SDK) for working with the
+HathiTrust Digital Library materials. It was designed for use in the HTRC Data
+Capsule service, which is the target distribution.</p>
+<p>All source code for the HTRC Python SDK is available on <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/">GitHub</a> under an
+<a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md">Apache 2.0 License</a>.</p>
+<div class="section" id="workset-paths">
+<h2>Workset paths<a class="headerlink" href="#workset-paths" title="Permalink to this headline">¶</a></h2>
+<p>Each of these commands takes a <em>HathiTrust ID (HTID)</em> or <em>workset path</em>. Valid
+identifier types and examples of each are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Identifier Type</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>HathiTrust ID</td>
+<td>mdp.39015078560078</td>
+</tr>
+<tr class="row-odd"><td>HathiTrust Catalog ID</td>
+<td>001423370</td>
+</tr>
+<tr class="row-even"><td>HathiTrust URL</td>
+<td><a class="reference external" href="https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13">https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13</a></td>
+</tr>
+<tr class="row-odd"><td>Handle.org Volume URL</td>
+<td><a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">https://hdl.handle.net/2027/mdp.39015078560078</a></td>
+</tr>
+<tr class="row-even"><td>HathiTrust Catalog URL</td>
+<td><a class="reference external" href="https://catalog.hathitrust.org/Record/001423370">https://catalog.hathitrust.org/Record/001423370</a></td>
+</tr>
+<tr class="row-odd"><td>HathiTrust Collection Builder URL</td>
+<td><a class="reference external" href="https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727">https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727</a></td>
+</tr>
+<tr class="row-even"><td>Local volumes file</td>
+<td><code class="docutils literal"><span class="pre">/home/dcuser/Downloads/collections.txt</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>For example, to download the metadata associated with volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of
+Jonathan Swift</a>, the command would be:</p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">mdp.39015078560078</span></code></div></blockquote>
+<p>Note that this would only retrieve the first volume. If you want to download
+metadata for all 8 volumes, the catalog identifier would be used:</p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">001423370</span></code></div></blockquote>
+<p>Each command can be used with the URL as well (<em>note the quote marks around each
+URL</em>):</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13&quot;</span></code></p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://catalog.hathitrust.org/Record/001423370&quot;</span></code></p>
+</div></blockquote>
+<p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links
+for computational analysis using the SDK.</p>
+</div>
+</div>
+<div class="section" id="software-development-kit">
+<h1>Software Development Kit<a class="headerlink" href="#software-development-kit" title="Permalink to this headline">¶</a></h1>
+<p>In addition to the CLI, this library provides a software development kit (SDK) for
+users of HTRC services:</p>
 <ul class="simple">
 <li>An access layer for the Bibliographic API (<a class="reference internal" href="#htrc-metadata">htrc.metadata</a>)</li>
 <li>An access layer for the Data API (<a class="reference internal" href="#htrc-volumes">htrc.volumes</a>)</li>
@@ -91,10 +154,12 @@ to the secure mode of the Capsule.</p>
 </div>
 <div class="section" id="analysis-workflows">
 <h2>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h2>
-<p>The Python SDK also provides the command line tool <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>.</p>
-</div>
+<p>The Python SDK also provides the command line tool <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>. Like <a class="reference internal" href="#volume-download">volume
+download</a>, the</p>
 <div class="section" id="topic-modeling">
-<h2>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h2>
+<h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
+<p>There are two implementations of LDA topic modeling supported by the</p>
+</div>
 </div>
 <div class="section" id="mock-testing">
 <h2>Mock Testing<a class="headerlink" href="#mock-testing" title="Permalink to this headline">¶</a></h2>
@@ -318,10 +383,16 @@ file per page (default).</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to the HTRC Python SDK&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#workset-paths">Workset paths</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#software-development-kit">Software Development Kit</a><ul>
 <li><a class="reference internal" href="#volume-download">Volume Download</a></li>
 <li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a></li>
-<li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a></li>
+<li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
 <li><a class="reference internal" href="#topic-modeling">Topic Modeling</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mock-testing">Mock Testing</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
