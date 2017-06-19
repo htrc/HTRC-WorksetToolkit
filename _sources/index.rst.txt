@@ -16,6 +16,7 @@ HTRC Data Capsule service:
 
 It also provides a software development kit (SDK) for developers using the HTRC
 Data Capsule:
+
 - An access layer for the Bibliographic API (`htrc.metadata`_)
 - An access layer for the Data API (`htrc.volumes`_)
 - Pre-built analysis workflows (`htrc.tools`_)
