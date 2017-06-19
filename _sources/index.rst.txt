@@ -5,23 +5,23 @@
 
 Welcome to the HTRC Python SDK's documentation!
 =================================================
-The HTRC Python SDK (`GitHub`_) provides a standard interface for writing and testing
-scientific workflows for the HTRC Data Capsule Service. It provides the
-following functionality:
+The HTRC Python SDK (`GitHub`_) provides a standard interface for users of the
+HTRC Data Capsule service:
 
+- Volume Download (``htrc download``)
+- Metadata Download (``htrc metadata``)
+- Pre-built Analysis Workflows (``htrc run``)
+- Provenance tracking
+
+
+It also provides a software development kit (SDK) for developers using the HTRC
+Data Capsule:
 - An access layer for the Bibliographic API (`htrc.metadata`_)
 - An access layer for the Data API (`htrc.volumes`_)
 - Pre-built analysis workflows (`htrc.tools`_)
 - Provenance tracking for verification of non-consumptive exports (`htrc.prov`_)
 - Mock testing interface for user-machine or maintenance-mode testing (`htrc.mock`_)
 - Utilities for record and volume resolution (`htrc.util`_)
-
-- Volume Download (``htrc download``)
-- Metadata Download (``htrc metadata``)
-- Pre-built Analysis Workflows (``htrc run``)
-- Provenance tracking
-- Development test framework
-- Entity resolution
 
 The *HTRC Data Capsule Service* provisions virtual machines (VMs) to researchers
 within the HTRC secure environment. The VM and software environment (including

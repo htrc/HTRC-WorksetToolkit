@@ -43,23 +43,22 @@
             
   <div class="section" id="welcome-to-the-htrc-python-sdk-s-documentation">
 <h1>Welcome to the HTRC Python SDK&#8217;s documentation!<a class="headerlink" href="#welcome-to-the-htrc-python-sdk-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The HTRC Python SDK (<a class="reference external" href="http://github.com/htrc/HTRC-PythonSDK">GitHub</a>) provides a standard interface for writing and testing
-scientific workflows for the HTRC Data Capsule Service. It provides the
-following functionality:</p>
+<p>The HTRC Python SDK (<a class="reference external" href="http://github.com/htrc/HTRC-PythonSDK">GitHub</a>) provides a standard interface for users of the
+HTRC Data Capsule service:</p>
 <ul class="simple">
-<li>An access layer for the Bibliographic API (<a class="reference internal" href="#htrc-metadata">htrc.metadata</a>)</li>
-<li>An access layer for the Data API (<a class="reference internal" href="#htrc-volumes">htrc.volumes</a>)</li>
-<li>Pre-built analysis workflows (<a class="reference internal" href="#htrc-tools">htrc.tools</a>)</li>
-<li>Provenance tracking for verification of non-consumptive exports (<a class="reference internal" href="#htrc-prov">htrc.prov</a>)</li>
-<li>Mock testing interface for user-machine or maintenance-mode testing (<a class="reference internal" href="#htrc-mock">htrc.mock</a>)</li>
-<li>Utilities for record and volume resolution (<a class="reference internal" href="#htrc-util">htrc.util</a>)</li>
 <li>Volume Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code>)</li>
 <li>Metadata Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code>)</li>
 <li>Pre-built Analysis Workflows (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>)</li>
 <li>Provenance tracking</li>
-<li>Development test framework</li>
-<li>Entity resolution</li>
 </ul>
+<p>It also provides a software development kit (SDK) for developers using the HTRC
+Data Capsule:
+- An access layer for the Bibliographic API (<a class="reference internal" href="#htrc-metadata">htrc.metadata</a>)
+- An access layer for the Data API (<a class="reference internal" href="#htrc-volumes">htrc.volumes</a>)
+- Pre-built analysis workflows (<a class="reference internal" href="#htrc-tools">htrc.tools</a>)
+- Provenance tracking for verification of non-consumptive exports (<a class="reference internal" href="#htrc-prov">htrc.prov</a>)
+- Mock testing interface for user-machine or maintenance-mode testing (<a class="reference internal" href="#htrc-mock">htrc.mock</a>)
+- Utilities for record and volume resolution (<a class="reference internal" href="#htrc-util">htrc.util</a>)</p>
 <p>The <em>HTRC Data Capsule Service</em> provisions virtual machines (VMs) to researchers
 within the HTRC secure environment. The VM and software environment (including
 the SDK) together form a Capsule. Each researcher has exclusive use of the
