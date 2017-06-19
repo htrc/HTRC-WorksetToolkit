@@ -16,13 +16,28 @@ Each of these commands takes a *workset path* (described below).
 
 In addition, it provides a software development kit (SDK) for working with the
 HathiTrust Digital Library materials. It was designed for use in the HTRC Data
-Capsule service, which is the target distribution.
+Capsule service, which is the target distribution. It has the following aspects:
+
+- An access layer for the Bibliographic API (`htrc.metadata`_)
+- An access layer for the Data API (`htrc.volumes`_)
+- Pre-built analysis workflows (`htrc.tools`_)
+- Provenance tracking for verification of non-consumptive exports (`htrc.prov`_)
+- Mock testing interface for user-machine or maintenance-mode testing (`htrc.mock`_)
+- Utilities for record and volume resolution (`htrc.util`_)
 
 All source code for the HTRC Python SDK is available on `GitHub`_ under an
 `Apache 2.0 License`_.
 
 .. _GitHub: https://github.com/htrc/HTRC-PythonSDK/
 .. _Apache 2.0 License: https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   index
+   sdk
+   tips
 
 Workset paths
 ---------------
@@ -41,6 +56,10 @@ HathiTrust Collection Builder URL   https://babel.hathitrust.org/shcgi/mb?a=list
 Local volumes file                  ``/home/dcuser/Downloads/collections.txt``
 ==================================  ==============================================================================
 
+
+
+Examples
+''''''''''''
 For example, to download the metadata associated with volume 1 of `The Works of
 Jonathan Swift`_, the command would be: 
 
@@ -65,19 +84,8 @@ for computational analysis using the SDK.
 .. _hathitrust.org: https://www.hathitrust.org/
 
 
-
-Software Development Kit
-==========================
-In addition to the CLI, this library provides a software development kit (SDK) for
-users of HTRC services:
-
-- An access layer for the Bibliographic API (`htrc.metadata`_)
-- An access layer for the Data API (`htrc.volumes`_)
-- Pre-built analysis workflows (`htrc.tools`_)
-- Provenance tracking for verification of non-consumptive exports (`htrc.prov`_)
-- Mock testing interface for user-machine or maintenance-mode testing (`htrc.mock`_)
-- Utilities for record and volume resolution (`htrc.util`_)
-
+HTRC Data Capsule Service
+------------------------------
 The *HTRC Data Capsule Service* provisions virtual machines (VMs) to researchers
 within the HTRC secure environment. The VM and software environment (including
 the SDK) together form a Capsule. Each researcher has exclusive use of the
@@ -92,11 +100,9 @@ Any changes made on the non-secure volumes are reverted when leaving secure
 mode, so persistent code changes must occur in maintenance mode. The SDK
 addresses these connectivity issues with the `htrc.mock`_ library.
 
-.. _GitHub: http://github.com/htrc/HTRC-PythonSDK 
-
 
 Volume Download
-----------------------------------------
+--------------------
 The Python SDK provides the ``htrc download`` function to download volumes
 to the secure mode of the Capsule.
 
@@ -176,48 +182,7 @@ This script leverages use of the ``python -O`` switch, which controls the
 
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
-
-Modules
-=========
-
-`htrc.metadata`
------------------
-.. automodule:: htrc.metadata
-   :members:
-
-`htrc.mock`
------------------
-.. automodule:: htrc.mock
-   :members:
-
-`htrc.mock.volumes`
-'''''''''''''''''''''
-.. automodule:: htrc.mock.volumes
-   :members:
-
-`htrc.prov`
------------------
-.. automodule:: htrc.prov
-   :members:
-
-`htrc.tools`
------------------
-.. automodule:: htrc.tools
-   :members:
-
-`htrc.volumes`
-----------------
-.. automodule:: htrc.volumes
-   :members:
-
-`htrc.util`
-----------------
-.. automodule:: htrc.util
-   :members:
 
 
 Indices and tables
