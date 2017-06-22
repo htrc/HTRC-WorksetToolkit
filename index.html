@@ -26,6 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HTRC Python CLI" href="cli.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -49,320 +50,56 @@ and analyzing volumes in the HathiTrust Digital Library:</p>
 <li>Volume Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code>)</li>
 <li>Metadata Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code>)</li>
 <li>Pre-built Analysis Workflows (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>)</li>
+<li>Export of volume lists (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span></code>)</li>
 </ul>
-<p>Each of these commands takes a <em>workset path</em> (described below).</p>
+<p>Each of these commands takes a <a class="reference internal" href="cli.html#workset-path"><span class="std std-ref">Workset Path</span></a>, which is one of 7 types of
+identifiers. Almost any web page on <a class="reference external" href="http://hathitrust.org">http://hathitrust.org</a> is a valid identifier,
+including the PageTurner view, Catalog record view, and Collection Builder
+collections.</p>
+<p>More details on each command can be found on the <a class="reference internal" href="cli.html#htrc-python-cli"><span class="std std-ref">HTRC Python CLI</span></a> page.</p>
 <p>In addition, it provides a software development kit (SDK) for working with the
 HathiTrust Digital Library materials. It was designed for use in the HTRC Data
-Capsule service, which is the target distribution.</p>
+Capsule service, which is the target distribution. It has the following aspects:</p>
+<ul class="simple">
+<li>An access layer for the Bibliographic API (<code class="docutils literal"><span class="pre">htrc.metadata</span></code>)</li>
+<li>An access layer for the Data API (<code class="docutils literal"><span class="pre">htrc.volumes</span></code>)</li>
+<li>Pre-built analysis workflows (<code class="docutils literal"><span class="pre">htrc.tools</span></code>)</li>
+<li>Provenance tracking for verification of non-consumptive exports (<code class="docutils literal"><span class="pre">htrc.prov</span></code>)</li>
+<li>Mock testing interface for user-machine or maintenance-mode testing (<code class="docutils literal"><span class="pre">htrc.mock</span></code>)</li>
+<li>Utilities for record and volume resolution (<code class="docutils literal"><span class="pre">htrc.util</span></code>)</li>
+</ul>
+<p>More details on each module can be found on the <a class="reference internal" href="sdk.html#htrc-python-sdk"><span class="std std-ref">HTRC Python SDK</span></a> page.</p>
 <p>All source code for the HTRC Python SDK is available on <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/">GitHub</a> under an
 <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md">Apache 2.0 License</a>.</p>
-<div class="section" id="workset-paths">
-<h2>Workset paths<a class="headerlink" href="#workset-paths" title="Permalink to this headline">¶</a></h2>
-<p>Each of these commands takes a <em>HathiTrust ID (HTID)</em> or <em>workset path</em>. Valid
-identifier types and examples of each are:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="30%" />
-<col width="70%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Identifier Type</th>
-<th class="head">Example</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>HathiTrust ID</td>
-<td>mdp.39015078560078</td>
-</tr>
-<tr class="row-odd"><td>HathiTrust Catalog ID</td>
-<td>001423370</td>
-</tr>
-<tr class="row-even"><td>HathiTrust URL</td>
-<td><a class="reference external" href="https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13">https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13</a></td>
-</tr>
-<tr class="row-odd"><td>Handle.org Volume URL</td>
-<td><a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">https://hdl.handle.net/2027/mdp.39015078560078</a></td>
-</tr>
-<tr class="row-even"><td>HathiTrust Catalog URL</td>
-<td><a class="reference external" href="https://catalog.hathitrust.org/Record/001423370">https://catalog.hathitrust.org/Record/001423370</a></td>
-</tr>
-<tr class="row-odd"><td>HathiTrust Collection Builder URL</td>
-<td><a class="reference external" href="https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727">https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727</a></td>
-</tr>
-<tr class="row-even"><td>Local volumes file</td>
-<td><code class="docutils literal"><span class="pre">/home/dcuser/Downloads/collections.txt</span></code></td>
-</tr>
-</tbody>
-</table>
-<p>For example, to download the metadata associated with volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of
-Jonathan Swift</a>, the command would be:</p>
-<blockquote>
-<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">mdp.39015078560078</span></code></div></blockquote>
-<p>Note that this would only retrieve the first volume. If you want to download
-metadata for all 8 volumes, the catalog identifier would be used:</p>
-<blockquote>
-<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">001423370</span></code></div></blockquote>
-<p>Each command can be used with the URL as well (<em>note the quote marks around each
-URL</em>):</p>
-<blockquote>
-<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13&quot;</span></code></p>
-<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://catalog.hathitrust.org/Record/001423370&quot;</span></code></p>
-</div></blockquote>
-<p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links
-for computational analysis using the SDK.</p>
 </div>
-</div>
-<div class="section" id="software-development-kit">
-<h1>Software Development Kit<a class="headerlink" href="#software-development-kit" title="Permalink to this headline">¶</a></h1>
-<p>In addition to the CLI, this library provides a software development kit (SDK) for
-users of HTRC services:</p>
-<ul class="simple">
-<li>An access layer for the Bibliographic API (<a class="reference internal" href="#htrc-metadata">htrc.metadata</a>)</li>
-<li>An access layer for the Data API (<a class="reference internal" href="#htrc-volumes">htrc.volumes</a>)</li>
-<li>Pre-built analysis workflows (<a class="reference internal" href="#htrc-tools">htrc.tools</a>)</li>
-<li>Provenance tracking for verification of non-consumptive exports (<a class="reference internal" href="#htrc-prov">htrc.prov</a>)</li>
-<li>Mock testing interface for user-machine or maintenance-mode testing (<a class="reference internal" href="#htrc-mock">htrc.mock</a>)</li>
-<li>Utilities for record and volume resolution (<a class="reference internal" href="#htrc-util">htrc.util</a>)</li>
-</ul>
-<p>The <em>HTRC Data Capsule Service</em> provisions virtual machines (VMs) to researchers
-within the HTRC secure environment. The VM and software environment (including
-the SDK) together form a Capsule. Each researcher has exclusive use of the
-Capsule for a period of weeks or months during which they can configure their
-own environment for performing research on HathiTrust Digital Library texts,
-including both in-copyright and public domain volumes.</p>
-<p>Each Capsule has both a maintenance mode and a secure mode. In secure
-mode, network access is restricted to the HTRC Data API and some HTDL
-resources, allowing text and image data to be downloaded to the Capsule.
-Any changes made on the non-secure volumes are reverted when leaving secure
-mode, so persistent code changes must occur in maintenance mode. The SDK
-addresses these connectivity issues with the <a class="reference internal" href="#htrc-mock">htrc.mock</a> library.</p>
-<div class="section" id="volume-download">
-<h2>Volume Download<a class="headerlink" href="#volume-download" title="Permalink to this headline">¶</a></h2>
-<p>The Python SDK provides the <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code> function to download volumes
-to the secure mode of the Capsule.</p>
-<p>The function takes either a volume ID or one of several types of Workset files:</p>
-<ul class="simple">
-<li>volume HTID or HTIDs</li>
-<li>plain-text list of volume IDs (one per line)</li>
-<li>HTRC Portal Workset Builder</li>
-<li>HTRC JSON-LD Workset format</li>
-<li>HT Collection Builder</li>
-</ul>
-</div>
-<div class="section" id="bibliographic-api-access">
-<h2>Bibliographic API Access<a class="headerlink" href="#bibliographic-api-access" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="analysis-workflows">
-<h2>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h2>
-<p>The Python SDK also provides the command line tool <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>. Like <a class="reference internal" href="#volume-download">volume
-download</a>, the</p>
-<div class="section" id="topic-modeling">
-<h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
-<p>There are two implementations of LDA topic modeling supported by the</p>
-</div>
-</div>
-<div class="section" id="mock-testing">
-<h2>Mock Testing<a class="headerlink" href="#mock-testing" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Mock_object">Mock testing</a> uses simulated objects or functions to mimic the behavior
-of real code in controlled ways.</p>
-<p>The HTRC Python SDK implements a mock of the Data API access layer in
-<a class="reference internal" href="#htrc-mock-volumes">htrc.mock.volumes</a>. The Data API server is only accessible via a Capsule
-in secure mode. By implementing a function with the same call signature
-that returns the same data types, workflows that rely on the Data API can be
-tested either in Capsule maintenance mode or on a user&#8217;s own computer.</p>
-<p>An easy way to use this pattern is shown below.</p>
-<div class="section" id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">__debug__</span><span class="p">:</span>
-    <span class="c1"># This code will execute when running `python script.py`</span>
-    <span class="kn">import</span> <span class="nn">htrc.mock.volumes</span> <span class="k">as</span> <span class="nn">volumes</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># This code will execute when running `python -O script.py`</span>
-    <span class="c1"># The -O argument turns on optimizations, setting __debug__ = False.</span>
-    <span class="kn">import</span> <span class="nn">htrc.volumes</span> <span class="k">as</span> <span class="nn">volumes</span>
-
-<span class="c1"># The following is just to make a running script</span>
-<span class="n">volume_ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;htrc.testid&#39;</span><span class="p">]</span>    <span class="c1"># any list will do</span>
-<span class="n">output_dir</span> <span class="o">=</span> <span class="s1">&#39;htrc_data&#39;</span>        <span class="c1"># any path will do</span>
-
-<span class="c1"># download volumes</span>
-<span class="n">volumes</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">volume_ids</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This script leverages use of the <code class="docutils literal"><span class="pre">python</span> <span class="pre">-O</span></code> switch, which controls the
-<code class="docutils literal"><span class="pre">__debug__</span></code> global variable:</p>
-<blockquote>
-<div><ul class="simple">
-<li>When run in the development environment, which does not have secure
-access to the Data API, the program is run with <code class="docutils literal"><span class="pre">python</span> <span class="pre">script.py</span></code>,
-setting <code class="docutils literal"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">True</span></code>. This means that <code class="docutils literal"><span class="pre">volumes.download(volume_ids,</span>
-<span class="pre">output_dir)</span></code> utilizes the function <code class="docutils literal"><span class="pre">htrc.mock.volumes.download(volume_ids,</span>
-<span class="pre">output_dir)</span></code>.</li>
-<li>When run in secure mode of the data capsule, the program is executed with
-<code class="docutils literal"><span class="pre">python</span> <span class="pre">-O</span> <span class="pre">script.py</span></code>, setting <code class="docutils literal"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">False</span></code>. The statement
-<code class="docutils literal"><span class="pre">volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code> utilizes the function
-<code class="docutils literal"><span class="pre">htrc.mock.volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code>.</li>
-</ul>
-</div></blockquote>
+<div class="section" id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="modules">
-<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-htrc.metadata">
-<span id="htrc-metadata"></span><h2><cite>htrc.metadata</cite><a class="headerlink" href="#module-htrc.metadata" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="htrc.metadata.get_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">get_metadata</code><span class="sig-paren">(</span><em>ids</em>, <em>output_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves metadata for a folder of folders, where each subfolder is named
-for a HathiTrust ID. This structure is the default structure extracted from
-a Data API request (:method htrc.volumes.get_volumes:).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.metadata.get_volume_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">get_volume_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>marc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_volume_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
-<p>Params:
-:param id: HTID for the volume to be retrieved
-:param marc: Retrieve MARC-XML within JSON return value.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.metadata.record_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">record_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#record_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.record_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve metadata for a HathiTrust Record.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.metadata.safe_volume_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">safe_volume_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>marc=False</em>, <em>sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#safe_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.safe_volume_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
-<p>Unlike :method volume_metadata:, this function returns an empty dictionary,
-rather than an error when metadata is missing.</p>
-<p>Params:
-:param id: HTID for the volume to be retrieved
-:param marc: Retrieve MARC-XML within JSON return value.</p>
-<p>_ <a class="reference external" href="https://www.hathitrust.org/bib_api">https://www.hathitrust.org/bib_api</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.metadata.volume_solr_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">volume_solr_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>sleep_time=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#volume_solr_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.volume_solr_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve metadata from HTRC Solr API.</p>
-<p>The HTRC Solr instance is used only for certain extracted features 
-unavailable in the main HathiTrust Bibliographic API. If you are a
-recipient of a HTRC Advanced Collaborative Support (ACS) grant,
-then you may have to use this function.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-htrc.mock">
-<span id="htrc-mock"></span><h2><cite>htrc.mock</cite><a class="headerlink" href="#module-htrc.mock" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="module-htrc.mock.volumes">
-<span id="htrc-mock-volumes"></span><h3><cite>htrc.mock.volumes</cite><a class="headerlink" href="#module-htrc.mock.volumes" title="Permalink to this headline">¶</a></h3>
-<p><cite>htrc.mock.volumes</cite></p>
-<p>Contains functions to test the volume retrieval from the HTRC Data API.
-The download functions will return a sample zip file.</p>
-<p>See the core documentation for an example of how to use this library.</p>
-<dl class="function">
-<dt id="htrc.mock.volumes.credentials_from_config">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">credentials_from_config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#credentials_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.credentials_from_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the username and password from a config file for the Data API.
-DOES NOT raise an EnvironmentError if path is invalid.
-See also: credential_prompt</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.mock.volumes.get_oauth2_token">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_oauth2_token</code><span class="sig-paren">(</span><em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_oauth2_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_oauth2_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a sample token for oauth2</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.mock.volumes.get_pages">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_pages</code><span class="sig-paren">(</span><em>token</em>, <em>page_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a ZIP file containing specfic pages.</p>
-<p>Parameters:
-:token: An OAuth2 token for the app.
-:volume_ids: A list of volume_ids
-:concat: If True, return a single file per volume. If False, return a single
-file per page (default).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.mock.volumes.get_volumes">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_volumes</code><span class="sig-paren">(</span><em>token</em>, <em>volume_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns volumes from the Data API as a raw zip stream.</p>
-<p>Parameters:
-:token: An OAuth2 token for the app.
-:volume_ids: A list of volume_ids
-:concat: If True, return a single file per volume. If False, return a single
-file per page (default).</p>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="module-htrc.prov">
-<span id="htrc-prov"></span><h2><cite>htrc.prov</cite><a class="headerlink" href="#module-htrc.prov" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-htrc.tools">
-<span id="htrc-tools"></span><h2><cite>htrc.tools</cite><a class="headerlink" href="#module-htrc.tools" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-htrc.volumes">
-<span id="htrc-volumes"></span><h2><cite>htrc.volumes</cite><a class="headerlink" href="#module-htrc.volumes" title="Permalink to this headline">¶</a></h2>
-<p><cite>htrc.volumes</cite></p>
-<p>Contains functions to retrieve volumes from the HTRC Data API.</p>
-<p>The functions in this package will not operate unless they are 
-executed from an HTRC Data Capsule in Secure Mode. The module 
-<cite>htrc.mock.volumes</cite> contains Patch objects for testing workflows.</p>
-<dl class="function">
-<dt id="htrc.volumes.credential_prompt">
-<code class="descclassname">htrc.volumes.</code><code class="descname">credential_prompt</code><span class="sig-paren">(</span><em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#credential_prompt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.credential_prompt" title="Permalink to this definition">¶</a></dt>
-<dd><p>A prompt for entering HathiTrust credentials.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.credentials_from_config">
-<code class="descclassname">htrc.volumes.</code><code class="descname">credentials_from_config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#credentials_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.credentials_from_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the username and password from a config file for the Data API.
-Raises an EnvironmentError if not specified.
-See also: credential_prompt</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.get_pages">
-<code class="descclassname">htrc.volumes.</code><code class="descname">get_pages</code><span class="sig-paren">(</span><em>token</em>, <em>page_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a ZIP file containing specfic pages.</p>
-<p>Parameters:
-:token: An OAuth2 token for the app.
-:volume_ids: A list of volume_ids
-:concat: If True, return a single file per volume. If False, return a single
-file per page (default).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.get_volumes">
-<code class="descclassname">htrc.volumes.</code><code class="descname">get_volumes</code><span class="sig-paren">(</span><em>token</em>, <em>volume_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns volumes from the Data API as a raw zip stream.</p>
-<p>Parameters:
-:token: An OAuth2 token for the app.
-:volume_ids: A list of volume_ids
-:concat: If True, return a single file per volume. If False, return a single
-file per page (default).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.save_credentials">
-<code class="descclassname">htrc.volumes.</code><code class="descname">save_credentials</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#save_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.save_credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves credentials in the config file.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-htrc.util">
-<span id="htrc-util"></span><h2><cite>htrc.util</cite><a class="headerlink" href="#module-htrc.util" title="Permalink to this headline">¶</a></h2>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Python CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#workset-path">Workset Path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#volume-download">Volume Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#bibliographic-api-access">Bibliographic API Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#analysis-workflows">Analysis Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Python SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#htrc-data-capsule-service">HTRC Data Capsule Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#modules">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.metadata"><cite>htrc.metadata</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.mock"><cite>htrc.mock</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.prov"><cite>htrc.prov</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.tools"><cite>htrc.tools</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.volumes"><cite>htrc.volumes</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.util"><cite>htrc.util</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">HTRC Python SDK Tips</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tips.html#pretty-print-of-json-data-using-jq">Pretty-print of JSON data using <code class="docutils literal"><span class="pre">jq</span></code></a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -382,41 +119,15 @@ file per page (default).</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to the HTRC Python SDK&#8217;s documentation!</a><ul>
-<li><a class="reference internal" href="#workset-paths">Workset paths</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#software-development-kit">Software Development Kit</a><ul>
-<li><a class="reference internal" href="#volume-download">Volume Download</a></li>
-<li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a></li>
-<li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
-<li><a class="reference internal" href="#topic-modeling">Topic Modeling</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#mock-testing">Mock Testing</a><ul>
-<li><a class="reference internal" href="#example">Example</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#modules">Modules</a><ul>
-<li><a class="reference internal" href="#module-htrc.metadata"><cite>htrc.metadata</cite></a></li>
-<li><a class="reference internal" href="#module-htrc.mock"><cite>htrc.mock</cite></a><ul>
-<li><a class="reference internal" href="#module-htrc.mock.volumes"><cite>htrc.mock.volumes</cite></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-htrc.prov"><cite>htrc.prov</cite></a></li>
-<li><a class="reference internal" href="#module-htrc.tools"><cite>htrc.tools</cite></a></li>
-<li><a class="reference internal" href="#module-htrc.volumes"><cite>htrc.volumes</cite></a></li>
-<li><a class="reference internal" href="#module-htrc.util"><cite>htrc.util</cite></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Welcome to the HTRC Python SDK&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="cli.html" title="next chapter">HTRC Python CLI</a></li>
   </ul></li>
 </ul>
 </div>

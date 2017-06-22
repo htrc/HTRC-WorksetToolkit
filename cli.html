@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HTRC Python CLI &#8212; HTRC Python SDK 1.0.0b1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0b1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HTRC Python SDK" href="sdk.html" />
+    <link rel="prev" title="Welcome to the HTRC Python SDK’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="htrc-python-cli">
+<h1>HTRC Python CLI<a class="headerlink" href="#htrc-python-cli" title="Permalink to this headline">¶</a></h1>
+<p>The HTRC Python SDK provides a command line interface for interacting with
+and analyzing volumes in the HathiTrust Digital Library:</p>
+<ul class="simple">
+<li>Volume Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code>)</li>
+<li>Metadata Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code>)</li>
+<li>Pre-built Analysis Workflows (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>)</li>
+<li>Export of volume lists (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span></code>)</li>
+</ul>
+<div class="section" id="workset-path">
+<h2>Workset Path<a class="headerlink" href="#workset-path" title="Permalink to this headline">¶</a></h2>
+<p>Each of these commands takes a <em>workset path</em>. Valid types of workset paths
+and examples of each are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Identifier Type</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>HathiTrust ID</td>
+<td>mdp.39015078560078</td>
+</tr>
+<tr class="row-odd"><td>HathiTrust Catalog ID</td>
+<td>001423370</td>
+</tr>
+<tr class="row-even"><td>HathiTrust URL</td>
+<td><a class="reference external" href="https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13">https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13</a></td>
+</tr>
+<tr class="row-odd"><td>Handle.org Volume URL</td>
+<td><a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">https://hdl.handle.net/2027/mdp.39015078560078</a></td>
+</tr>
+<tr class="row-even"><td>HathiTrust Catalog URL</td>
+<td><a class="reference external" href="https://catalog.hathitrust.org/Record/001423370">https://catalog.hathitrust.org/Record/001423370</a></td>
+</tr>
+<tr class="row-odd"><td>HathiTrust Collection Builder URL</td>
+<td><a class="reference external" href="https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727">https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727</a></td>
+</tr>
+<tr class="row-even"><td>Local volumes file</td>
+<td><code class="docutils literal"><span class="pre">/home/dcuser/Downloads/collections.txt</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="volume-download">
+<h2>Volume Download<a class="headerlink" href="#volume-download" title="Permalink to this headline">¶</a></h2>
+<p>The Python SDK provides the <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code> function to download volumes
+to the secure mode of the Capsule.</p>
+<p>The function takes either a volume ID or one of several types of Workset files:</p>
+<ul class="simple">
+<li>volume HTID or HTIDs</li>
+<li>plain-text list of volume IDs (one per line)</li>
+<li>HTRC Portal Workset Builder</li>
+<li>HTRC JSON-LD Workset format</li>
+<li>HT Collection Builder</li>
+</ul>
+</div>
+<div class="section" id="bibliographic-api-access">
+<h2>Bibliographic API Access<a class="headerlink" href="#bibliographic-api-access" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>For example, to download the metadata associated with volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of
+Jonathan Swift</a>, the command would be:</p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">mdp.39015078560078</span></code></div></blockquote>
+<p>Note that this would only retrieve the first volume. If you want to download
+metadata for all 8 volumes, the catalog identifier would be used:</p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">001423370</span></code></div></blockquote>
+<p>Each command can be used with the URL as well (<em>note the quote marks around each
+URL</em>):</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13&quot;</span></code></p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://catalog.hathitrust.org/Record/001423370&quot;</span></code></p>
+</div></blockquote>
+<p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links
+for computational analysis using the SDK.</p>
+</div>
+</div>
+<div class="section" id="analysis-workflows">
+<h2>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h2>
+<p>The Python SDK also provides the command line tool <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>. Like <a class="reference internal" href="#volume-download">volume
+download</a>, the</p>
+<div class="section" id="topic-modeling">
+<h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
+<p>There are two implementations of LDA topic modeling supported by the</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HTRC Python CLI</a><ul>
+<li><a class="reference internal" href="#workset-path">Workset Path</a></li>
+<li><a class="reference internal" href="#volume-download">Volume Download</a></li>
+<li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
+<li><a class="reference internal" href="#topic-modeling">Topic Modeling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to the HTRC Python SDK&#8217;s documentation!</a></li>
+      <li>Next: <a href="sdk.html" title="next chapter">HTRC Python SDK</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cli.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, HathiTrust Research Center (Jaimie Murdock).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -67,7 +67,7 @@
 
 <span class="n">EXAMPLE_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;example.zip&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="get_volumes"><a class="viewcode-back" href="../../../index.html#htrc.mock.volumes.get_volumes">[docs]</a><span class="k">def</span> <span class="nf">get_volumes</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">volume_ids</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_volumes"><a class="viewcode-back" href="../../../sdk.html#htrc.mock.volumes.get_volumes">[docs]</a><span class="k">def</span> <span class="nf">get_volumes</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">volume_ids</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns volumes from the Data API as a raw zip stream.</span>
 
@@ -85,7 +85,7 @@
 
     <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="get_pages"><a class="viewcode-back" href="../../../index.html#htrc.mock.volumes.get_pages">[docs]</a><span class="k">def</span> <span class="nf">get_pages</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">page_ids</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_pages"><a class="viewcode-back" href="../../../sdk.html#htrc.mock.volumes.get_pages">[docs]</a><span class="k">def</span> <span class="nf">get_pages</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">page_ids</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a ZIP file containing specfic pages.</span>
 <span class="sd">    </span>
@@ -103,14 +103,14 @@
 
     <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="get_oauth2_token"><a class="viewcode-back" href="../../../index.html#htrc.mock.volumes.get_oauth2_token">[docs]</a><span class="k">def</span> <span class="nf">get_oauth2_token</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<div class="viewcode-block" id="get_oauth2_token"><a class="viewcode-back" href="../../../sdk.html#htrc.mock.volumes.get_oauth2_token">[docs]</a><span class="k">def</span> <span class="nf">get_oauth2_token</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a sample token for oauth2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;a1b2c3d4e5f6&#39;</span></div>
 
 
-<div class="viewcode-block" id="credentials_from_config"><a class="viewcode-back" href="../../../index.html#htrc.mock.volumes.credentials_from_config">[docs]</a><span class="k">def</span> <span class="nf">credentials_from_config</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="credentials_from_config"><a class="viewcode-back" href="../../../sdk.html#htrc.mock.volumes.credentials_from_config">[docs]</a><span class="k">def</span> <span class="nf">credentials_from_config</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the username and password from a config file for the Data API.</span>
 <span class="sd">    DOES NOT raise an EnvironmentError if path is invalid.</span>

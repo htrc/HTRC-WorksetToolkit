@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python Module Index &#8212; HTRC Python SDK 1.0.0b1 documentation</title>
+    <title>HTRC Python SDK Tips &#8212; HTRC Python SDK 1.0.0b1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,14 +26,12 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-
+    <link rel="prev" title="HTRC Python SDK" href="sdk.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-
 
   </head>
   <body role="document">
@@ -44,72 +42,48 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-
-   <h1>Python Module Index</h1>
-
-   <div class="modindex-jumpbox">
-   <a href="#cap-h"><strong>h</strong></a>
-   </div>
-
-   <table class="indextable modindextable">
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-h"><td></td><td>
-       <strong>h</strong></td><td></td></tr>
-     <tr>
-       <td><img src="_static/minus.png" class="toggler"
-              id="toggle-1" style="display: none" alt="-" /></td>
-       <td>
-       <code class="xref">htrc</code></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.metadata"><code class="xref">htrc.metadata</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.mock"><code class="xref">htrc.mock</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.mock.volumes"><code class="xref">htrc.mock.volumes</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.prov"><code class="xref">htrc.prov</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.tools"><code class="xref">htrc.tools</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.util"><code class="xref">htrc.util</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="sdk.html#module-htrc.volumes"><code class="xref">htrc.volumes</code></a></td><td>
-       <em></em></td></tr>
-   </table>
+  <div class="section" id="htrc-python-sdk-tips">
+<h1>HTRC Python SDK Tips<a class="headerlink" href="#htrc-python-sdk-tips" title="Permalink to this headline">¶</a></h1>
+<p>This document contains a number of tips for using the CLI and SDK in conjunction
+with other tools.</p>
+<div class="section" id="pretty-print-of-json-data-using-jq">
+<h2>Pretty-print of JSON data using <code class="docutils literal"><span class="pre">jq</span></code><a class="headerlink" href="#pretty-print-of-json-data-using-jq" title="Permalink to this headline">¶</a></h2>
+<p>The command line tool <code class="docutils literal"><span class="pre">jq</span></code> is very powerful when combined with the <code class="docutils literal"><span class="pre">htrc</span>
+<span class="pre">metadata</span></code> command, as it can be used to quickly query documents:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">htrc</span> <span class="n">metadata</span> <span class="n">mdp</span><span class="o">.</span><span class="mi">39015078560078</span> <span class="o">|</span> <span class="n">jq</span>
+</pre></div>
+</div>
+</div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HTRC Python SDK Tips</a><ul>
+<li><a class="reference internal" href="#pretty-print-of-json-data-using-jq">Pretty-print of JSON data using <code class="docutils literal"><span class="pre">jq</span></code></a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="sdk.html" title="previous chapter">HTRC Python SDK</a></li>
   </ul></li>
 </ul>
 </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tips.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -131,6 +105,9 @@
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
+      |
+      <a href="_sources/tips.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
     
