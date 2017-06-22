@@ -30,20 +30,28 @@ Local volumes file                  ``/home/dcuser/Downloads/collections.txt``
 
 Volume Download
 --------------------
-The Python SDK provides the ``htrc download`` function to download volumes
-to the secure mode of the Capsule.
+The ``htrc download`` command retrieves volumes from the `HTRC Data API`_
+to the secure mode of the :ref:`HTRC Data Capsule Service`.
 
-The function takes either a volume ID or one of several types of Workset files:
+.. note::
 
-- volume HTID or HTIDs
-- plain-text list of volume IDs (one per line)
-- HTRC Portal Workset Builder
-- HTRC JSON-LD Workset format
-- HT Collection Builder
+   This command will return an error when run on a non-HTRC computer or on a
+   Capsule running in maintenance mode.
+
+.. _HTRC Data API: https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+API+Users+Guide
+
+
+Examples
+''''''''''
 
 
 Bibliographic API Access
 --------------------------
+``htrc metadata`` retrieves metadata from the `HathiTrust Bibliographic API`_.
+This command has no limitations on which computer or network executes it.
+
+.. _HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
+
 
 
 Examples

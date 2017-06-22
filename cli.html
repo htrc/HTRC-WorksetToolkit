@@ -94,21 +94,23 @@ and examples of each are:</p>
 </div>
 <div class="section" id="volume-download">
 <h2>Volume Download<a class="headerlink" href="#volume-download" title="Permalink to this headline">¶</a></h2>
-<p>The Python SDK provides the <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code> function to download volumes
-to the secure mode of the Capsule.</p>
-<p>The function takes either a volume ID or one of several types of Workset files:</p>
-<ul class="simple">
-<li>volume HTID or HTIDs</li>
-<li>plain-text list of volume IDs (one per line)</li>
-<li>HTRC Portal Workset Builder</li>
-<li>HTRC JSON-LD Workset format</li>
-<li>HT Collection Builder</li>
-</ul>
+<p>The <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code> command retrieves volumes from the <a class="reference external" href="https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+API+Users+Guide">HTRC Data API</a>
+to the secure mode of the <a class="reference internal" href="sdk.html#htrc-data-capsule-service"><span class="std std-ref">HTRC Data Capsule Service</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This command will return an error when run on a non-HTRC computer or on a
+Capsule running in maintenance mode.</p>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 <div class="section" id="bibliographic-api-access">
 <h2>Bibliographic API Access<a class="headerlink" href="#bibliographic-api-access" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code> retrieves metadata from the <a class="reference external" href="https://www.hathitrust.org/bib_api">HathiTrust Bibliographic API</a>.
+This command has no limitations on which computer or network executes it.</p>
+<div class="section" id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>For example, to download the metadata associated with volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of
 Jonathan Swift</a>, the command would be:</p>
 <blockquote>
@@ -148,9 +150,12 @@ download</a>, the</p>
   <ul>
 <li><a class="reference internal" href="#">HTRC Python CLI</a><ul>
 <li><a class="reference internal" href="#workset-path">Workset Path</a></li>
-<li><a class="reference internal" href="#volume-download">Volume Download</a></li>
-<li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a><ul>
+<li><a class="reference internal" href="#volume-download">Volume Download</a><ul>
 <li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a><ul>
+<li><a class="reference internal" href="#id1">Examples</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
