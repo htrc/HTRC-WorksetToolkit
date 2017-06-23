@@ -40,10 +40,9 @@ All source code for the HTRC Python SDK is available on `GitHub`_ under an
 .. _Apache 2.0 License: https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md
 
 Table of Contents
-===================
+================================
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    cli
    sdk
