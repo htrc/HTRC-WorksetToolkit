@@ -104,6 +104,51 @@ Capsule running in maintenance mode.</p>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 </div>
+<div class="section" id="arguments">
+<h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">download</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">u</span> <span class="n">USERNAME</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">PASSWORD</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>file</kbd></td>
+<td><p class="first">workset path[s]</p>
+<p class="last">Default: &lt;_io.TextIOWrapper name=&#8217;&lt;stdin&gt;&#8217; mode=&#8217;r&#8217; encoding=&#8217;UTF-8&#8217;&gt;</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-u, &#8211;username</kbd></td>
+<td>HTRC username</td></tr>
+<tr><td class="option-group">
+<kbd>-p, &#8211;password</kbd></td>
+<td>HTRC password</td></tr>
+<tr><td class="option-group">
+<kbd>-f, &#8211;force</kbd></td>
+<td><p class="first">remove folder if exists</p>
+<p class="last">Default: False</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-o, &#8211;output</kbd></td>
+<td><p class="first">output directory</p>
+<p class="last">Default: &#8220;/media/secure_volume/workset/&#8221;</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div class="section" id="bibliographic-api-access">
 <h2>Bibliographic API Access<a class="headerlink" href="#bibliographic-api-access" title="Permalink to this headline">¶</a></h2>
@@ -128,6 +173,24 @@ URL</em>):</p>
 <p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links
 for computational analysis using the SDK.</p>
 </div>
+<div class="section" id="id2">
+<h3>Arguments<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">metadata</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">path</span> <span class="p">[</span><span class="n">path</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>workset path[s]</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div class="section" id="analysis-workflows">
 <h2>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h2>
@@ -136,6 +199,73 @@ download</a>, the</p>
 <div class="section" id="topic-modeling">
 <h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
 <p>There are two implementations of LDA topic modeling supported by the</p>
+</div>
+<div class="section" id="id3">
+<h3>Arguments<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">mallet</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>Default: &#8220;/media/secure_volume/workset/&#8221;</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-k</kbd></td>
+<td>number of topics</td></tr>
+<tr><td class="option-group">
+<kbd>&#8211;iter</kbd></td>
+<td><p class="first">number of iterations</p>
+<p class="last">Default: 200</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">topicexplorer</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="n">K</span> <span class="o">...</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>Default: &#8220;/media/secure_volume/workset/&#8221;</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-k</kbd></td>
+<td>number of topics</td></tr>
+<tr><td class="option-group">
+<kbd>&#8211;iter</kbd></td>
+<td><p class="first">number of iterations</p>
+<p class="last">Default: 200</p>
+</td></tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -152,14 +282,30 @@ download</a>, the</p>
 <li><a class="reference internal" href="#workset-path">Workset Path</a></li>
 <li><a class="reference internal" href="#volume-download">Volume Download</a><ul>
 <li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a><ul>
+<li><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a><ul>
 <li><a class="reference internal" href="#id1">Examples</a></li>
+<li><a class="reference internal" href="#id2">Arguments</a><ul>
+<li><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
 <li><a class="reference internal" href="#topic-modeling">Topic Modeling</a></li>
+<li><a class="reference internal" href="#id3">Arguments</a><ul>
+<li><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+<li><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

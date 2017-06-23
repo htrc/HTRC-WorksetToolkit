@@ -45,6 +45,14 @@ Examples
 ''''''''''
 
 
+Arguments
+'''''''''''
+.. argparse::
+   :module: htrc.__main__
+   :func: download_parser
+   :prog: htrc download 
+
+
 Bibliographic API Access
 --------------------------
 ``htrc metadata`` retrieves metadata from the `HathiTrust Bibliographic API`_.
@@ -81,6 +89,14 @@ for computational analysis using the SDK.
 
 
 
+Arguments
+'''''''''''
+.. argparse::
+   :module: htrc.__main__
+   :func: add_workset_path
+   :prog: htrc metadata
+
+
 Analysis Workflows
 --------------------
 The Python SDK also provides the command line tool ``htrc run``. Like `volume
@@ -89,3 +105,17 @@ download`_, the
 Topic Modeling
 ''''''''''''''''
 There are two implementations of LDA topic modeling supported by the 
+
+
+Arguments
+'''''''''''
+.. argparse::
+   :module: htrc.tools.mallet
+   :func: populate_parser
+   :prog: htrc run mallet
+
+.. argparse::
+   :module: htrc.tools.topicexplorer
+   :func: populate_parser
+   :prog: htrc run topicexplorer
+
