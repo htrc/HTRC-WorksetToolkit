@@ -37,7 +37,10 @@ def main(path, topics, iterations):
         '--num-iterations', str(iterations)
         ])
 
-def populate_parser(parser):
+def populate_parser(parser=None):
+    if parser is None:
+        from argparse import ArgumentParser
+        parser = ArgumentParser()
     parser.add_argument('-k', help="number of topics", required=True)
     parser.add_argument('--iter', help="number of iterations", default=200)
     parser.add_argument('path', default='/media/secure_volume/workset/',

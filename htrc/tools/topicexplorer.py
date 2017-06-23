@@ -25,7 +25,11 @@ def main(path, topics, iterations):
         'topicexplorer', 'launch', path 
     ])
 
-def populate_parser(parser):
+def populate_parser(parser=None):
+    if parser is None:
+        from argparse import ArgumentParser
+        parser = ArgumentParser()
+
     parser.add_argument('-k', type=int, nargs='+', required=True,
         help="number of topics")
     parser.add_argument('--iter', help="number of iterations", default=200)

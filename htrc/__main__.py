@@ -13,40 +13,52 @@ from htrc.metadata import get_metadata, get_volume_metadata
 import htrc.volumes
 import htrc.workset
 import htrc.tools.mallet
+from argparse import ArgumentParser
 import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
 
 
-def main():
-    from argparse import ArgumentParser
+def download_parser(parser=None):
+    if parser is None:
+        parser = ArgumentParser()
+    parser.add_argument("-u", "--username", help="HTRC username")
+    parser.add_argument("-p", "--password", help="HTRC password")
+    parser.add_argument("file", nargs='?', default=sys.stdin,
+        help="workset path[s]")
+    parser.add_argument("-f", "--force", action='store_true', 
+        help="remove folder if exists")
+    parser.add_argument("-o", "--output", help="output directory",
+        default='/media/secure_volume/workset/')
+    return parser
 
+def add_workset_path(parser=None):
+    if parser is None:
+        parser = ArgumentParser()
+    parser.add_argument("path", nargs='+', help="workset path[s]")
+    return parser
+
+    
+
+def main():
     parser = ArgumentParser()
     parsers = parser.add_subparsers(help="select a command")
 
     # Metadata Helpers
     parser_getmd = parsers.add_parser('metadata',
                                       help="Get metadata for a folder of HathiTrust volumes")
-    parser_getmd.add_argument("path", nargs='*',
-                              help="Workset path or HathiTrust ID")
+    add_workset_path(parser_getmd)
     parser_getmd.set_defaults(func='metadata')
 
     # Export Helpers
-    parser_getmd = parsers.add_parser('export',
+    parser_export = parsers.add_parser('export',
                                       help="Export the list of HathiTrust volumes")
-    parser_getmd.add_argument("path", help="Workset path or HathiTrust ID", nargs='+')
-    parser_getmd.set_defaults(func='export')
+    add_workset_path(parser_export)
+    parser_export.set_defaults(func='export')
 
     # Download Helper
     parser_download = parsers.add_parser('download',
         help="Download HathiTrust volumes to disk [requires auth]")
-    parser_download.add_argument("-u", "--username", help="HTRC username")
-    parser_download.add_argument("-p", "--password", help="HTRC password")
-    parser_download.add_argument("file", nargs='?', default=sys.stdin,
-        help="input file of ids")
-    parser_download.add_argument("-f", "--force", action='store_true', 
-        help="remove folder if exists")
-    parser_download.add_argument("-o", "--output", help="output directory",
-        default='/media/secure_volume/workset/')
+    download_parser(parser_download)
     parser_download.set_defaults(func='download')
 
     # Run helper
