@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to the HTRC Python SDK’s documentation! &#8212; HTRC Python SDK 1.0.0b1 documentation</title>
+    <title>Welcome to the HTRC Workset Toolkit’s documentation! &#8212; HTRC Workset Toolkit 1.0.0b1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="HTRC Python CLI" href="cli.html" />
+    <link rel="next" title="HTRC Workset Toolkit" href="cli.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -42,9 +42,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-the-htrc-python-sdk-s-documentation">
-<h1>Welcome to the HTRC Python SDK&#8217;s documentation!<a class="headerlink" href="#welcome-to-the-htrc-python-sdk-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The HTRC Python SDK provides a command line interface for interacting with
+  <div class="section" id="welcome-to-the-htrc-workset-toolkit-s-documentation">
+<h1>Welcome to the HTRC Workset Toolkit&#8217;s documentation!<a class="headerlink" href="#welcome-to-the-htrc-workset-toolkit-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The HTRC Workset Toolkit provides a command line interface for interacting with
 and analyzing volumes in the HathiTrust Digital Library:</p>
 <ul class="simple">
 <li>Volume Download (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code>)</li>
@@ -52,38 +52,64 @@ and analyzing volumes in the HathiTrust Digital Library:</p>
 <li>Pre-built Analysis Workflows (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span></code>)</li>
 <li>Export of volume lists (<code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span></code>)</li>
 </ul>
-<p>Each of these commands takes a <a class="reference internal" href="cli.html#workset-path"><span class="std std-ref">Workset Path</span></a>, which is one of 7 types of
+<p>Each tool operates on a <em>workset</em>, which is a collection of volumes, pages,
+or catalog records.</p>
+<p>A workset is referenced by a <a class="reference internal" href="cli.html#workset-path"><span class="std std-ref">Workset Path</span></a>, which is one of 7 types of
 identifiers. Almost any web page on <a class="reference external" href="http://hathitrust.org">http://hathitrust.org</a> is a valid identifier,
 including the PageTurner view, Catalog record view, and Collection Builder
 collections.</p>
-<p>More details on each command can be found on the <a class="reference internal" href="cli.html#htrc-python-cli"><span class="std std-ref">HTRC Python CLI</span></a> page.</p>
-<p>In addition, it provides a software development kit (SDK) for working with the
-HathiTrust Digital Library materials. It was designed for use in the HTRC Data
-Capsule service, which is the target distribution. It has the following aspects:</p>
+<p>The tools also assist with the HTRC Data Capsule, enabling you to download volumes
+to the secure mode of the capsule for analysis.</p>
+<p>More details on each command can be found on the <a class="reference internal" href="cli.html#htrc-workset-toolkit"><span class="std std-ref">HTRC Workset Toolkit</span></a> page.</p>
+<p>For developers, the Workset Toolkit provides ways to test algorithms that will
+be run in the secure mode of the Data Capsule. It also provides methods for
+accessing the bibliographic records for HathiTrust volumes and ways to resolve
+catalog records for multivolume collections. It has the following components:</p>
 <ul class="simple">
 <li>An access layer for the Bibliographic API (<code class="docutils literal"><span class="pre">htrc.metadata</span></code>)</li>
 <li>An access layer for the Data API (<code class="docutils literal"><span class="pre">htrc.volumes</span></code>)</li>
 <li>Pre-built analysis workflows (<code class="docutils literal"><span class="pre">htrc.tools</span></code>)</li>
 <li>Provenance tracking for verification of non-consumptive exports (<code class="docutils literal"><span class="pre">htrc.prov</span></code>)</li>
-<li>Mock testing interface for user-machine or maintenance-mode testing (<code class="docutils literal"><span class="pre">htrc.mock</span></code>)</li>
+<li>Mock testing interface for user-machine or maintenance-mode testing of
+secure-mode commands (<code class="docutils literal"><span class="pre">htrc.mock</span></code>)</li>
 <li>Utilities for record and volume resolution (<code class="docutils literal"><span class="pre">htrc.util</span></code>)</li>
 </ul>
-<p>More details on each module can be found on the <a class="reference internal" href="sdk.html#htrc-python-sdk"><span class="std std-ref">HTRC Python SDK</span></a> page.</p>
-<p>All source code for the HTRC Python SDK is available on <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/">GitHub</a> under an
+<p>More details on each module can be found on the <a class="reference internal" href="sdk.html#htrc-workset-toolkit-development-library"><span class="std std-ref">HTRC Workset Toolkit Development Library</span></a> page.</p>
+<p>All source code for the HTRC Workset Toolkit is available on <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/">GitHub</a> under an
 <a class="reference external" href="https://github.com/htrc/HTRC-PythonSDK/blob/master/LICENSE.md">Apache 2.0 License</a>.</p>
+<div class="section" id="data-capsule-usage">
+<h2>Data Capsule usage<a class="headerlink" href="#data-capsule-usage" title="Permalink to this headline">¶</a></h2>
+<p>The HTRC Data Capsule allows for analysis of HathiTrust volumes. It is the only
+way to perform analysis on the raw OCR text of in-copyright works.</p>
+<p>New users can register and configure a data capsule by following the <a class="reference external" href="https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+Capsule+Tutorial">HTRC Data
+Capsule Tutorial</a>.</p>
+<p>The HTRC Workset Toolkit will be pre-installed on Data Capsule images in the
+near future. Current data capsules will need to follow the ref:<cite>installation
+instructions</cite>.</p>
 </div>
-<div class="section" id="htrc-python-sdk-documentation">
-<h1>HTRC Python SDK Documentation<a class="headerlink" href="#htrc-python-sdk-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation-instructions">
+<h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Download and install <a class="reference external" href="https://www.continuum.io/downloads">Anaconda Python</a>. The HTRC Workset Toolkit is
+compatible with both Python 2.7 and 3.6, but we recommend using the 3.6 version
+for future compatibility.</li>
+<li>After installing Anaconda, open a new terminal and type <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">htrc</span></code>
+to install the SDK.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Python CLI</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Workset Toolkit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#workset-path">Workset Path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#volume-download">Volume Download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#bibliographic-api-access">Bibliographic API Access</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#analysis-workflows">Analysis Workflows</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Python SDK</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Workset Toolkit Development Library</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sdk.html#htrc-data-capsule-service">HTRC Data Capsule Service</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sdk.html#modules">Modules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sdk.html#module-htrc.metadata"><cite>htrc.metadata</cite></a></li>
@@ -118,15 +144,15 @@ Capsule service, which is the target distribution. It has the following aspects:
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Python CLI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Python SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Workset Toolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Workset Toolkit Development Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tips.html">HTRC Python SDK Tips</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="cli.html" title="next chapter">HTRC Python CLI</a></li>
+      <li>Next: <a href="cli.html" title="next chapter">HTRC Workset Toolkit</a></li>
   </ul></li>
 </ul>
 </div>
