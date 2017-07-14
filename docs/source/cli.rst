@@ -1,6 +1,6 @@
-HTRC Python CLI
-=================
-The HTRC Python SDK provides a command line interface for interacting with 
+HTRC Workset Toolkit
+======================
+The HTRC Workset Toolkit povides a command line interface for interacting with 
 and analyzing volumes in the HathiTrust Digital Library:
 
 - Volume Download (``htrc download``)
@@ -99,7 +99,7 @@ Arguments
 
 Analysis Workflows
 --------------------
-The Python SDK also provides the command line tool ``htrc run``. Like `volume
+The HTRC Workset Toolkit also provides the command line tool ``htrc run``. Like `volume
 download`_, the
 
 Topic Modeling

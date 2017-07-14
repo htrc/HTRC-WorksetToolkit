@@ -1,45 +1,48 @@
-# HTRC-PythonSDK
+# HTRC Workset Toolkit
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/htrc.svg)](https://pypi.python.org/pypi/htrc)
 [![PyPI Version](https://img.shields.io/pypi/v/htrc.svg)](https://pypi.python.org/pypi/htrc)
 [![Build Status](https://travis-ci.org/htrc/HTRC-PythonSDK.svg?branch=master)](https://travis-ci.org/htrc/HTRC-PythonSDK)
 [![Coverage Status](https://coveralls.io/repos/github/htrc/HTRC-PythonSDK/badge.svg?branch=master)](https://coveralls.io/github/htrc/HTRC-PythonSDK?branch=master)
 
-HTRC-PythonSDK is a translation layer between Python code and the HTRC Data API and the HTRC Solr API, providing easy access to metadata and volumes. It is interoperable with both Python 2.7+ and 3.2+.
+HTRC Workset Toolkit provides tools for interacting with and analyzing volumes in the HathiTrust Digital Library:
+
+- Volume Download (`htrc download`)
+- Metadata Download (`htrc metadata`)
+- Pre-built Analysis Workflows (`htrc run`)
+- Export of volume lists (`htrc export`)
+
+Each tool operates on a *workset*, which is a collection of volumes, pages, or catalog records. 
+
+The tools also assist with the HTRC Data Capsule, enabling you to download volumes to the secure mode of the capsule for analysis.
+
+For usage instructions and documentation see [https://htrc.github.io/HTRC-WorksetToolkit/cli.html].
+
+For developers, the Workset Toolkit provides ways to test algorithms that will be run in the secure mode of the Data Capsule. It also provides methods for accessing the bibliographic records for HathiTrust volumes and ways to resolve catalog records for multivolume collections. It has the following components:
+
+- An access layer for the Bibliographic API (`htrc.metadata`)
+- An access layer for the Data API (`htrc.volumes`)
+- Pre-built analysis workflows (`htrc.tools`)
+- Provenance tracking for verification of non-consumptive exports (`htrc.prov`)
+- Mock testing interface for user-machine or maintenance-mode testing of
+  secure-mode commands (`htrc.mock`)
+- Utilities for record and volume resolution (`htrc.util`)
+
+For documentation of the development libraries see [https://htrc.github.io/HTRC-WorksetToolkit/sdk.html].
+
+## Data Capsule usage
+The HTRC Data Capsule allows for analysis of HathiTrust volumes. It is the only way to perform analysis on the raw OCR text of in-copyright works.
+
+New users can register and configure a data capsule by following the [HTRC Data Capsule Tutorial](https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+Capsule+Tutorial).
+
+The HTRC Workset Toolkit will be pre-installed on Data Capsule images in the near future. Current data capsules will need to follow the [installation instructions](#installation-instructions).
+
 
 ## Installation instructions
-The only supported HTRC Python SDK testing environment is on the Data Capsule. 
 
-1. Register and configure a data capsule by following the [HTRC Data Capsule Tutorial](https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+Capsule+Tutorial)
-2. Open a terminal and type `pip install htrc` to install the SDK.
+1. Download and install [Anaconda Python](https://www.continuum.io/downloads). The HTRC Workset Toolkit is compatible with both Python 2.7 and 3.6, but we recommend using the 3.6 version for future compatibility.
 
-## Usage instructions
-Download volumes by creating a file with 1 HathiTrust ID per line. For example:
-```
-uc2.ark+=13960=t5fb53094
-uc2.ark+=13960=t4bn9xv1t
-mdp.39015018624224
-njp.32101073333633
-uc2.ark+=13960=t6k075534
-```
+2. After installing Anaconda, open a new terminal and type `pip install htrc` to install the SDK.
 
-Save the file as `htids.txt`.
 
-The volumes can then be downloaded with `htrc download htids.txt`.
-
-## Organization
-
-### htrc.metadata
-Contains functions for retrieving volume metadata
-
-### htrc.util.resolve
-Contains functions for resolving volume and records.
-
-### htrc.volumes
-Contains functions for retrieving volume data
-
-### htrc.workset
-Contains functions for the workset mapping.
-
-## Roadmap
-1. Test framework with mock Solr and Data API server for remote scripting
-
+## Documentation
+For usage instructions and documentation see [https://htrc.github.io/HTRC-WorksetToolkit/]
