@@ -1,0 +1,9 @@
+[data]
+host = "silvermaple.pti.indiana.edu"
+port = 25443
+url = "/data-api/"
+
+[oauth]
+port = 443
+url = "/oauth2/token"
+

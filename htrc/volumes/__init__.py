@@ -14,7 +14,6 @@ standard_library.install_aliases()
 
 from builtins import input
 
-from configparser import RawConfigParser as ConfigParser
 import http.client
 from io import BytesIO  # used to stream http response into zipfile.
 import json
@@ -33,18 +32,11 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
+import htrc.config
 
 import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
-
-# Global information to connect to the data API
-host = "silvermaple.pti.indiana.edu"  # use over HTTPS
-port = 25443
-oauth2EPRurl = "/oauth2/token"
-oauth2port = 443
-dataapiEPR = "/data-api/"
-
 
 def get_volumes(token, volume_ids, concat=False):
     """
@@ -59,7 +51,7 @@ def get_volumes(token, volume_ids, concat=False):
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
 
-    url = dataapiEPR + "volumes"
+    url = htrc.config.get_dataapi_epr() + "volumes"
     data = {'volumeIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
@@ -76,6 +68,7 @@ def get_volumes(token, volume_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
+    host, port = htrc.config.get_host_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -122,7 +115,7 @@ def get_pages(token, page_ids, concat=False):
     if not page_ids:
         raise ValueError("page_ids is empty.")
 
-    url = dataapiEPR
+    url = htrc.config.get_dataapi_epr()
     url += "pages?pageIDs=" + quote_plus('|'.join(page_ids))
     if concat:
         url += "&concat=true"
@@ -136,6 +129,7 @@ def get_pages(token, page_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Create connection
+    host, port = htrc.config.get_host_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
@@ -171,6 +165,9 @@ def get_oauth2_token(username, password):
     ctx.verify_mode = ssl.CERT_NONE
 
     # make sure the request method is POST
+    host, port = htrc.config.get_host_port()
+    oauth2port = htrc.config.get_oauth2_port()
+    oauth2EPRurl = htrc.config.get_oauth2_url()
     httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
     httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
 
@@ -198,65 +195,6 @@ def get_oauth2_token(username, password):
 
     return token
 
-
-def credential_prompt(save_path=None):
-    """
-    A prompt for entering HathiTrust credentials.
-    """
-    print("Please enter your HathiTrust credentials.")
-    username = input("Token: ")
-    password = input("Password: ")
-    save = bool_prompt("Save credentials?", default=True)
-
-    if save_path and save:
-        save_credentials(username, password, save_path)
-
-    return (username, password)
-
-def save_credentials(username, password, save_path=None):
-    """
-    Saves credentials in the config file.
-    """
-    # Default to ~/.htrc
-    if save_path is None:
-        save_path = os.path.expanduser('~')
-        save_path = os.path.join(save_path, '.htrc')
-
-    # Open and modify existing config file, if it exists.
-    config = ConfigParser(allow_no_value=True)
-    if os.path.exists(save_path):
-        config.read(save_path)
-    if not config.has_section('main'):
-        config.add_section('main')
-    config.set('main', 'username', username)
-    config.set('main', 'password', password)
-    with open(save_path, 'w') as credential_file:
-        config.write(credential_file)
-
-    return (username, password)
-
-def credentials_from_config(path):
-    """
-    Retrieves the username and password from a config file for the Data API.
-    Raises an EnvironmentError if not specified.
-    See also: credential_prompt
-    """
-    username = None
-    password = None
-
-    config = ConfigParser(allow_no_value=True)
-    if os.path.exists(path):
-        config.read(path)
-        if config.has_section('main'):
-            username = config.get("main", "username")
-            password = config.get("main", "password")
-
-    if not username and not password:
-        logging.error("Config path: {}".format(path))
-        raise EnvironmentError("No username and password stored in config file.")
-
-    return (username, password)
-
 def download_volumes(volume_ids, output_dir, username=None, password=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
@@ -264,12 +202,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None):
 
     # get credentials if not specified
     if not username and not password:
-        path = os.path.expanduser('~')
-        path = os.path.join(path, '.htrc')
-        try:
-            username, password = credentials_from_config(path)
-        except EnvironmentError:
-            username, password = credential_prompt(path)
+        username, password = htrc.config.get_credentials(path)
     
     # Retrieve token and download volumes
     token = get_oauth2_token(username, password)
