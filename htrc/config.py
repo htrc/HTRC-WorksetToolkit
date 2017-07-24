@@ -8,19 +8,31 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import input
 
-from configparser import RawConfigParser as ConfigParser
+from configparser import RawConfigParser as ConfigParser, NoSectionError
+from codecs import open
+import logging
 import os.path
 
 from htrc.lib.cli import bool_prompt
 
 DEFAULT_PATH = os.path.expanduser('~')
-DEFAULT_PATH = os.path.join(path, '.htrc')
+DEFAULT_PATH = os.path.join(DEFAULT_PATH, '.htrc')
+if not os.path.exists(DEFAULT_PATH):
+    DEFAULT_PATH = os.path.dirname(__file__)
+    DEFAULT_PATH = os.path.join(DEFAULT_PATH, '.htrc.default')
 
 def _get_value(section, key, path=None):
     if path is None:
         path = DEFAULT_PATH
-    
+
     config = ConfigParser(allow_no_value=True)
+    with open(path, encoding='utf8') as configfile:
+        config.readfp(configfile)
+    try:
+        return config.get(section, key)
+    except NoSectionError:
+        raise EnvironmentError("Config not set for {} {} in {}".format(
+            section, key, path))
     
 def get_host_port(path=None):
     host = _get_value('data', 'host', path)
@@ -28,13 +40,13 @@ def get_host_port(path=None):
     return (host, port)
 
 def get_oauth2_url(path=None):
-    return _get_value('oauth', 'token_url', path)
+    return _get_value('oauth', 'url', path)
 
 def get_oauth2_port(path=None):
-    return _get_value('oauth', 'path', path)
+    return _get_value('oauth', 'port', path)
 
 def get_dataapi_epr(path=None):
-    return _get_value('data', 'apiEPR', path)
+    return _get_value('data', 'url', path)
 
 def get_credentials(path=None):
     """
@@ -52,7 +64,7 @@ def get_credentials(path=None):
     return username, password
     
 
-def credential_prompt(save_path=None):
+def credential_prompt(path=None):
     """
     A prompt for entering HathiTrust credentials.
     """
@@ -62,11 +74,11 @@ def credential_prompt(save_path=None):
     save = bool_prompt("Save credentials?", default=True)
 
     if save:
-        save_credentials(username, password, save_path)
+        save_credentials(username, password, path)
 
     return (username, password)
 
-def save_credentials(username, password, save_path=None):
+def save_credentials(username, password, path=None):
     """
     Saves credentials in the config file.
     """
@@ -76,13 +88,13 @@ def save_credentials(username, password, save_path=None):
 
     # Open and modify existing config file, if it exists.
     config = ConfigParser(allow_no_value=True)
-    if os.path.exists(save_path):
-        config.read(save_path)
+    if os.path.exists(path):
+        config.read(path)
     if not config.has_section('main'):
         config.add_section('main')
     config.set('main', 'username', username)
     config.set('main', 'password', password)
-    with open(save_path, 'w') as credential_file:
+    with open(path, 'w') as credential_file:
         config.write(credential_file)
 
     return (username, password)

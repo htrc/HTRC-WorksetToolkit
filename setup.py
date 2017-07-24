@@ -36,7 +36,8 @@ setup(
     packages=find_packages(),
     install_requires=install_requires,
     include_package_data=True,
-    data_files=[('htrc/mock/volumes/', ['htrc/mock/volumes/example.zip'])],
+    data_files=[('htrc/mock/volumes/', ['htrc/mock/volumes/example.zip']),
+                ('htrc/', ['htrc/.htrc.default'])],
     zip_safe=False,
     entry_points={
         'console_scripts' : ['htrc = htrc.__main__:main']

@@ -195,14 +195,15 @@ def get_oauth2_token(username, password):
 
     return token
 
-def download_volumes(volume_ids, output_dir, username=None, password=None):
+def download_volumes(volume_ids, output_dir, username=None, password=None,
+                     config_path=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
     # get credentials if not specified
     if not username and not password:
-        username, password = htrc.config.get_credentials(path)
+        username, password = htrc.config.get_credentials(config_path)
     
     # Retrieve token and download volumes
     token = get_oauth2_token(username, password)

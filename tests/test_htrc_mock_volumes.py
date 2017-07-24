@@ -94,7 +94,7 @@ class TestVolumes(unittest.TestCase):
         config_path = os.path.join(config_path, '.htrc')
         preexisting_config = os.path.exists(config_path)
         if not preexisting_config:
-            htrc.mock.volumes.save_credentials('1234', '1234')
+            htrc.mock.volumes.save_credentials('1234', '1234', config_path)
 
         htrc.mock.volumes.download_volumes(self.test_vols, self.output_path)
 

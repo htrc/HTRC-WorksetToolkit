@@ -13,6 +13,7 @@ from tempfile import NamedTemporaryFile, mkdtemp
 import unittest2 as unittest
 
 import htrc.volumes
+import htrc.config
 
 class MockResponse(BytesIO):
     def __init__(self, data, status=200, *args, **kwargs):
@@ -34,27 +35,6 @@ class TestVolumes(unittest.TestCase):
         os.remove(self.config_path)
         shutil.rmtree(self.output_path)
 
-    @patch('htrc.volumes.bool_prompt')
-    @patch('htrc.volumes.input')
-    def test_credential_prompt(self, input_mock, bool_mock):
-        # configure mocks
-        input_mock.return_value = '1234'
-        bool_mock.return_value = True
-
-        # test prompts
-        username, password = htrc.volumes.credential_prompt(self.config_path)
-        self.assertEqual(username, '1234')
-        self.assertEqual(password, '1234')
-
-        # test read
-        username, password = htrc.volumes.credentials_from_config(
-            self.config_path)
-        self.assertEqual(username, '1234')
-        self.assertEqual(password, '1234')
-
-    def test_empty_credential_exception(self):
-        with self.assertRaises(EnvironmentError):
-            htrc.volumes.credentials_from_config(self.empty_config_path)
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_oauth2_token(self, https_mock):
@@ -139,7 +119,7 @@ class TestVolumes(unittest.TestCase):
         config_path = os.path.join(config_path, '.htrc')
         preexisting_config = os.path.exists(config_path)
         if not preexisting_config:
-            htrc.volumes.save_credentials('1234', '1234')
+            htrc.config.save_credentials('1234', '1234', config_path)
 
         htrc.volumes.download_volumes(self.test_vols, self.output_path)
 
