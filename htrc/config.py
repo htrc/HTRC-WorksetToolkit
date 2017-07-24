@@ -12,14 +12,17 @@ from configparser import RawConfigParser as ConfigParser, NoSectionError
 from codecs import open
 import logging
 import os.path
+import shutil
 
 from htrc.lib.cli import bool_prompt
 
 DEFAULT_PATH = os.path.expanduser('~')
 DEFAULT_PATH = os.path.join(DEFAULT_PATH, '.htrc')
 if not os.path.exists(DEFAULT_PATH):
-    DEFAULT_PATH = os.path.dirname(__file__)
-    DEFAULT_PATH = os.path.join(DEFAULT_PATH, '.htrc.default')
+    DEFAULT_FILE = os.path.dirname(__file__)
+    DEFAULT_FILE = os.path.join(DEFAULT_FILE, '.htrc.default')
+    logging.info("Copying default config file to home directory.")
+    shutil.copyfile(DEFAULT_FILE, DEFAULT_PATH)
 
 def _get_value(section, key, path=None):
     if path is None:
