@@ -42,14 +42,24 @@ def get_host_port(path=None):
     port = _get_value('data', 'port', path)
     return (host, port)
 
+
+def get_dataapi_epr(path=None):
+    return _get_value('data', 'url', path)
+
+
 def get_oauth2_url(path=None):
     return _get_value('oauth', 'url', path)
+
 
 def get_oauth2_port(path=None):
     return _get_value('oauth', 'port', path)
 
-def get_dataapi_epr(path=None):
-    return _get_value('data', 'url', path)
+
+def get_oauth2_host_port(path=None):
+    host = _get_value('oauth', 'host', path)
+    port = _get_value('oauth', 'port', path)
+    return (host, port)
+
 
 def get_credentials(path=None):
     """

@@ -165,7 +165,7 @@ def get_oauth2_token(username, password):
     ctx.verify_mode = ssl.CERT_NONE
 
     # make sure the request method is POST
-    host, port = htrc.config.get_host_port()
+    host, port = htrc.config.get_oauth2_host_port()
     oauth2port = htrc.config.get_oauth2_port()
     oauth2EPRurl = htrc.config.get_oauth2_url()
     httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)

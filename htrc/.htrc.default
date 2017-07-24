@@ -8,5 +8,6 @@ port = 25443
 url = "/data-api/"
 
 [oauth]
+host = "silvermaple.pti.indiana.edu"
 port = 443
 url = "/oauth2/token"
