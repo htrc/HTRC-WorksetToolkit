@@ -43,6 +43,10 @@ The HTRC Workset Toolkit will be pre-installed on Data Capsule images in the nea
 
 2. After installing Anaconda, open a new terminal and type `pip install htrc` to install the SDK.
 
+## Testing
+
+Run the unit tests with the command: `python setup.py test`
+
 
 ## Documentation
 For usage instructions and documentation see [https://htrc.github.io/HTRC-WorksetToolkit/]
