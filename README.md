@@ -1,8 +1,8 @@
 # HTRC Workset Toolkit
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/htrc.svg)](https://pypi.python.org/pypi/htrc)
 [![PyPI Version](https://img.shields.io/pypi/v/htrc.svg)](https://pypi.python.org/pypi/htrc)
-[![Build Status](https://travis-ci.org/htrc/HTRC-PythonSDK.svg?branch=master)](https://travis-ci.org/htrc/HTRC-PythonSDK)
-[![Coverage Status](https://coveralls.io/repos/github/htrc/HTRC-PythonSDK/badge.svg?branch=master)](https://coveralls.io/github/htrc/HTRC-PythonSDK?branch=master)
+[![Build Status](https://travis-ci.org/htrc/HTRC-WorksetToolkit.svg?branch=master)](https://travis-ci.org/htrc/HTRC-WorksetToolkit)
+[![Coverage Status](https://coveralls.io/repos/github/htrc/HTRC-WorksetToolkit/badge.svg?branch=master)](https://coveralls.io/github/htrc/HTRC-WorksetToolkitPythonSDK?branch=master)
 
 HTRC Workset Toolkit provides tools for interacting with and analyzing volumes in the HathiTrust Digital Library:
 
