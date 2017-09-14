@@ -150,6 +150,24 @@ def get_pages(token, page_ids, concat=False):
 
     return data
 
+def get_jwt_token(username, password):
+    headers = {"Content-type": "application/x-www-form-urlencoded"}
+    data = {"grant_type": "client_credentials",
+            "client_secret": password,
+            "client_id": username}
+    data = urlencode(data)
+
+    # make sure the request method is POST
+    host, port = htrc.config.get_oauth2_host_port()
+    oauth2port = htrc.config.get_oauth2_port()
+    oauth2EPRurl = htrc.config.get_oauth2_url()
+    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
+    httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
+
+    response = httpsConnection.getresponse()
+    pass
+
+
 
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
