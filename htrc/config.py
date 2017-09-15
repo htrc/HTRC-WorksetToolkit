@@ -61,6 +61,23 @@ def get_oauth2_host_port(path=None):
     return (host, port)
 
 
+# Add jwt credential access methods
+def get_jwt_url(path=None):
+    return _get_value('jwt', 'url', path)
+
+
+def get_jwt_port(path=None):
+    return _get_value('jwt', 'port', path)
+
+def get_jwt_host_port(path=None):
+    host = _get_value('jwt', 'host', path)
+    port = _get_value('jwt', 'port', path)
+    return (host, port)
+
+def get_jwt_token(path=None):
+    pass
+
+
 def get_credentials(path=None):
     """
     Either retrieves credentials from existing config file or prompts user.

@@ -157,15 +157,41 @@ def get_jwt_token(username, password):
             "client_id": username}
     data = urlencode(data)
 
+    # create an SSL context
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
     # make sure the request method is POST
-    host, port = htrc.config.get_oauth2_host_port()
-    oauth2port = htrc.config.get_oauth2_port()
-    oauth2EPRurl = htrc.config.get_oauth2_url()
-    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
-    httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
+    host, port = htrc.config.get_jwt_host_port()
+    jwtport = htrc.config.get_jwt_port()
+    jwtEPRurl = htrc.config.get_jwt_url()
+    httpsConnection = http.client.HTTPSConnection(host, jwtport, context=ctx)
+    httpsConnection.request("POST", jwtEPRurl + "?" + data, "", headers)
 
     response = httpsConnection.getresponse()
-    pass
+
+    # if response status is OK
+    if response.status == 200:
+        data = response.read().decode('utf-8')
+
+        jsonData = json.loads(data)
+        logging.info("*** JSON: {}".format(jsonData))
+
+        token = jsonData["access_token"]
+        logging.info("*** parsed token: {}".format(token))
+
+    else:
+        logging.warning("Unable to get token")
+        logging.warning("Response Code: {}".format(response.status))
+        logging.warning("Response: {}".format(response.reason))
+        logging.warning(response.read())
+        raise EnvironmentError("Unable to get token.")
+
+    if httpsConnection is not None:
+        httpsConnection.close()
+
+    return token
 
 
 

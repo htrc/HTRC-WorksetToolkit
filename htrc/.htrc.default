@@ -11,3 +11,10 @@ url = "/data-api/"
 host = "silvermaple.pti.indiana.edu"
 port = 443
 url = "/oauth2/token"
+
+#[encoded header].[encoded payload].[signature]
+[jwt]
+host =
+port =
+url =
+token =
