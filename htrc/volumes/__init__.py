@@ -150,49 +150,10 @@ def get_pages(token, page_ids, concat=False):
 
     return data
 
-def get_jwt_token(username, password):
-    headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = {"grant_type": "client_credentials",
-            "client_secret": password,
-            "client_id": username}
-    data = urlencode(data)
-
-    # create an SSL context
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-
-    # make sure the request method is POST
-    host, port = htrc.config.get_jwt_host_port()
-    jwtport = htrc.config.get_jwt_port()
-    jwtEPRurl = htrc.config.get_jwt_url()
-    httpsConnection = http.client.HTTPSConnection(host, jwtport, context=ctx)
-    httpsConnection.request("POST", jwtEPRurl + "?" + data, "", headers)
-
-    response = httpsConnection.getresponse()
-
-    # if response status is OK
-    if response.status == 200:
-        data = response.read().decode('utf-8')
-
-        jsonData = json.loads(data)
-        logging.info("*** JSON: {}".format(jsonData))
-
-        token = jsonData["access_token"]
-        logging.info("*** parsed token: {}".format(token))
-
-    else:
-        logging.warning("Unable to get token")
-        logging.warning("Response Code: {}".format(response.status))
-        logging.warning("Response: {}".format(response.reason))
-        logging.warning(response.read())
-        raise EnvironmentError("Unable to get token.")
-
-    if httpsConnection is not None:
-        httpsConnection.close()
-
-    return token
-
+def get_jwt_token():
+    # Currently we just store one common jwt token locally at .htrc file for simplicity
+    # Expect to add POST method to query unique jwt token with the combo of username and password
+    return htrc.config.get_jwt_token()
 
 
 def get_oauth2_token(username, password):
@@ -239,6 +200,7 @@ def get_oauth2_token(username, password):
 
     return token
 
+
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None):
     # create output_dir folder, if nonexistant
@@ -250,7 +212,8 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         username, password = htrc.config.get_credentials(config_path)
     
     # Retrieve token and download volumes
-    token = get_oauth2_token(username, password)
+    # token = get_oauth2_token(username, password)
+    token = get_jwt_token()
     if token is not None:
         logging.info("obtained token: %s\n" % token)
 
