@@ -2,6 +2,7 @@
 sandbox
 
 *.ini
+.idea
 
 logs/*
 
