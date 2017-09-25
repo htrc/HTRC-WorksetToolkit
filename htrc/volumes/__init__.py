@@ -150,6 +150,11 @@ def get_pages(token, page_ids, concat=False):
 
     return data
 
+def get_jwt_token():
+    # Currently we just store one common jwt token locally at .htrc file for simplicity
+    # Expect to add POST method to query unique jwt token with the combo of username and password
+    return htrc.config.get_jwt_token()
+
 
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
@@ -195,6 +200,7 @@ def get_oauth2_token(username, password):
 
     return token
 
+
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None):
     # create output_dir folder, if nonexistant
@@ -206,7 +212,8 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         username, password = htrc.config.get_credentials(config_path)
     
     # Retrieve token and download volumes
-    token = get_oauth2_token(username, password)
+    # token = get_oauth2_token(username, password)
+    token = get_jwt_token()
     if token is not None:
         logging.info("obtained token: %s\n" % token)
 

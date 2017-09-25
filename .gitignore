@@ -3,6 +3,8 @@ sandbox
 
 *.ini
 
+.idea
+
 logs/*
 
 build/
