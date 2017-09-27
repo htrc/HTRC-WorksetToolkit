@@ -2,7 +2,7 @@
 sandbox
 
 *.ini
-
+.pypirc
 .idea
 
 logs/*

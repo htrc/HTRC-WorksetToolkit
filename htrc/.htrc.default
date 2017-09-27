@@ -2,14 +2,14 @@
 username = 1234
 password = 1234
 
-[data]
-host = "silvermaple.pti.indiana.edu"
+[data]:
+host = "htrc4.pti.indiana.edu"
 port = 25443
 url = "/data-api/"
 
 [oauth]
-host = "silvermaple.pti.indiana.edu"
-port = 443
+host = "htrc3.pti.indiana.edu"
+port = 9443
 url = "/oauth2/token"
 
 [jwt]

@@ -47,6 +47,11 @@ class TestVolumes(unittest.TestCase):
         self.assertEqual(token, 'a1b2c3d4e5f6')
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
+    def test_get_jwt_token(self, https_mock):
+        token = htrc.volumes.get_jwt_token()
+        self.assertEqual(token, 'eyJ4NXQiOiJObUptT0dVeE16WmxZak0yWkRSaE5UWmxZVEExWXpkaFpUUmlPV0UwTldJMk0ySm1PVGMxWkEiLCJraWQiOiJkMGVjNTE0YTMyYjZmODhjMGFiZDEyYTI4NDA2OTliZGQzZGViYTlkIiwiYWxnIjoiUlMyNTYifQ')
+
+    @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_oauth2_token_error(self, https_mock):
         response_mock = Mock(status=500)
         https_mock.return_value.getresponse.return_value = response_mock
