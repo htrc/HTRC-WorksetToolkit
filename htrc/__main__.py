@@ -44,6 +44,8 @@ def add_workset_path(parser=None):
 
 def main():
     parser = ArgumentParser()
+    parser.add_argument('-d', '--debug', help="print long debug messages",
+                        action='store_true')
     parsers = parser.add_subparsers(help="select a command")
 
     # Metadata Helpers
@@ -161,7 +163,10 @@ def download(args):
         else:
             print("Could not download volumes. {} {}".format(e.strerror, e.filename))
     except RuntimeError as e:
-        print("Could not download volumes. {}".format(str(e)))
+        if not args.debug:
+            print("Could not download volumes. {}".format(str(e)))
+        else:
+            raise e
 
 if __name__ == '__main__':
     main()
