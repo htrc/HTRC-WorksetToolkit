@@ -161,7 +161,7 @@ def download(args):
         else:
             print("Could not download volumes. {} {}".format(e.strerror, e.filename))
     except RuntimeError as e:
-        print("Could not download volumes. {}".format(e.message))
+        print("Could not download volumes. {}".format(str(e)))
 
 if __name__ == '__main__':
     main()
