@@ -63,7 +63,7 @@ def get_oauth2_host_port(path=None):
 
 # Add jwt credential access methods
 def get_jwt_token(path=None):
-    return _get_value('jwt','token', path)
+    return _get_value('jwt', 'token', path)
 
 
 def get_credentials(path=None):
