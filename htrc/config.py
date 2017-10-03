@@ -10,6 +10,7 @@ from builtins import input
 
 from configparser import RawConfigParser as ConfigParser, NoSectionError
 from codecs import open
+from getpass import getpass
 import logging
 import os.path
 import shutil
@@ -129,8 +130,8 @@ def credential_prompt(path=None):
     A prompt for entering HathiTrust credentials.
     """
     print("Please enter your HathiTrust credentials.")
-    username = input("Token: ")
-    password = input("Password: ")
+    username = input("Username: ")
+    password = getpass("Password: ")
     save = bool_prompt("Save credentials?", default=True)
 
     if save:
