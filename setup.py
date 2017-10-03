@@ -7,7 +7,8 @@ import sys
 __version__ = '0.1.31'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
-    'requests', 'wget', 'sphinx-argparse', 'sphinxcontrib-fulltoc']
+    'requests', 'wget', 'argparse==1.1']
+# TODO: migrate to docs confix:, 'sphinx-argparse', 'sphinxcontrib-fulltoc']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
     install_requires.append('mock')
