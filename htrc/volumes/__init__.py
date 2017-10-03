@@ -206,10 +206,6 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-
-    # get credentials if not specified
-    if not username and not password:
-        username, password = htrc.config.get_credentials(config_path)
     
     # get token if not specified
     if not token:
