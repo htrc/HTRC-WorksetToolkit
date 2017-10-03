@@ -202,7 +202,7 @@ def get_oauth2_token(username, password):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None):
+                     config_path=None, token=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -211,9 +211,10 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
     if not username and not password:
         username, password = htrc.config.get_credentials(config_path)
     
-    # Retrieve token and download volumes
-    # token = get_oauth2_token(username, password)
-    token = get_jwt_token()
+    # get token if not specified
+    if not token:
+        token = get_jwt_token()
+
     if token is not None:
         logging.info("obtained token: %s\n" % token)
 
@@ -227,7 +228,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
 
     else:
-        raise RuntimeError("Failed to obtain oauth token.")
+        raise RuntimeError("Failed to obtain jwt token.")
 
 
 def download(args):

@@ -63,7 +63,49 @@ def get_oauth2_host_port(path=None):
 
 # Add jwt credential access methods
 def get_jwt_token(path=None):
-    return _get_value('jwt', 'token', path)
+    if path is None:
+        path = DEFAULT_PATH
+
+    try:
+        token = _get_value('jwt', 'token', path)
+    except EnvironmentError:
+        token = jwt_prompt(path)
+
+    return token
+
+def jwt_prompt(path=None):
+    """
+    A prompt for entering HathiTrust JWT tokens.
+    """
+    print("Please enter your HathiTrust JWT Token.")
+    token = input("Token: ")
+    save = bool_prompt("Save credentials?", default=True)
+
+    if save:
+        save_jwt_token(token, path)
+
+    return token
+
+
+def save_jwt_token(token, path=None):
+    """
+    Saves JWT token in the config file.
+    """
+    # Default to ~/.htrc
+    if path is None:
+        path = DEFAULT_PATH
+
+    # Open and modify existing config file, if it exists.
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(path):
+        config.read(path)
+    if not config.has_section('jwt'):
+        config.add_section('jwt')
+    config.set('jwt', 'token', token)
+    with open(path, 'w') as credential_file:
+        config.write(credential_file)
+
+    return token
 
 
 def get_credentials(path=None):
