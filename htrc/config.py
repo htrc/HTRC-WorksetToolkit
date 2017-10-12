@@ -40,7 +40,7 @@ def _get_value(section, key, path=None):
     
 def get_host_port(path=None):
     host = _get_value('data', 'host', path)
-    port = _get_value('data', 'port', path)
+    port = int(_get_value('data', 'port', path))
     return (host, port)
 
 
