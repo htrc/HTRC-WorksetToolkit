@@ -43,7 +43,11 @@ def credential_prompt():
     username = input("HTRC Username: ")
     password = getpass("HTRC Password: ")
 
-    return (username, password)
+    if not username or not password:
+        print("Invalid username or password. Please try again.")
+        return credential_prompt()
+    else:
+        return (username, password)
 
 
 if __name__ == '__main__':
