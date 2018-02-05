@@ -30,7 +30,7 @@ def get_jwt_token():
         expiration = int(time.time()) + data['expires_in']
         return data['id_token'], expiration
     elif data['error'] == 'invalid_grant':
-        print("Invalid username or password. Please try again.")
+        print("Invalid username or password. Please try again.\n")
         return get_jwt_token()
     else:
         raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
@@ -44,7 +44,7 @@ def credential_prompt():
     password = getpass("HTRC Password: ")
 
     if not username or not password:
-        print("Invalid username or password. Please try again.")
+        print("Invalid username or password. Please try again.\n")
         return credential_prompt()
     else:
         return (username, password)
