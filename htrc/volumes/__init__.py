@@ -140,9 +140,9 @@ def get_pages(token, page_ids, concat=False):
     if response.status is 200:
         data = response.read()
     else:
-        logging.warning("Unable to get pages")
-        logging.warning("Response Code: ".format(response.status))
-        logging.warning("Response: ".format(response.reason))
+        logging.debug("Unable to get pages")
+        logging.debug("Response Code: ".format(response.status))
+        logging.debug("Response: ".format(response.reason))
         raise EnvironmentError("Unable to get pages.")
 
     if httpsConnection is not None:
@@ -183,10 +183,10 @@ def get_oauth2_token(username, password):
         logging.info("*** parsed token: {}".format(token))
 
     else:
-        logging.warning("Unable to get token")
-        logging.warning("Response Code: {}".format(response.status))
-        logging.warning("Response: {}".format(response.reason))
-        logging.warning(response.read())
+        logging.debug("Unable to get token")
+        logging.debug("Response Code: {}".format(response.status))
+        logging.debug("Response: {}".format(response.reason))
+        logging.debug(response.read())
         raise EnvironmentError("Unable to get token.")
 
     if httpsConnection is not None:
