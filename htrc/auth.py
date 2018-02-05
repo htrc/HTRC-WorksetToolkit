@@ -2,6 +2,7 @@ from base64 import b64encode
 from getpass import getpass
 import http.client
 import ssl
+import time
 
 import requests
 import requests.auth
@@ -25,19 +26,20 @@ def get_jwt_token():
     r = requests.post(url, data=data, auth=auth)
 
     data = r.json()
-    return data['id_token']
+    expiritation = int(time.time()) + data['expires_in']
+    return data['id_token'], expiration
 
 def credential_prompt():
     """
     A prompt for entering HathiTrust Research Center credentials.
     """
     print("Please enter your HathiTrust Research Center credentials.")
-    username = input("Username: ")
-    password = getpass("Password: ")
+    username = input("HTRC Username: ")
+    password = getpass("HTRC Password: ")
 
     return (username, password)
 
 
 if __name__ == '__main__':
-    token = get_jwt_token()
-    htrc.config.save_jwt_token(token)
+    token, expiration = get_jwt_token()
+    htrc.config.save_jwt_token(token, expiration)

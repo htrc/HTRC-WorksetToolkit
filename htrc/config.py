@@ -14,6 +14,7 @@ from getpass import getpass
 import logging
 import os.path
 import shutil
+import time
 
 from htrc.lib.cli import bool_prompt
 
@@ -71,16 +72,21 @@ def get_idp_url(path=None):
 def get_jwt_token(path=None):
     try:
         token = _get_value('jwt', 'token', path)
-        # TODO: Save Expiration Date
-        if expires:
-            pass
+
+        # check expiration date
+        expiration = int(_get_value('jwt', 'expiration', path))
+        if time.time() > expiration:
+            raise RuntimeError("JWT token expired.") 
     except:
-        pass
+        # This should run on either a missing or expired token.
+        import htrc.auth
+        token, expiration = htrc.auth.get_jwt_token()
+        htrc.config.save_jwt_token(token, expiration, path)
 
 
     return token
 
-def save_jwt_token(token, path=None):
+def save_jwt_token(token, expiration=None, path=None):
     """
     Saves JWT token in the config file.
     """
@@ -88,13 +94,20 @@ def save_jwt_token(token, path=None):
     if path is None:
         path = DEFAULT_PATH
 
+    # Default to expiration of now - force a new token on next request
+    if expiration is None:
+        expiration = time.time()
+
     # Open and modify existing config file, if it exists.
     config = ConfigParser(allow_no_value=True)
     if os.path.exists(path):
         config.read(path)
     if not config.has_section('jwt'):
         config.add_section('jwt')
+
+    # set token and expiration
     config.set('jwt', 'token', token)
+    config.set('jwt', 'expiration', expiration)
 
     with open(path, 'w') as credential_file:
         config.write(credential_file)

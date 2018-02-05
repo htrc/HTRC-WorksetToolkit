@@ -91,9 +91,9 @@ def get_volumes(token, volume_ids, concat=False):
 
         data = data.getvalue()
     else:
-        logging.warning("Unable to get volumes")
-        logging.warning("Response Code: {}".format(response.status))
-        logging.warning("Response: {}".format(response.reason))
+        logging.debug("Unable to get volumes")
+        logging.debug("Response Code: {}".format(response.status))
+        logging.debug("Response: {}".format(response.reason))
         raise EnvironmentError("Unable to get volumes.")
 
     if httpsConnection is not None:
@@ -105,7 +105,7 @@ def get_volumes(token, volume_ids, concat=False):
 def get_pages(token, page_ids, concat=False):
     """
     Returns a ZIP file containing specfic pages.
-    
+
     Parameters:
     :token: An OAuth2 token for the app.
     :volume_ids: A list of volume_ids
@@ -149,12 +149,6 @@ def get_pages(token, page_ids, concat=False):
         httpsConnection.close()
 
     return data
-
-def get_jwt_token():
-    # Currently we just store one common jwt token locally at .htrc file for simplicity
-    # Expect to add POST method to query unique jwt token with the combo of username and password
-    return htrc.config.get_jwt_token()
-
 
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
@@ -206,10 +200,11 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-    
+
     # get token if not specified
     if not token:
-        token = get_jwt_token()
+        import htrc.config
+        token = htrc.config.get_jwt_token()
 
     if token is not None:
         logging.info("obtained token: %s\n" % token)
