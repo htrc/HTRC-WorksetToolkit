@@ -29,6 +29,9 @@ def get_jwt_token():
     if 'error' not in data:
         expiration = int(time.time()) + data['expires_in']
         return data['id_token'], expiration
+    elif data['error'] == 'invalid_grant':
+        print("Invalid username or password. Please try again.")
+        return get_jwt_token()
     else:
         raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
 
