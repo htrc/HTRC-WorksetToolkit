@@ -68,7 +68,7 @@ def get_volumes(token, volume_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    host, port = htrc.config.get_host_port()
+    host, port = htrc.config.get_dataapi_host_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -129,7 +129,7 @@ def get_pages(token, page_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Create connection
-    host, port = htrc.config.get_host_port()
+    host, port = htrc.config.get_dataapi_host_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
