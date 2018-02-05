@@ -38,7 +38,7 @@ def _get_value(section, key, path=None):
         raise EnvironmentError("Config not set for {} {} in {}".format(
             section, key, path))
     
-def get_host_port(path=None):
+def get_dataapi_host_port(path=None):
     host = _get_value('data', 'host', path)
     port = int(_get_value('data', 'port', path))
     return (host, port)
@@ -48,45 +48,37 @@ def get_dataapi_epr(path=None):
     return _get_value('data', 'url', path)
 
 
-def get_oauth2_url(path=None):
-    return _get_value('oauth', 'url', path)
+def get_idp_host_port(path=None):
+    host = _get_value('idp', 'host', path)
+    port = _get_value('idp', 'port', path)
 
-
-def get_oauth2_port(path=None):
-    return _get_value('oauth', 'port', path)
-
-
-def get_oauth2_host_port(path=None):
-    host = _get_value('oauth', 'host', path)
-    port = _get_value('oauth', 'port', path)
     return (host, port)
+
+def get_idp_path(path=None):
+    return _get_value('idp', 'url')
+
+def get_idp_url(path=None):
+    host, port = get_idp_host_port(path)
+    path = get_idp_path(path)
+    if port == 443:
+        # On HTTPS Default Path
+        return "https://{}{}".format(host, path)
+    else:
+        return "https://{}:{}{}".format(host, port, path)
 
 
 # Add jwt credential access methods
 def get_jwt_token(path=None):
-    if path is None:
-        path = DEFAULT_PATH
-
     try:
         token = _get_value('jwt', 'token', path)
-    except EnvironmentError:
-        token = jwt_prompt(path)
+        # TODO: Save Expiration Date
+        if expires:
+            pass
+    except:
+        pass
+
 
     return token
-
-def jwt_prompt(path=None):
-    """
-    A prompt for entering HathiTrust JWT tokens.
-    """
-    print("Please enter your HathiTrust JWT Token.")
-    token = input("Token: ")
-    save = bool_prompt("Save credentials?", default=True)
-
-    if save:
-        save_jwt_token(token, path)
-
-    return token
-
 
 def save_jwt_token(token, path=None):
     """
@@ -103,84 +95,25 @@ def save_jwt_token(token, path=None):
     if not config.has_section('jwt'):
         config.add_section('jwt')
     config.set('jwt', 'token', token)
+
     with open(path, 'w') as credential_file:
         config.write(credential_file)
 
     return token
-
-
 def get_credentials(path=None):
-    """
-    Either retrieves credentials from existing config file or prompts user.
-    Very convenient function for CLI applications.
-    """
-    if path is None:
-        path = DEFAULT_PATH
-
-    try:
-        username, password = credentials_from_config(path)
-    except EnvironmentError:
-        username, password = credential_prompt(path)
-
-    return username, password
-    
-
-def credential_prompt(path=None):
-    """
-    A prompt for entering HathiTrust credentials.
-    """
-    print("Please enter your HathiTrust credentials.")
-    username = input("Username: ")
-    password = getpass("Password: ")
-    save = bool_prompt("Save credentials?", default=True)
-
-    if save:
-        save_credentials(username, password, path)
-
-    return (username, password)
-
-def save_credentials(username, password, path=None):
-    """
-    Saves credentials in the config file.
-    """
-    # Default to ~/.htrc
-    if path is None:
-        path = DEFAULT_PATH
-
-    # Open and modify existing config file, if it exists.
-    config = ConfigParser(allow_no_value=True)
-    if os.path.exists(path):
-        config.read(path)
-    if not config.has_section('main'):
-        config.add_section('main')
-    config.set('main', 'username', username)
-    config.set('main', 'password', password)
-    with open(path, 'w') as credential_file:
-        config.write(credential_file)
-
-    return (username, password)
-
-def credentials_from_config(path):
     """
     Retrieves the username and password from a config file for the Data API.
     Raises an EnvironmentError if not specified.
     See also: credential_prompt
     """
-    username = None
-    password = None
+    client_id = _get_value('idp', 'client_id', path)
+    client_secret = _get_value('idp', 'client_secret', path)
 
-    config = ConfigParser(allow_no_value=True)
-    if os.path.exists(path):
-        config.read(path)
-        if config.has_section('main'):
-            username = config.get("main", "username")
-            password = config.get("main", "password")
-
-    if not username and not password:
+    if not client_id and not client_secret:
         logging.error("Config path: {}".format(path))
-        raise EnvironmentError("No username and password stored in config file.")
+        raise EnvironmentError("No client_id and client_secret stored in config file.")
 
-    return (username, password)
+    return (client_id, client_secret)
 
 def populate_parser(parser):
     return parser
