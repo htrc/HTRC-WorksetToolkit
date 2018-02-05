@@ -26,8 +26,11 @@ def get_jwt_token():
     r = requests.post(url, data=data, auth=auth)
 
     data = r.json()
-    expiritation = int(time.time()) + data['expires_in']
-    return data['id_token'], expiration
+    if 'error' not in data:
+        expiritation = int(time.time()) + data['expires_in']
+        return data['id_token'], expiration
+    else:
+        raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
 
 def credential_prompt():
     """
