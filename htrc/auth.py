@@ -27,7 +27,7 @@ def get_jwt_token():
 
     data = r.json()
     if 'error' not in data:
-        expiritation = int(time.time()) + data['expires_in']
+        expiration = int(time.time()) + data['expires_in']
         return data['id_token'], expiration
     else:
         raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
