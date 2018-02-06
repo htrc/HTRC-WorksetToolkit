@@ -32,8 +32,8 @@ def download_parser(parser=None):
         help="remove folder if exists")
     parser.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
-    parser.add_argument("-c", "--concatenate",
-        help="concatenate a volume's pages in to a single file", default=False)
+    parser.add_argument("-c", "--concatenate", action='store_true',
+        help="concatenate a volume's pages in to a single file")
     return parser
 
 def add_workset_path(parser=None):
