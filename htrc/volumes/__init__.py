@@ -196,7 +196,7 @@ def get_oauth2_token(username, password):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None):
+                     config_path=None, token=None, concat=False):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -210,7 +210,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         logging.info("obtained token: %s\n" % token)
 
         try:
-            data = get_volumes(token, volume_ids, False)
+            data = get_volumes(token, volume_ids, concat)
 
             myzip = ZipFile(BytesIO(data))
             myzip.extractall(output_dir)
@@ -227,5 +227,5 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_volumes(volumeIDs, args.output, args.username, args.password)
+    return download_volumes(volumeIDs, args.output, args.username, args.password, concat=args.concatenate)
 

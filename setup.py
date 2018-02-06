@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.33'
+__version__ = '0.1.34-SNAPSHOT'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
     'requests', 'wget', 'argparse==1.1']
