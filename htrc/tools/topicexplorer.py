@@ -17,7 +17,7 @@ def main(path, topics, iterations):
     subprocess.check_call([
         'topicexplorer', 'train', path,
         '-k'] + list(map(str,topics)) + [
-        '--iter', iterations,
+        '--iter', str(iterations),
         '--context-type', 'book',
         '-q'
     ])
