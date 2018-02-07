@@ -7,7 +7,7 @@ import sys
 __version__ = '0.1.33'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
-    'requests', 'wget', 'argparse==1.1']
+    'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b193']
 # TODO: migrate to docs confix:, 'sphinx-argparse', 'sphinxcontrib-fulltoc']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
