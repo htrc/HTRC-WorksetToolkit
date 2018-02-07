@@ -55,14 +55,9 @@ In order to update PyPI, you will need owner permissions, which are currently he
    [distutils]
    index-servers =
       pypi
-      pypitest
-
-   [pypitest]
-   hostname:http://testpypi.python.org/pypi/
-   username:USERNAME
-   password:PASSWORD
 
    [pypi]
+   repository=https://upload.pypi.org/legacy/
    username:USERNAME
    password:PASSWORD
    ```
