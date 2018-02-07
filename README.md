@@ -47,6 +47,27 @@ The HTRC Workset Toolkit will be pre-installed on Data Capsule images in the nea
 
 Run the unit tests with the command: `python setup.py test`
 
+## Updating PyPI
+In order to update PyPI, you will need owner permissions, which are currently held by Samitha Liyanage and Jaimie Murdock.
+
+1. Create a `.pypirc` containing your username and password:
+   ```
+   [distutils]
+   index-servers =
+      pypi
+      pypitest
+
+   [pypitest]
+   hostname:http://testpypi.python.org/pypi/
+   username:USERNAME
+   password:PASSWORD
+
+   [pypi]
+   username:USERNAME
+   password:PASSWORD
+   ```
+2. Run `python setup.py sdist upload` to upload the tarball.
+3. Run `python setup.py bdist_egg upload` to upload the egg file.
 
 ## Documentation
 For usage instructions and documentation see [https://htrc.github.io/HTRC-WorksetToolkit/]
