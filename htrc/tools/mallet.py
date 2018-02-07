@@ -4,6 +4,8 @@ import subprocess
 import tarfile
 import wget
 
+from htrc.workset import path_to_volumes
+
 # Mallet is downloaded and intalled in users current directory
 def install_mallet():
     if not os.path.exists("/home/dcuser/mallet"):
@@ -13,8 +15,14 @@ def install_mallet():
         mallet_dir.extractall(path="/home/dcuser/mallet")
         mallet_dir.close()
 
-def main(path, topics, iterations):
+def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
     install_mallet()
+
+    if not os.path.isdir(path):
+        volumes = path_to_volumes(path)
+        download_volumes(volumes, output_dir)
+        path = output_dir
+
 
     # import the workset to MALLET format.
     subprocess.check_call([
@@ -43,6 +51,8 @@ def populate_parser(parser=None):
         parser = ArgumentParser()
     parser.add_argument('-k', help="number of topics", required=True)
     parser.add_argument('--iter', help="number of iterations", default=200)
+    parser.add_argument('--workset-path', help="Location to store workset download.",
+                        default='/media/secure_volume/workset/')
     parser.add_argument('path', default='/media/secure_volume/workset/',
         nargs='?')
     return parser
@@ -54,4 +64,4 @@ if __name__ == '__main__':
     populate_parser(parser)
     args = parser.parse_args()
 
-    main(args.path, args.k, args.iter)
+    main(args.path, args.k, args.iter, args.workset_path)
