@@ -45,7 +45,16 @@ The HTRC Workset Toolkit will be pre-installed on Data Capsule images in the nea
 
 ## Testing
 
-Run the unit tests with the command: `python setup.py test`
+1. `git clone https://github.com/htrc/HTRC-WorksetToolkit.git`
+2. `cd HTRC-WorksetToolkit`
+3. `python setup.py develop`
+4. The `htrc` command will now refer to the code in this local repository.
+5. Run the unit tests with the command: `python setup.py test`
+6. To revert to the PyPI version:
+   ```
+   pip uninstall htrc
+   pip install htrc
+   ```
 
 ## Updating PyPI
 In order to update PyPI, you will need owner permissions, which are currently held by Samitha Liyanage and Jaimie Murdock.
