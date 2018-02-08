@@ -20,7 +20,9 @@ def install_mallet():
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
     if not os.path.exists("/home/dcuser/mallet"):
         if not os.path.exists('/media/secure_volume/'):
+            print('Installing Mallet ...')
             install_mallet()
+            print('\n')
         else:
             print('Mallet not installed, but capsule is in secure mode.')
             print('Switch to maintenance mode and run this command again')
