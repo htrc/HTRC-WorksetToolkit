@@ -4,6 +4,7 @@ import subprocess
 import tarfile
 import wget
 
+from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
 
 # Mallet is downloaded and intalled in users current directory
