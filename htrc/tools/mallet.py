@@ -31,10 +31,14 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
             sys.exit(1)
 
     if not os.path.isdir(path):
-        volumes = path_to_volumes(path)
+        try:
+            volumes = path_to_volumes(path)
+        except ValueError as e:
+            print("Could not process workset. {}".format(str(e)))
+            sys.exit(1)
+
         try:
             download_volumes(volumes, output_dir)
-
         except OSError as e:
             if not os.path.exists('/media/secure_volume/'):
                 print('Secure volume not mounted. Could not download volumes')

@@ -176,6 +176,6 @@ def path_to_volumes(path):
         with open(path) as infile:
             volumes = [line.strip() for line in infile]
     else:
-        raise ValueError("invalid workset path")
+        raise ValueError("Invalid workset path.")
 
     return volumes
