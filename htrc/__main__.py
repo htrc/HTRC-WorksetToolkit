@@ -160,11 +160,14 @@ def download(args):
     except OSError as e:
         if not os.path.exists('/media/secure_volume/'):
             print('Secure volume not mounted. Could not download volumes')
+            sys.exit(1)
         else:
             print("Could not download volumes. {} {}".format(e.strerror, e.filename))
+            sys.exit(1)
     except RuntimeError as e:
         if not args.debug:
             print("Could not download volumes. {}".format(str(e)))
+            sys.exit(1)
         else:
             raise e
 

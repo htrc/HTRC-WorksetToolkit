@@ -1,6 +1,7 @@
 from builtins import str
 import os, os.path
 import subprocess
+import sys
 import tarfile
 import wget
 
@@ -17,11 +18,34 @@ def install_mallet():
         mallet_dir.close()
 
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
-    install_mallet()
+    if not os.path.exists("/home/dcuser/mallet"):
+        if not os.path.exists('/media/secure_volume/'):
+            install_mallet()
+        else:
+            print('Mallet not installed, but capsule is in secure mode.')
+            print('Switch to maintenance mode and run this command again')
+            print('to install Mallet. Then, switch to secure mode to train')
+            print('topic models.')
+            sys.exit(1)
 
     if not os.path.isdir(path):
         volumes = path_to_volumes(path)
-        download_volumes(volumes, output_dir)
+        try:
+            download_volumes(volumes, output_dir)
+
+        except OSError as e:
+            if not os.path.exists('/media/secure_volume/'):
+                print('Secure volume not mounted. Could not download volumes')
+                sys.exit(1)
+            else:
+                print("Could not download volumes. {} {}".format(e.strerror, e.filename))
+                sys.exit(1)
+        except RuntimeError as e:
+            if not args.debug:
+                print("Could not download volumes. {}".format(str(e)))
+                sys.exit(1)
+            else:
+                raise e
         path = output_dir
 
 
