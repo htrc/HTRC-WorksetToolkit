@@ -6,11 +6,7 @@ from tempfile import NamedTemporaryFile
 from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
 
-def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
-    # strip trailing slash for topic support.
-    if path.endswith('/'):
-        path = path[:-1]
-
+def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
     if os.path.exists("/media/secure_volume"):
         # If in secure mode, downlaod the volumes from data api
         try:
@@ -57,6 +53,10 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
             print("Could not process workset. {}".format(str(e)))
             sys.exit(1)
 
+    # strip trailing slash for topic support.
+    if path.endswith('/'):
+        path = path[:-1]
+
     # training the topics on the data from above.
     subprocess.check_call([
         'topicexplorer', 'init', path,
@@ -86,10 +86,10 @@ def populate_parser(parser=None):
     parser.add_argument('-k', type=int, nargs='+', required=True,
         help="number of topics")
     parser.add_argument('--iter', help="number of iterations", default=200)
-    parser.add_argument('path', default='/media/secure_volume/workset/',
+    parser.add_argument('path', default='/media/secure_volume/workset',
         nargs='?')
     parser.add_argument('--workset-path', help="Location to store workset download.",
-                        default='/media/secure_volume/workset/')
+                        default='/media/secure_volume/workset')
     return parser
 
 if __name__ == '__main__':
