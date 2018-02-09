@@ -1,9 +1,31 @@
 from builtins import map
+import os.path
 import subprocess
+from tempfile import NamedTemporaryFile
+
+from htrc.workset import path_to_volumes
 
 def main(path, topics, iterations):
+    # strip trailing slash for topic support.
     if path.endswith('/'):
         path = path[:-1]
+
+    # If a workset url was given to the script, we'll need to create a temporary
+    # file with the volumes for processing by topic explorer.
+    if not os.path.exists(path):
+        try:
+            volumes = path_to_volumes(path)
+
+            volfile = NamedTemporaryFile(prefix='htrc-workset', delete=False)
+            volfile.write(bytes('\n'.join(volumes), "ascii"))
+
+            path = volfile.name
+
+            volfile.close()
+
+        except ValueError as e:
+            print("Could not process workset. {}".format(str(e)))
+            sys.exit(1)
 
     subprocess.check_call([
         'topicexplorer', 'init', path,
@@ -11,7 +33,7 @@ def main(path, topics, iterations):
         '--rebuild', '--htrc', '-q'
     ])
     subprocess.check_call([
-        'topicexplorer', 'prep', path, 
+        'topicexplorer', 'prep', path,
         '-q', '--min-word-len', '3', '--lang', 'en'
     ])
     subprocess.check_call([
@@ -22,7 +44,7 @@ def main(path, topics, iterations):
         '-q'
     ])
     subprocess.check_call([
-        'topicexplorer', 'launch', path 
+        'topicexplorer', 'launch', path
     ])
 
 def populate_parser(parser=None):
