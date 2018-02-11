@@ -2,11 +2,13 @@
 from __future__ import print_function
 
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 import os
 import platform
 import sys
+import atexit
 
-__version__ = '0.1.39'
+__version__ = '0.1.40'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
     'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b194']
@@ -15,14 +17,33 @@ if sys.version_info.major == 2:
     install_requires.append('configparser')
     install_requires.append('mock')
 
-try:
-    import wget
+
+def _download_config():
     print("Downloading .htrc file...")
-    wget.download('https://analytics.hathitrust.org/files/.htrc',
-        out=os.path.expanduser('~/.htrc'))
+
+    _config_file_url = 'https://analytics.hathitrust.org/files/.htrc'
+    _path = os.path.expanduser('~/.htrc')
+    if sys.version_info[0] < 3:
+        import urllib2
+
+        headers={'User-agent' : 'Mozilla/5.0'}
+        req = urllib2.Request(_config_file_url, None, headers)
+        filedata = urllib2.urlopen(req)
+        datatowrite = filedata.read()
+
+        with open(_path, 'w') as f:
+            f.write(datatowrite)
+    else:
+        import urllib.request
+        urllib.request.urlretrieve(_config_file_url, _path)
+
     print("\n")
-except ImportError:
-    print(".htrc file not downloaded due to missing wget.")
+
+
+class PostInstallCommand(install, object):
+    def __init__(self, *args, **kwargs):
+        super(PostInstallCommand, self).__init__(*args, **kwargs)
+        atexit.register(_download_config)
 
 setup(
     name='htrc',
@@ -55,6 +76,7 @@ setup(
         'console_scripts' : ['htrc = htrc.__main__:main']
     },
     test_suite="unittest2.collector",
-    tests_require=['unittest2']
+    tests_require=['unittest2'],
+    cmdclass={'install': PostInstallCommand}
 )
 
