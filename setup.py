@@ -8,7 +8,7 @@ import platform
 import sys
 import atexit
 
-__version__ = '0.1.39'
+__version__ = '0.1.40'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
     'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b194']
