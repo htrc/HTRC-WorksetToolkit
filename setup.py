@@ -6,7 +6,7 @@ import os
 import platform
 import sys
 
-__version__ = '0.1.38'
+__version__ = '0.1.39'
 
 install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
     'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b194']
