@@ -22,6 +22,7 @@ def _download_config():
     print("Downloading .htrc file...")
 
     _config_file_url = 'https://analytics.hathitrust.org/files/.htrc'
+    _path = os.path.expanduser('~/.htrc')
     if sys.version_info[0] < 3:
         import urllib2
 
@@ -30,11 +31,11 @@ def _download_config():
         filedata = urllib2.urlopen(req)
         datatowrite = filedata.read()
 
-        with open('~/.htrc', 'w') as f:
+        with open(_path, 'w') as f:
             f.write(datatowrite)
     else:
         import urllib.request
-        urllib.request.urlretrieve(_config_file_url, '~/.htrc')
+        urllib.request.urlretrieve(_config_file_url, _path)
 
     print("\n")
 
