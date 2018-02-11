@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 from setuptools import setup, find_packages
 import os
 import platform
@@ -12,6 +14,15 @@ install_requires = [ 'PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
 if sys.version_info.major == 2:
     install_requires.append('configparser')
     install_requires.append('mock')
+
+try:
+    import wget
+    print("Downloading .htrc file...")
+    wget.download('https://analytics.hathitrust.org/files/.htrc',
+        out=os.path.expanduser('~/.htrc'))
+    print("\n")
+except ImportError:
+    print(".htrc file not downloaded due to missing wget.")
 
 setup(
     name='htrc',
