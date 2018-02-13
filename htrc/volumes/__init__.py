@@ -52,6 +52,11 @@ def get_volumes(token, volume_ids, concat=False):
         raise ValueError("volume_ids is empty.")
 
     url = htrc.config.get_dataapi_epr() + "volumes"
+
+    for id in volume_ids:
+        if "." not in id:
+            print("Invalid volume id " + id + ". Please correct this volume id and try again.")
+
     data = {'volumeIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
@@ -194,6 +199,23 @@ def get_oauth2_token(username, password):
 
     return token
 
+def grep(file_name, pattern):
+    print("\nFollowing volume ids are not available.")
+    for line in open(file_name):
+        if pattern in line:
+            print (line.split()[-1])
+
+def check_error_file(output_dir):
+    file_name = "ERROR.err"
+
+    if output_dir.endswith("/"):
+        file_path = output_dir+ file_name
+    else:
+        file_path = output_dir+"/"+file_name
+
+    if os.path.isfile(file_path):
+        grep(file_path,"KeyNotFoundException")
+
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None, token=None):
@@ -215,6 +237,9 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
             myzip = ZipFile(BytesIO(data))
             myzip.extractall(output_dir)
             myzip.close()
+
+            check_error_file(output_dir)
+
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
 
