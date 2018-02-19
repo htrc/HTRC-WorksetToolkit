@@ -78,7 +78,7 @@ def get_metadata(ids, output_file=None):
     for a HathiTrust ID. This structure is the default structure extracted from
     a Data API request (:method htrc.volumes.get_volumes:). 
     """
-    data = [(id.strip(), safe_volume_metadata(id.strip())) for id in ids]
+    data = [(id.strip(), safe_volume_metadata(id.strip().replace('+', ':').replace('=', '/'))) for id in ids]
     data = dict(data)
 
     if output_file:
