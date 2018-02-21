@@ -98,11 +98,49 @@ to the secure mode of the <a class="reference internal" href="sdk.html#htrc-data
 <p class="last">This command will return an error when run on a non-HTRC computer or on a
 Capsule running in maintenance mode.</p>
 </div>
-<div class="section" id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-</div>
 <div class="section" id="arguments">
 <h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">download</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>file</kbd></td>
+<td><p class="first">workset path[s]</p>
+<p class="last">Default: &lt;_io.TextIOWrapper name=’&lt;stdin&gt;’ mode=’r’ encoding=’UTF-8’&gt;</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-f, --force</kbd></td>
+<td><p class="first">remove folder if exists</p>
+<p class="last">Default: False</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-o, --output</kbd></td>
+<td><p class="first">output directory</p>
+<p class="last">Default: “/media/secure_volume/workset/”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-c, --concat</kbd></td>
+<td><p class="first">concatenate a volume’s pages in to a single file</p>
+<p class="last">Default: False</p>
+</td></tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="section" id="bibliographic-api-access">
@@ -110,26 +148,22 @@ Capsule running in maintenance mode.</p>
 <p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code> retrieves metadata from the <a class="reference external" href="https://www.hathitrust.org/bib_api">HathiTrust Bibliographic API</a>.
 This command has no limitations on which computer or network executes it.</p>
 <div class="section" id="id1">
-<h3>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>For example, to download the metadata associated with volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of
-Jonathan Swift</a>, the command would be:</p>
-<blockquote>
-<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">mdp.39015078560078</span></code></div></blockquote>
-<p>Note that this would only retrieve the first volume. If you want to download
-metadata for all 8 volumes, the catalog identifier would be used:</p>
-<blockquote>
-<div><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">001423370</span></code></div></blockquote>
-<p>Each command can be used with the URL as well (<em>note the quote marks around each
-URL</em>):</p>
-<blockquote>
-<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13&quot;</span></code></p>
-<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://catalog.hathitrust.org/Record/001423370&quot;</span></code></p>
-</div></blockquote>
-<p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links
-for computational analysis using the SDK.</p>
+<h3>Arguments<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">metadata</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">path</span> <span class="p">[</span><span class="n">path</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
 </div>
-<div class="section" id="id2">
-<h3>Arguments<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>workset path[s]</td></tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="section" id="analysis-workflows">
@@ -140,9 +174,343 @@ download</a>, the</p>
 <h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
 <p>There are two implementations of LDA topic modeling supported by the</p>
 </div>
-<div class="section" id="id3">
-<h3>Arguments<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Arguments<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">mallet</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">workset</span><span class="o">-</span><span class="n">path</span> <span class="n">WORKSET_PATH</span><span class="p">]</span>
+                       <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+</pre></div>
 </div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>Default: “/media/secure_volume/workset/”</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-k</kbd></td>
+<td>number of topics</td></tr>
+<tr><td class="option-group">
+<kbd>--iter</kbd></td>
+<td><p class="first">number of iterations</p>
+<p class="last">Default: 200</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--workset-path</kbd></td>
+<td><p class="first">Location to store workset download.</p>
+<p class="last">Default: “/media/secure_volume/workset/”</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">topicexplorer</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="n">K</span> <span class="o">...</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">--</span><span class="n">workset</span><span class="o">-</span><span class="n">path</span> <span class="n">WORKSET_PATH</span><span class="p">]</span>
+                              <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>path</kbd></td>
+<td>Default: “/media/secure_volume/workset”</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-k</kbd></td>
+<td>number of topics</td></tr>
+<tr><td class="option-group">
+<kbd>--iter</kbd></td>
+<td><p class="first">number of iterations</p>
+<p class="last">Default: 200</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--workset-path</kbd></td>
+<td><p class="first">Location to store workset download.</p>
+<p class="last">Default: “/media/secure_volume/workset”</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="use-cases-and-examples">
+<h2>Use Cases and Examples<a class="headerlink" href="#use-cases-and-examples" title="Permalink to this headline">¶</a></h2>
+<p>Following are the use cases and examples of <code class="docutils literal"><span class="pre">htrc</span></code> commands inside the HTRC Data Capsule.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="55%" />
+<col width="45%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span></code></td>
+<td>capsule mode: <strong>secure</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Download volumes of volume id list to default path :
+(/media/secure_volume/workset)</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Download volumes of hathi collection url to default path :
+(/media/secure_volume/workset)</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span> <span class="pre">“https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1337751722”</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Download volumes to specific location :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span> <span class="pre">-o</span> <span class="pre">/media/secure_volume/my-workset</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Download volumes to specific location with concatenation option - (This will concatenate all the pages of the volume into one txt file.) :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">download</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span> <span class="pre">-o</span> <span class="pre">/media/secure_volume/my-workset</span> <span class="pre">-c</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code></td>
+<td>capsule mode: <strong>secure</strong> and <strong>maintenance</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Download the metadata of volumes by giving hathi collection url :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514&quot;</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Download the metadata of volumes by giving volume id list :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Download the metadata associated with volume id :
+volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.39015078560078">The Works of Jonathan Swift</a></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">mdp.39015078560078</span></code></p>
+</div></blockquote>
+<p>Note that this would only retrieve the first volume. If you want to download metadata for all 8 volumes, the catalog identifier would be used:</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">001423370</span></code></p>
+</div></blockquote>
+<p>Each command can be used with the URL as well (<em>note the quote marks around each URL</em>):</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13&quot;</span></code></p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">&quot;https://catalog.hathitrust.org/Record/001423370&quot;</span></code></p>
+</div></blockquote>
+<p>This URL support makes it easy to browse <a class="reference external" href="https://www.hathitrust.org/">hathitrust.org</a> and copy links for computational analysis using the SDK.</p>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code></td>
+<td>capsule mode: <strong>secure</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Download the metadata of volumes by giving already downloaded volumes path :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">/media/secure_volume/workset</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span></code></td>
+<td>capsule mode: <strong>maintenance</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Download the metadata of volumes by giving already downloaded volumes path - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names.) :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">mkdir</span> <span class="pre">/home/dcuser/unzipped_volumes</span></code></p>
+<p><code class="docutils literal"><span class="pre">cp</span> <span class="pre">/home/dcuser/HTRC/data/sample_volumes/fiction/&lt;zip_files&gt;</span> <span class="pre">/home/dcuser/unzipped_volumes</span></code></p>
+<p><code class="docutils literal"><span class="pre">unzip</span> <span class="pre">/home/dcuser/unzipped_volumes/’*.zip’</span> <span class="pre">|</span> <span class="pre">rm</span> <span class="pre">/home/dcuser/unzipped_volumes/*.zip</span></code></p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">metadata</span> <span class="pre">/home/dcuser/unzipped_volumes</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span></code></td>
+<td>capsule mode: <strong>secure</strong> and <strong>maintenance</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Export volume ids from downloaded hathi collection and create workset with only volume ids :</p>
+<blockquote>
+<div><p>Go to the following link in the browser</p>
+<p><a class="reference external" href="https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514">https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514</a></p>
+<p>Download metadata in tab separated format (Download Item Metadata: Tab-Delimited Text (TSV)), then -</p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span> <span class="pre">mb-9.txt</span> <span class="pre">&gt;</span> <span class="pre">volumes.tx</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Export volume ids from hathi collection url and create workset with only volume ids (works in both secure and maintenance modes) :</p>
+<p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">export</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514&quot;</span> <span class="pre">&gt;</span> <span class="pre">volumes.txt</span></code></p>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">mallet</span></code></td>
+<td>capsule mode: <strong>secure</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Run mallet on already downloaded volumes :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">mallet</span> <span class="pre">/media/secure_volume/workset</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Run mallet on volume id list :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">mallet</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Run mallet on hathi collection :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">mallet</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514&quot;</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">mallet</span></code></td>
+<td>capsule mode: <strong>maintenance</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Run mallet on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">mallet</span> <span class="pre">/home/dcuser/unzipped_volumes</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span></code></td>
+<td>capsule mode: <strong>secure</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Run topicexplorer on already downloaded volumes :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">/media/secure_volume/workset</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Run topicexplorer on volume id list :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">Run topicexplorer on hathi collection :</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514&quot;</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="43%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>command: <code class="docutils literal"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span></code></td>
+<td>capsule mode: <strong>maintenance</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p class="first">Run topicexplorer on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">htrc</span> <span class="pre">topicexplorer</span> <span class="pre">/home/dcuser/unzipped_volumes</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
+</div></blockquote>
+</li>
+</ul>
 </div>
 </div>
 
@@ -157,20 +525,32 @@ download</a>, the</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTRC Workset Toolkit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#workset-path">Workset Path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#volume-download">Volume Download</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arguments">Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#bibliographic-api-access">Bibliographic API Access</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#analysis-workflows">Analysis Workflows</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#topic-modeling">Topic Modeling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#use-cases-and-examples">Use Cases and Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Workset Toolkit Development Library</a></li>
