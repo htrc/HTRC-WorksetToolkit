@@ -40,17 +40,12 @@ to the secure mode of the :ref:`HTRC Data Capsule Service`.
 
 .. _HTRC Data API: https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+API+Users+Guide
 
-
-Examples
-''''''''''
-
-
 Arguments
 '''''''''''
 .. argparse::
    :module: htrc.__main__
    :func: download_parser
-   :prog: htrc download 
+   :prog: htrc download
 
 
 Bibliographic API Access
@@ -59,34 +54,6 @@ Bibliographic API Access
 This command has no limitations on which computer or network executes it.
 
 .. _HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
-
-
-
-Examples
-''''''''''''
-For example, to download the metadata associated with volume 1 of `The Works of
-Jonathan Swift`_, the command would be: 
-
-    ``htrc metadata mdp.39015078560078``
-
-Note that this would only retrieve the first volume. If you want to download
-metadata for all 8 volumes, the catalog identifier would be used:
-    
-    ``htrc metadata 001423370``
-
-Each command can be used with the URL as well (*note the quote marks around each
-URL*):
-
-    ``htrc metadata "https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13"``
-
-    ``htrc metadata "https://catalog.hathitrust.org/Record/001423370"``
-
-This URL support makes it easy to browse `hathitrust.org`_ and copy links
-for computational analysis using the SDK.
-
-.. _The Works of Jonathan Swift: https://hdl.handle.net/2027/mdp.39015078560078
-.. _hathitrust.org: https://www.hathitrust.org/
-
 
 
 Arguments
@@ -118,4 +85,168 @@ Arguments
    :module: htrc.tools.topicexplorer
    :func: populate_parser
    :prog: htrc run topicexplorer
+
+
+Use Cases and Examples
+--------------------------------------------
+
+Following are the use cases and examples of ``htrc`` commands inside the HTRC Data Capsule.
+
++---------------------------------+---------------------------+
+| command: ``htrc download``      | capsule mode: **secure**  |
++---------------------------------+---------------------------+
+
+* Download volumes of volume id list to default path :
+  (/media/secure_volume/workset)
+
+   ``htrc download /home/dcuser/HTRC/htrc-id``
+
+* Download volumes of hathi collection url to default path :
+  (/media/secure_volume/workset)
+
+   ``htrc download “https://babel.hathitrust.org/cgi/mb?a=listis&c=1337751722”``
+
+* Download volumes to specific location :
+
+   ``htrc download /home/dcuser/HTRC/htrc-id -o /media/secure_volume/my-workset``
+
+* Download volumes to specific location with concatenation option - (This will concatenate all the pages of the volume into one txt file.) :
+
+    ``htrc download /home/dcuser/HTRC/htrc-id -o /media/secure_volume/my-workset -c``
+
+|
++---------------------------------+-----------------------------------------------+
+| command: ``htrc metadata``      | capsule mode: **secure** and **maintenance**  |
++---------------------------------+-----------------------------------------------+
+
+* Download the metadata of volumes by giving hathi collection url :
+
+   ``htrc metadata "https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514"``
+
+* Download the metadata of volumes by giving volume id list :
+
+   ``htrc metadata /home/dcuser/HTRC/htrc-id``
+
+* Download the metadata associated with volume id :
+  volume 1 of `The Works of Jonathan Swift`_
+
+    ``htrc metadata mdp.39015078560078``
+
+  Note that this would only retrieve the first volume. If you want to download metadata for all 8 volumes, the catalog identifier would be used:
+
+    ``htrc metadata 001423370``
+
+  Each command can be used with the URL as well (*note the quote marks around each URL*):
+
+    ``htrc metadata "https://babel.hathitrust.org/cgi/pt?id=mdp.39015078560078;view=1up;seq=13"``
+
+    ``htrc metadata "https://catalog.hathitrust.org/Record/001423370"``
+
+  This URL support makes it easy to browse `hathitrust.org`_ and copy links for computational analysis using the SDK.
+
+.. _The Works of Jonathan Swift: https://hdl.handle.net/2027/mdp.39015078560078
+.. _hathitrust.org: https://www.hathitrust.org/
+
+
+
+|
++---------------------------------+-----------------------------------------------+
+| command: ``htrc metadata``      | capsule mode: **secure**                      |
++---------------------------------+-----------------------------------------------+
+
+* Download the metadata of volumes by giving already downloaded volumes path :
+
+   ``htrc metadata /media/secure_volume/workset``
+
+|
++---------------------------------+-----------------------------------------------+
+| command: ``htrc metadata``      | capsule mode: **maintenance**                 |
++---------------------------------+-----------------------------------------------+
+
+* Download the metadata of volumes by giving already downloaded volumes path - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names.) :
+
+   ``mkdir /home/dcuser/unzipped_volumes``
+
+   ``cp /home/dcuser/HTRC/data/sample_volumes/fiction/<zip_files> /home/dcuser/unzipped_volumes``
+
+   ``unzip /home/dcuser/unzipped_volumes/’*.zip’ | rm /home/dcuser/unzipped_volumes/*.zip``
+
+   ``htrc metadata /home/dcuser/unzipped_volumes``
+
+|
++---------------------------------+-----------------------------------------------+
+| command: ``htrc export``        | capsule mode: **secure** and **maintenance**  |
++---------------------------------+-----------------------------------------------+
+
+* Export volume ids from downloaded hathi collection and create workset with only volume ids :
+
+   Go to the following link in the browser
+
+   https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514
+
+   Download metadata in tab separated format (Download Item Metadata: Tab-Delimited Text (TSV)), then -
+
+
+   ``htrc export mb-9.txt > volumes.tx``
+
+* Export volume ids from hathi collection url and create workset with only volume ids (works in both secure and maintenance modes) :
+
+  ``htrc export "https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514" > volumes.txt``
+
+
+|
++---------------------------------+-----------------------------------------------+
+| command: ``htrc run mallet``    | capsule mode: **secure**                      |
++---------------------------------+-----------------------------------------------+
+
+* Run mallet on already downloaded volumes :
+
+   ``htrc run mallet /media/secure_volume/workset -k 20``
+
+* Run mallet on volume id list :
+
+   ``htrc run mallet /home/dcuser/HTRC/htrc-id -k 20``
+
+* Run mallet on hathi collection :
+
+   ``htrc run mallet "https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514" -k 20``
+
+|
++-----------------------------------+-----------------------------------------------+
+| command: ``htrc run mallet``      | capsule mode: **maintenance**                 |
++-----------------------------------+-----------------------------------------------+
+
+* Run mallet on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).
+
+    ``htrc mallet /home/dcuser/unzipped_volumes -k 20``
+
+
+|
++---------------------------------------------+------------------------------------------+
+| command: ``htrc run topicexplorer``         |    capsule mode: **secure**              |
++---------------------------------------------+------------------------------------------+
+
+* Run topicexplorer on already downloaded volumes :
+
+   ``htrc run topicexplorer /media/secure_volume/workset -k 20``
+
+* Run topicexplorer on volume id list :
+
+   ``htrc run topicexplorer /home/dcuser/HTRC/htrc-id -k 20``
+
+* Run topicexplorer on hathi collection :
+
+   ``htrc run topicexplorer "https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514" -k 20``
+
+|
++--------------------------------------------------+-------------------------------------+
+| command: ``htrc run topicexplorer``              |   capsule mode: **maintenance**     |
++--------------------------------------------------+-------------------------------------+
+
+* Run topicexplorer on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).
+
+   ``htrc topicexplorer /home/dcuser/unzipped_volumes -k 20``
+
+
+
 
