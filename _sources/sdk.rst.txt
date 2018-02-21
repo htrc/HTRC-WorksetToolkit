@@ -1,5 +1,5 @@
-HTRC Python SDK
-=================
+HTRC Workset Toolkit Development Library
+==========================================
 
 .. toctree::
    :maxdepth: 2
@@ -29,7 +29,7 @@ Mock Testing
 `Mock testing`_ uses simulated objects or functions to mimic the behavior 
 of real code in controlled ways. 
 
-The HTRC Python SDK implements a mock of the Data API access layer in
+The HTRC Workset Toolkit implements a mock of the Data API access layer in
 ``htrc.mock.volumes``. The Data API server is only accessible via a Capsule 
 in secure mode. By implementing a function with the same call signature 
 that returns the same data types, workflows that rely on the Data API can be

@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>HTRC Workset Toolkit Development Library &#8212; HTRC Workset Toolkit 1.0.0b1 documentation</title>
-    
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -35,7 +32,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -69,7 +66,7 @@ of real code in controlled ways.</p>
 <code class="docutils literal"><span class="pre">htrc.mock.volumes</span></code>. The Data API server is only accessible via a Capsule
 in secure mode. By implementing a function with the same call signature
 that returns the same data types, workflows that rely on the Data API can be
-tested either in Capsule maintenance mode or on a user&#8217;s own computer.</p>
+tested either in Capsule maintenance mode or on a user’s own computer.</p>
 <p>An easy way to use this pattern is shown below.</p>
 </div>
 <div class="section" id="example">
@@ -204,8 +201,8 @@ file per page (default).</p>
 
 </div>
 </div>
-<div class="section" id="module-htrc.prov">
-<span id="htrc-prov"></span><h2><cite>htrc.prov</cite><a class="headerlink" href="#module-htrc.prov" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="htrc-prov">
+<h2><cite>htrc.prov</cite><a class="headerlink" href="#htrc-prov" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-htrc.tools">
 <span id="htrc-tools"></span><h2><cite>htrc.tools</cite><a class="headerlink" href="#module-htrc.tools" title="Permalink to this headline">¶</a></h2>
@@ -217,20 +214,6 @@ file per page (default).</p>
 <p>The functions in this package will not operate unless they are 
 executed from an HTRC Data Capsule in Secure Mode. The module 
 <cite>htrc.mock.volumes</cite> contains Patch objects for testing workflows.</p>
-<dl class="function">
-<dt id="htrc.volumes.credential_prompt">
-<code class="descclassname">htrc.volumes.</code><code class="descname">credential_prompt</code><span class="sig-paren">(</span><em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#credential_prompt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.credential_prompt" title="Permalink to this definition">¶</a></dt>
-<dd><p>A prompt for entering HathiTrust credentials.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.credentials_from_config">
-<code class="descclassname">htrc.volumes.</code><code class="descname">credentials_from_config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#credentials_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.credentials_from_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the username and password from a config file for the Data API.
-Raises an EnvironmentError if not specified.
-See also: credential_prompt</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="htrc.volumes.get_pages">
 <code class="descclassname">htrc.volumes.</code><code class="descname">get_pages</code><span class="sig-paren">(</span><em>token</em>, <em>page_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
@@ -251,12 +234,6 @@ file per page (default).</p>
 :volume_ids: A list of volume_ids
 :concat: If True, return a single file per volume. If False, return a single
 file per page (default).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="htrc.volumes.save_credentials">
-<code class="descclassname">htrc.volumes.</code><code class="descname">save_credentials</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#save_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.save_credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves credentials in the config file.</p>
 </dd></dl>
 
 </div>
@@ -286,7 +263,7 @@ file per page (default).</p>
 <li class="toctree-l3"><a class="reference internal" href="#module-htrc.mock.volumes"><cite>htrc.mock.volumes</cite></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-htrc.prov"><cite>htrc.prov</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#htrc-prov"><cite>htrc.prov</cite></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-htrc.tools"><cite>htrc.tools</cite></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-htrc.volumes"><cite>htrc.volumes</cite></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-htrc.util"><cite>htrc.util</cite></a></li>
@@ -328,8 +305,8 @@ file per page (default).</p>
       &copy;2017, HathiTrust Research Center (Jaimie Murdock).
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="_sources/sdk.rst.txt"
