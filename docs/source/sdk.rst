@@ -92,16 +92,6 @@ Modules
 .. automodule:: htrc.mock.volumes
    :members:
 
-`htrc.prov`
------------------
-.. automodule:: htrc.prov
-   :members:
-
-`htrc.tools`
------------------
-.. automodule:: htrc.tools
-   :members:
-
 `htrc.volumes`
 ----------------
 .. automodule:: htrc.volumes

@@ -24,15 +24,15 @@ from htrc.lib.cli import bool_prompt
 def download_parser(parser=None):
     if parser is None:
         parser = ArgumentParser()
-    parser.add_argument("-u", "--username", help="HTRC username")
-    parser.add_argument("-p", "--password", help="HTRC password")
+    #parser.add_argument("-u", "--username", help="HTRC username")
+    #parser.add_argument("-p", "--password", help="HTRC password")
     parser.add_argument("file", nargs='?', default=sys.stdin,
         help="workset path[s]")
     parser.add_argument("-f", "--force", action='store_true', 
         help="remove folder if exists")
     parser.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
-    parser.add_argument("-c", "--concatenate", action='store_true',
+    parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
     return parser
 
