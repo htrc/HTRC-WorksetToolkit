@@ -20,6 +20,7 @@ from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
 from htrc.auth import credential_prompt
+from htrc.config import save_jwt_token
 
 EXAMPLE_FILE = os.path.join(os.path.dirname(__file__), 'example.zip')
 
