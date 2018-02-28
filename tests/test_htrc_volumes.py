@@ -36,23 +36,23 @@ class TestVolumes(unittest.TestCase):
         shutil.rmtree(self.output_path)
 
 
-    @patch('htrc.volumes.http.client.HTTPSConnection')
-    def test_get_oauth2_token(self, https_mock):
-        response_mock = Mock(status=200, return_value=b'')
-        response_mock.read.return_value =\
-            '{"access_token": "a1b2c3d4e5f6"}'.encode('utf8')
-        https_mock.return_value.getresponse.return_value = response_mock
-        
-        token = htrc.volumes.get_oauth2_token('1234','1234')
-        self.assertEqual(token, 'a1b2c3d4e5f6')
-
-    @patch('htrc.volumes.http.client.HTTPSConnection')
-    def test_get_oauth2_token_error(self, https_mock):
-        response_mock = Mock(status=500)
-        https_mock.return_value.getresponse.return_value = response_mock
-
-        with self.assertRaises(EnvironmentError):
-            token = htrc.volumes.get_oauth2_token('1234','1234')
+    # @patch('htrc.volumes.http.client.HTTPSConnection')
+    # def test_get_oauth2_token(self, https_mock):
+    #     response_mock = Mock(status=200, return_value=b'')
+    #     response_mock.read.return_value =\
+    #         '{"access_token": "a1b2c3d4e5f6"}'.encode('utf8')
+    #     https_mock.return_value.getresponse.return_value = response_mock
+    #
+    #     token = htrc.volumes.get_oauth2_token('1234','1234')
+    #     self.assertEqual(token, 'a1b2c3d4e5f6')
+    #
+    # @patch('htrc.volumes.http.client.HTTPSConnection')
+    # def test_get_oauth2_token_error(self, https_mock):
+    #     response_mock = Mock(status=500)
+    #     https_mock.return_value.getresponse.return_value = response_mock
+    #
+    #     with self.assertRaises(EnvironmentError):
+    #         token = htrc.volumes.get_oauth2_token('1234','1234')
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_volumes_and_pages(self, https_mock):
