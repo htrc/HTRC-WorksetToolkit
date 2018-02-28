@@ -94,13 +94,13 @@ class TestVolumes(unittest.TestCase):
         volumes_mock.return_value = b''
 
         htrc.volumes.download_volumes(self.test_vols, self.output_path,
-            username='1234', password='1234')
+            username='1234', password='1234', token='1234')
 
         # test directory creation
         import shutil
         shutil.rmtree(self.output_path)
         htrc.volumes.download_volumes(self.test_vols, self.output_path,
-            username='1234', password='1234')
+            username='1234', password='1234', token='1234')
 
     # TODO: Fix this test for case where config file exists, but creds not set
     """
