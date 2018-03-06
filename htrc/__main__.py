@@ -24,8 +24,8 @@ from htrc.lib.cli import bool_prompt
 def download_parser(parser=None):
     if parser is None:
         parser = ArgumentParser()
-    #parser.add_argument("-u", "--username", help="HTRC username")
-    #parser.add_argument("-p", "--password", help="HTRC password")
+    parser.add_argument("-u", "--username", help="HTRC username")
+    parser.add_argument("-p", "--password", help="HTRC password")
     parser.add_argument("file", nargs='?', default=sys.stdin,
         help="workset path[s]")
     parser.add_argument("-f", "--force", action='store_true', 
