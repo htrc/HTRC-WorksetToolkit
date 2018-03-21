@@ -74,4 +74,5 @@ In order to update PyPI, you will need owner permissions, which are currently he
 3. Run `python setup.py bdist_egg upload` to upload the egg file.
 
 ## Documentation
-For usage instructions and documentation see [https://htrc.github.io/HTRC-WorksetToolkit/]
+For usage instructions and documentation please see: [https://htrc.github.io/HTRC-WorksetToolkit/]
+For a more detailed guide please see: [https://wiki.htrc.illinois.edu/x/NQBTAw.]
