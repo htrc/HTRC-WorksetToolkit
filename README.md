@@ -75,4 +75,5 @@ In order to update PyPI, you will need owner permissions, which are currently he
 
 ## Documentation
 For usage instructions and documentation please see: [https://htrc.github.io/HTRC-WorksetToolkit/]
+
 For a more detailed guide please see: [https://wiki.htrc.illinois.edu/x/NQBTAw.]
