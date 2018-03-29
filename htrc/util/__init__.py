@@ -15,4 +15,5 @@ def split_items(seq, split_size):
     full_segments = math.floor(len(seq) / split_size)
     for i in range(full_segments):
         yield seq[i*split_size:(i+1)*split_size]
-    yield seq[(i+1)*split_size:]
+    if (full_segments * split_size) != len(seq):
+        yield seq[(full_segments+1)*split_size:]

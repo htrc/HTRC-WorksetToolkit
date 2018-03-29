@@ -73,7 +73,7 @@ def safe_volume_metadata(id, marc=False, sleep_time=1):
         logging.error(err)
         return dict()
 
-def bulk_metadata(ids):
+def bulk_metadata(ids, marc=False):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
 
@@ -91,13 +91,15 @@ def bulk_metadata(ids):
         biblio_api += '/brief'
 
     query = '|'.join(['htid:' + id for id in ids])
-    url = biblio_api + '/json/'
+    url = biblio_api + '/json/' + query
 
     metadata = dict()
     try:
         reader = codecs.getreader('utf-8')
         raw = json.load(reader(urlopen(url)))
+
         for id, data in raw.items():
+            id = id.replace('htid:','')
             if len(data['records']) == 1:
                 for item in data['items']:
                     if item['htid'] == id:
@@ -108,7 +110,7 @@ def bulk_metadata(ids):
                 metadata[id] = dict()
     except HTTPError:
         raise RuntimeError("Could not access HT Bibliography API.")
-    
+
     return metadata
 
 def get_metadata(ids, output_file=None):
@@ -117,11 +119,11 @@ def get_metadata(ids, output_file=None):
     for a HathiTrust ID. This structure is the default structure extracted from
     a Data API request (:method htrc.volumes.get_volumes:). 
     """
-    ids = map(str.strip, ids) # data cleanup
+    ids = [str.strip(id) for id in ids] # data cleanup
     data = [bulk_metadata(segment) for segment in split_items(ids, 20)]
 
     metadata = dict()
-    for items in data[1:]:
+    for items in data:
         metadata.update(items)
 
     if output_file:
