@@ -120,10 +120,10 @@ def get_metadata(ids, output_file=None):
     a Data API request (:method htrc.volumes.get_volumes:). 
     """
     ids = [str.strip(id) for id in ids] # data cleanup
-    data = [bulk_metadata(segment) for segment in split_items(ids, 20)]
 
     metadata = dict()
-    for items in data:
+    for segment in split_items(ids, 20):
+        items = bulk_metadata(segment)
         metadata.update(items)
 
     if output_file:
