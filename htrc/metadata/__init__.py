@@ -73,12 +73,12 @@ def safe_volume_metadata(id, marc=False, sleep_time=1):
         logging.error(err)
         return dict()
 
-def bulk_metadata(ids, marc=False):
+def get_bulk_metadata(ids, marc=False):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
 
     Params:
-    :param id: HTID for the volume to be retrieved
+    :param ids: HTIDs for the volumes to be retrieved
     :param marc: Retrieve MARC-XML within JSON return value.
 
     .. _from the HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
@@ -113,6 +113,28 @@ def bulk_metadata(ids, marc=False):
 
     return metadata
 
+def safe_bulk_metadata(ids, marc=False, sleep_time=1):
+    """
+    Retrieve bulk item metadata `from the HathiTrust Bibliographic API`_.
+    
+    Unlike :method get_bulk_metadata:, this function returns an 
+    empty dictionary, rather than an error when metadata is missing.
+
+    Params:
+    :param ids: HTIDs for the volumes to be retrieved
+    :param marc: Retrieve MARC-XML within JSON return value.
+
+    _ https://www.hathitrust.org/bib_api
+    """
+    try:
+        metadata = get_bulk_metadata(ids, marc)
+        if sleep_time:
+            sleep(sleep_time)
+        return metadata
+    except ValueError as err:
+        logging.error(err)
+        return dict()
+
 def get_metadata(ids, output_file=None):
     """
     Retrieves metadata for a folder of folders, where each subfolder is named
@@ -123,7 +145,7 @@ def get_metadata(ids, output_file=None):
 
     metadata = dict()
     for segment in split_items(ids, 20):
-        items = bulk_metadata(segment)
+        items = safe_bulk_metadata(segment)
         metadata.update(items)
 
     if output_file:
