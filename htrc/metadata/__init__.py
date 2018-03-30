@@ -84,7 +84,7 @@ def get_bulk_metadata(ids, marc=False):
     .. _from the HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
     """
     biblio_api = "https://catalog.hathitrust.org/api/volumes"
-    
+
     if marc:
         biblio_api += '/full'
     else:
@@ -116,8 +116,8 @@ def get_bulk_metadata(ids, marc=False):
 def safe_bulk_metadata(ids, marc=False, sleep_time=1):
     """
     Retrieve bulk item metadata `from the HathiTrust Bibliographic API`_.
-    
-    Unlike :method get_bulk_metadata:, this function returns an 
+
+    Unlike :method get_bulk_metadata:, this function returns an
     empty dictionary, rather than an error when metadata is missing.
 
     Params:
@@ -141,7 +141,7 @@ def get_metadata(ids, output_file=None):
     for a HathiTrust ID. This structure is the default structure extracted from
     a Data API request (:method htrc.volumes.get_volumes:). 
     """
-    ids = [str.strip(id) for id in ids] # data cleanup
+    ids = [str.strip(id).replace('+', ':').replace('=', '/') for id in ids] # data cleanup
 
     metadata = dict()
     for segment in split_items(ids, 20):
