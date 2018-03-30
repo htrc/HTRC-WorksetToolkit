@@ -57,11 +57,12 @@ def get_volumes(token, volume_ids, concat=False):
     url = htrc.config.get_dataapi_epr() + "volumes"
 
     for id in volume_ids:
-        if "." not in id:
-            print("Invalid volume id " + id + ". Please correct this volume id and try again.")
+        if re.match(pattern=r"\S+\.\S+", string=id):
+            id.replace('+', ':').replace('=', '/')
+        else :
+            print("Invalid volume id " + id + ". Please correct this volume id and try agan")
 
-    data = {'volumeIDs': '|'.join(
-        [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
+    data = {'volumeIDs': '|'.join(volume_ids)}
     if concat:
         data['concat'] = 'true'
 
@@ -122,6 +123,13 @@ def get_pages(token, page_ids, concat=False):
     """
     if not page_ids:
         raise ValueError("page_ids is empty.")
+
+    for id in page_ids:
+        if re.match(pattern=r"\S+\.\S+\[\d+(?:(,\d+))+\]$", string=id):
+            id.replace('+', ':').replace('=', '/')
+        else :
+            print("Invalid page or/and volume id " + id + ". Please correct this volume or/and page id and try agan")
+
 
     url = htrc.config.get_dataapi_epr()
     url += "pages?pageIDs=" + quote_plus('|'.join(page_ids))
