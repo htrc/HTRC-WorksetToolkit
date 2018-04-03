@@ -252,5 +252,5 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_volumes(volumeIDs, args.output, args.username, args.password, concat=args.concat)
+    return download_volumes(volumeIDs, args.output, args.username, args.password, token=args.token, concat=args.concat)
 

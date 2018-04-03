@@ -34,6 +34,7 @@ def download_parser(parser=None):
         default='/media/secure_volume/workset/')
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
+    parser.add_argument("-t", "--token", help="JWT for volumes download.")
     return parser
 
 def add_workset_path(parser=None):
