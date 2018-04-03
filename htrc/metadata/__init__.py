@@ -92,7 +92,7 @@ def get_bulk_metadata(ids, marc=False):
 
     query = '|'.join(['htid:' + id for id in ids])
     url = biblio_api + '/json/' + query
-
+    print(url)
     metadata = dict()
     try:
         reader = codecs.getreader('utf-8')
@@ -139,12 +139,12 @@ def get_metadata(ids, output_file=None):
     """
     Retrieves metadata for a folder of folders, where each subfolder is named
     for a HathiTrust ID. This structure is the default structure extracted from
-    a Data API request (:method htrc.volumes.get_volumes:). 
+    a Data API request (:method htrc.volumes.get_volumes:).
     """
     ids = [str.strip(id).replace('+', ':').replace('=', '/') for id in ids] # data cleanup
 
     metadata = dict()
-    for segment in split_items(ids, 20):
+    for segment in split_items(ids, 50):
         items = safe_bulk_metadata(segment)
         metadata.update(items)
 
