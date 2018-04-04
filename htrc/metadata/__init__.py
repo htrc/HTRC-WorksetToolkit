@@ -92,7 +92,7 @@ def get_bulk_metadata(ids, marc=False):
 
     query = '|'.join(['htid:' + id for id in ids])
     url = biblio_api + '/json/' + query
-    print(url)
+
     metadata = dict()
     try:
         reader = codecs.getreader('utf-8')
