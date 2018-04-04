@@ -10,7 +10,7 @@ import atexit
 import tarfile
 import wget
 
-__version__ = '0.1.44b0'
+__version__ = '0.1.44b1'
 
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
                     'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b194']
