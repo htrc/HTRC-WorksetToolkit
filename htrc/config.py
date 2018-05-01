@@ -39,11 +39,13 @@ def _get_value(section, key, path=None):
         raise EnvironmentError("Config not set for {} {} in {}".format(
             section, key, path))
     
-def get_dataapi_host_port(path=None):
-    host = _get_value('data', 'host', path)
+def get_dataapi_port(path=None):
     port = int(_get_value('data', 'port', path))
-    return (host, port)
+    return (port)
 
+def get_dataapi_host(path=None):
+    host = _get_value('data', 'host', path)
+    return (host)
 
 def get_dataapi_epr(path=None):
     return _get_value('data', 'url', path)

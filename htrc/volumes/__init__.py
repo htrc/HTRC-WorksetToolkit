@@ -38,7 +38,7 @@ import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-def get_volumes(token, volume_ids, concat=False):
+def get_volumes(token, volume_ids, host, port, concat=False):
     """
     Returns volumes from the Data API as a raw zip stream.
 
@@ -47,6 +47,8 @@ def get_volumes(token, volume_ids, concat=False):
     :volume_ids: A list of volume_ids
     :concat: If True, return a single file per volume. If False, return a single
     file per page (default).
+    :host: Data API host
+    :port: Data API port
     """
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
@@ -73,7 +75,6 @@ def get_volumes(token, volume_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    host, port = htrc.config.get_dataapi_host_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -134,7 +135,8 @@ def get_pages(token, page_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Create connection
-    host, port = htrc.config.get_dataapi_host_port()
+    host = htrc.config.get_dataapi_host()
+    port = htrc.config.get_dataapi_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
@@ -218,21 +220,26 @@ def check_error_file(output_dir):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False):
+                     config_path=None, token=None, concat=False, host=None, port=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
     # get token if not specified
     if not token:
-        import htrc.config
         token = htrc.config.get_jwt_token()
 
-    if token is not None:
+    if not host:
+        host= htrc.config.get_dataapi_host()
+
+    if not port:
+        port = htrc.config.get_dataapi_port()
+
+    if any((token, host, port)) is not None:
         logging.info("obtained token: %s\n" % token)
 
         try:
-            data = get_volumes(token, volume_ids, concat)
+            data = get_volumes(token, volume_ids, host, port, concat)
 
             myzip = ZipFile(BytesIO(data))
             myzip.extractall(output_dir)
@@ -254,5 +261,5 @@ def download(args):
 
     return download_volumes(volumeIDs, args.output, 
         username=args.username, password=args.password,
-        token=args.token, concat=args.concat)
+        token=args.token, concat=args.concat, host=args.datahost, port=args.dataport)
 

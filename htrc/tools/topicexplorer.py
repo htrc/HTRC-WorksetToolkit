@@ -66,7 +66,7 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
     subprocess.check_call([
         'topicexplorer', 'prep', path,
         '-q', '--min-word-len', '3', '--lang', 'en',
-        '--high-percent', '30', '--low-percent', '10'
+        '--high', '30', '--low', '10'
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
