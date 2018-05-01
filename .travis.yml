@@ -7,6 +7,7 @@ install:
   - python --version
   - pip --version
   # command to install dependencies
+  - pip install cython wget
   - pip install coveralls coverage codeclimate-test-reporter
   - pip install .
 # command to run tests
