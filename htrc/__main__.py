@@ -35,6 +35,8 @@ def download_parser(parser=None):
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
     parser.add_argument("-t", "--token", help="JWT for volumes download.")
+    parser.add_argument("-dh", "--datahost", help="Data API host.")
+    parser.add_argument("-dp", "--dataport", help="Data API port.")
     return parser
 
 def add_workset_path(parser=None):
