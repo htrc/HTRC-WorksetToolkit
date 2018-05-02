@@ -6,6 +6,8 @@ password =
 host = dataapi-dc.htrc.indiana.edu
 port = 443
 url = /
+cert =
+key =
 
 [oauth]
 host = silvermaple.pti.indiana.edu

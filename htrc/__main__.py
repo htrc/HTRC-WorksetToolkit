@@ -37,6 +37,9 @@ def download_parser(parser=None):
     parser.add_argument("-t", "--token", help="JWT for volumes download.")
     parser.add_argument("-dh", "--datahost", help="Data API host.")
     parser.add_argument("-dp", "--dataport", help="Data API port.")
+    parser.add_argument("-de", "--dataepr", help="Data API EPR.")
+    parser.add_argument("-dc", "--datacert", help="Client certificate file for mutual TLS with Data API.")
+    parser.add_argument("-dk", "--datakey", help="Client key file for mutual TLS with Data API.")
     return parser
 
 def add_workset_path(parser=None):
