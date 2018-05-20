@@ -8,12 +8,11 @@ import platform
 import sys
 import atexit
 import tarfile
-import wget
 
 __version__ = '0.1.44'
 
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
-                    'requests', 'wget', 'argparse==1.1', 'topicexplorer>=1.0b194']
+                    'requests', 'argparse==1.1', 'topicexplorer>=1.0b194']
 # TODO: migrate to docs confix:, 'sphinx-argparse', 'sphinxcontrib-fulltoc']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
@@ -25,19 +24,11 @@ def _download_config():
 
     _config_file_url = 'https://analytics.hathitrust.org/files/.htrc'
     _path = os.path.expanduser('~/.htrc')
-    if sys.version_info[0] < 3:
-        import urllib2
-
-        headers = {'User-agent': 'Mozilla/5.0'}
-        req = urllib2.Request(_config_file_url, None, headers)
-        filedata = urllib2.urlopen(req)
-        datatowrite = filedata.read()
-
-        with open(_path, 'w') as f:
-            f.write(datatowrite)
-    else:
-        import urllib.request
-        urllib.request.urlretrieve(_config_file_url, _path)
+    try: 
+        from urllib.request import urlretrieve
+    except ImportError:
+        from urllib import urlretrieve
+    urlretrieve(_config_file_url, _path)
 
     print("\n")
 
@@ -46,7 +37,11 @@ def _install_mallet():
     if not os.path.exists("/home/dcuser/mallet"):
         print('Installing Mallet ...')
         os.makedirs('/home/dcuser/mallet')
-        mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
+        try: 
+            from urllib.request import urlretrieve
+        except ImportError:
+            from urllib import urlretrieve
+        mallet_zip, _ = urlretrieve('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
         mallet_dir = tarfile.open(mallet_zip, "r:gz")
         mallet_dir.extractall(path="/home/dcuser/mallet")
         mallet_dir.close()
