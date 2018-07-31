@@ -76,10 +76,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    if not cert or key:
-        httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
-    else:
-        httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
 
 
     httpsConnection.request("POST", url, urlencode(data), headers)
