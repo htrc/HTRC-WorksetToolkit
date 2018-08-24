@@ -32,6 +32,7 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
+from htrc.util import split_items
 import htrc.config
 
 import logging
@@ -251,13 +252,14 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         logging.info("obtained token: %s\n" % token)
 
         try:
-            data = get_volumes(token, volume_ids, host, port, cert, key, epr, concat)
+            for ids in split_items(volume_ids, 250):
+                data = get_volumes(token, ids, host, port, cert, key, epr, concat)
 
-            myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output_dir)
-            myzip.close()
+                myzip = ZipFile(BytesIO(data))
+                myzip.extractall(output_dir)
+                myzip.close()
 
-            check_error_file(output_dir)
+                check_error_file(output_dir)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
