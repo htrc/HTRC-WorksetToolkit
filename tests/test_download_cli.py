@@ -39,13 +39,11 @@ class TestDownload(unittest.TestCase):
         htrc.__main__.main()
         download_mock.assert_called_once()
 
-    """
     @patch('argparse._sys.argv', ['htrc', 'download', 'https://catalog.hathitrust.org/Record/001423370'])
     @patch('htrc.__main__.download')
     def test_catalog_url(self, download_mock):
         htrc.__main__.main()
         download_mock.assert_called_once()
-    """
 
     @patch('argparse._sys.argv', ['htrc', 'download', 'https://babel.hathitrust.org/shcgi/mb?a=listis;c=696632727'])
     @patch('htrc.__main__.download')

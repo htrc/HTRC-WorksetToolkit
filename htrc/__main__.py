@@ -165,7 +165,8 @@ def resolve_and_download(args):
     
     # Check for valid record id
     if parse_record_id(args.file):
-        volumes = record_id_to_volume_ids(args.file)
+        record_id = parse_record_id(args.file)
+        volumes = record_id_to_volume_ids(record_id)
         download_with_tempfile(args, volumes)
         return
     else:
