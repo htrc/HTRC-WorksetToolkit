@@ -19,6 +19,7 @@ import htrc.tools.mallet
 from argparse import ArgumentParser
 import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
+from htrc.util.resolve import *
 
 
 def download_parser(parser=None):
@@ -123,39 +124,36 @@ def main():
 
 
         if args.file == sys.stdin:
-            f = NamedTemporaryFile()
-            for volume in sys.stdin:
-                f.write((volume + '\n').encode('utf-8'))
-            f.flush()
-            args.file = f.name
-
-            try:
-                download(args)
-            finally:
-                print("Closing temporary file: " + f.name)
-                f.close()
-        
+            # For use with UNIX pipes
+            download_with_tempfile(args, sys.stdin)
 
         elif (args.file.endswith('json')
             or args.file.endswith('jsonld')
             or args.file.startswith('http://')
             or args.file.startswith('https://')):
+            # For use with HTRC Worksets and HT Collection Builder
             volumes = htrc.workset.load(args.file)
 
-            f = NamedTemporaryFile()
-            for volume in volumes:
-                f.write((volume + '\n').encode('utf-8'))
-            f.flush()
-            args.file = f.name
-
-            try:
-                download(args)
-            finally:
-                print("Closing temporary file: " + f.name)
-                f.close()
+            download_with_tempfile(args, volumes)
 
         elif os.path.exists(args.file):
+            # For use with downloaded workset files - either in JSON or 
             download(args)
+
+        elif parse_volume_id(args.file):
+            # for handling a raw HTID, babel.hathitrust.org or hdl.handle.net
+            volumes = [args.file]
+
+            download_with_tempfile(args, volumes)
+
+        elif parse_record_id(args.file):
+            # for handling a raw HT Record identifier or record URL
+            volumes = record_id_to_volume_ids(args.file)
+
+            download_with_tempfile(args, volumes)
+        
+        elif 
+
         else:
             print("Not a valid ID file or workset identifier: {}".format(
                 args.file))
@@ -178,6 +176,20 @@ def download(args):
             sys.exit(1)
         else:
             raise e
+
+def download_with_tempfile(args, volumes):
+    f = NamedTemporaryFile()
+    for volume in volumes:
+        f.write((volume + '\n').encode('utf-8'))
+    f.flush()
+    args.file = f.name
+
+    try:
+        download(args)
+    finally:
+        print("Closing temporary file: " + f.name)
+        f.close()
+
 
 if __name__ == '__main__':
     main()
