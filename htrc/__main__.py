@@ -122,40 +122,56 @@ def main():
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
 
-
-        if args.file == sys.stdin:
-            # For use with UNIX pipes
-            download_with_tempfile(args, sys.stdin)
-
-        elif (args.file.endswith('json')
-            or args.file.endswith('jsonld')
-            or args.file.startswith('http://')
-            or args.file.startswith('https://')):
-            # For use with HTRC Worksets and HT Collection Builder
-            volumes = htrc.workset.load(args.file)
-
-            download_with_tempfile(args, volumes)
-
-        elif os.path.exists(args.file):
-            # For use with downloaded workset files - either in JSON or 
-            download(args)
-
-        elif parse_volume_id(args.file):
-            # for handling a raw HTID, babel.hathitrust.org or hdl.handle.net
-            volumes = [args.file]
-
-            download_with_tempfile(args, volumes)
-
-        elif parse_record_id(args.file):
-            # for handling a raw HT Record identifier or record URL
-            volumes = record_id_to_volume_ids(args.file)
-
-            download_with_tempfile(args, volumes)
-        
-        else:
-            print("Not a valid ID file or workset identifier: {}".format(
-                args.file))
+        try:
+            resolve_and_download(args)
+        except ValueError:
+            print("Invalid identifier:", args.file)
             sys.exit(1)
+
+def resolve_and_download(args):
+    if args.file == sys.stdin:
+        # For use with UNIX pipes
+        download_with_tempfile(args, sys.stdin)
+        return
+
+    elif os.path.exists(args.file):
+        # For use with downloaded workset files - either in JSON or 
+        download(args)
+        return
+
+    elif (args.file.endswith('json')
+        or args.file.endswith('jsonld')
+        or args.file.startswith('http://')
+        or args.file.startswith('https://')):
+        # For use with HTRC Worksets and HT Collection Builder
+        try:
+            volumes = htrc.workset.load(args.file)
+            download_with_tempfile(args, volumes)
+            return
+        except ValueError:
+            # Invalid workset, continue to last block
+            pass
+
+    # Check for valid volume_id
+    try:
+        if parse_volume_id(args.file):
+            volumes = [args.file]
+            download_with_tempfile(args, volumes)
+            return
+        else:
+            raise ValueError("No Volume ID found")
+    except ValueError:
+        pass
+    
+    # Check for valid record id
+    if parse_record_id(args.file):
+        volumes = record_id_to_volume_ids(args.file)
+        download_with_tempfile(args, volumes)
+        return
+    else:
+        # invalid
+        raise ValueError("Not a valid ID file or workset identifier: {}".format(
+                         args.file))
 
 
 def download(args):
