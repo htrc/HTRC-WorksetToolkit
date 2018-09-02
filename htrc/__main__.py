@@ -152,8 +152,6 @@ def main():
 
             download_with_tempfile(args, volumes)
         
-        elif 
-
         else:
             print("Not a valid ID file or workset identifier: {}".format(
                 args.file))
