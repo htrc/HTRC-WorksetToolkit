@@ -43,12 +43,13 @@ def _download_config():
 
 
 def _install_mallet():
-    if not os.path.exists("/home/dcuser/mallet"):
+    mallet_path = os.path.expanduser('~/mallet')
+    if not os.path.exists(mallet_path):
         print('Installing Mallet ...')
-        os.makedirs('/home/dcuser/mallet')
+        os.makedirs(mallet_path)
         mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
         mallet_dir = tarfile.open(mallet_zip, "r:gz")
-        mallet_dir.extractall(path="/home/dcuser/mallet")
+        mallet_dir.extractall(path=mallet_path)
         mallet_dir.close()
         print('\n')
 
