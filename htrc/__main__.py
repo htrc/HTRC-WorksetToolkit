@@ -155,7 +155,7 @@ def resolve_and_download(args):
     # Check for valid volume_id
     try:
         if parse_volume_id(args.file):
-            volumes = [args.file]
+            volumes = [parse_volume_id(args.file)]
             download_with_tempfile(args, volumes)
             return
         else:
