@@ -232,6 +232,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
     # get token if not specified
     if not token:
         token = htrc.config.get_jwt_token()
+        htrc.config.remove_jwt_token()
 
     if not host:
         host= htrc.config.get_dataapi_host()
