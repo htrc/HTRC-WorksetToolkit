@@ -32,13 +32,14 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
+from htrc.util import split_items
 import htrc.config
 
 import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-def get_volumes(token, volume_ids, host, port, concat=False):
+def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
     """
     Returns volumes from the Data API as a raw zip stream.
 
@@ -53,10 +54,11 @@ def get_volumes(token, volume_ids, host, port, concat=False):
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
 
-    url = htrc.config.get_dataapi_epr() + "volumes"
+    url = epr + "volumes"
 
     for id in volume_ids:
-        if "." not in id:
+        if ("." not in id
+            or " " in id):
             print("Invalid volume id " + id + ". Please correct this volume id and try again.")
 
     data = {'volumeIDs': '|'.join(
@@ -75,7 +77,9 @@ def get_volumes(token, volume_ids, host, port, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
+
+
     httpsConnection.request("POST", url, urlencode(data), headers)
 
     response = httpsConnection.getresponse()
@@ -220,7 +224,7 @@ def check_error_file(output_dir):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, host=None, port=None):
+                     config_path=None, token=None, concat=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -235,17 +239,27 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
     if not port:
         port = htrc.config.get_dataapi_port()
 
+    if not epr:
+        epr = htrc.config.get_dataapi_epr()
+
+    if not cert:
+        cert = htrc.config.get_dataapi_cert()
+
+    if not key:
+        key = htrc.config.get_dataapi_key()
+
     if any((token, host, port)) is not None:
         logging.info("obtained token: %s\n" % token)
 
         try:
-            data = get_volumes(token, volume_ids, host, port, concat)
+            for ids in split_items(volume_ids, 250):
+                data = get_volumes(token, ids, host, port, cert, key, epr, concat)
 
-            myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output_dir)
-            myzip.close()
+                myzip = ZipFile(BytesIO(data))
+                myzip.extractall(output_dir)
+                myzip.close()
 
-            check_error_file(output_dir)
+                check_error_file(output_dir)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
@@ -259,7 +273,9 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_volumes(volumeIDs, args.output, 
+    return download_volumes(volumeIDs, args.output,
         username=args.username, password=args.password,
-        token=args.token, concat=args.concat, host=args.datahost, port=args.dataport)
+        token=args.token, concat=args.concat, host=args.datahost,
+        port=args.dataport, cert=args.datacert, key=args.datakey,
+        epr=args.dataepr)
 
