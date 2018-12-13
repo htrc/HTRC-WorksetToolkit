@@ -9,7 +9,7 @@ import sys
 import atexit
 import tarfile
 
-__version__ = '0.1.44'
+__version__ = '0.1.45'
 
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
                     'requests', 'argparse==1.1', 'topicexplorer>=1.0b194']
@@ -34,7 +34,8 @@ def _download_config():
 
 
 def _install_mallet():
-    if not os.path.exists("/home/dcuser/mallet"):
+    mallet_path = os.path.expanduser('~/mallet')
+    if not os.path.exists(mallet_path):
         print('Installing Mallet ...')
         os.makedirs('/home/dcuser/mallet')
         try: 
@@ -43,7 +44,7 @@ def _install_mallet():
             from urllib import urlretrieve
         mallet_zip, _ = urlretrieve('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
         mallet_dir = tarfile.open(mallet_zip, "r:gz")
-        mallet_dir.extractall(path="/home/dcuser/mallet")
+        mallet_dir.extractall(path=mallet_path)
         mallet_dir.close()
         print('\n')
 
@@ -79,8 +80,8 @@ setup(
     packages=find_packages(),
     install_requires=install_requires,
     include_package_data=True,
-    data_files=[('htrc/mock/volumes/', ['htrc/mock/volumes/example.zip']),
-                ('htrc/', ['htrc/.htrc.default'])],
+    data_files=[('htrc/mock/volumes', ['htrc/mock/volumes/example.zip']),
+                ('htrc', ['htrc/.htrc.default'])],
     zip_safe=False,
     entry_points={
         'console_scripts': ['htrc = htrc.__main__:main']

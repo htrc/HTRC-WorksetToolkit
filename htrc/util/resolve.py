@@ -106,8 +106,9 @@ def parse_volume_id(string):
         # Parse the HT Digital Library URL, ex:
         # https://babel.hathitrust.org/cgi/pt?id=uc2.ark:/13960/fk92805m1s;view=1up;seq=7
         if parsed_url.query:
-            id = parse_qs(parsed_url.query).get('id', None)[0]
-        # TODO: Determine if there are alternate babel.hathitrust.org URLs.
+            id = parse_qs(parsed_url.query).get('id', None)
+            if id is not None:
+                id = id[0]
 
     else:
         id = string

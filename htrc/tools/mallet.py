@@ -8,17 +8,19 @@ import wget
 from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
 
-# Mallet is downloaded and intalled in users current directory
+MALLET_DIR = os.path.expanduser('~/mallet')
+
+# Mallet is downloaded and intalled in user's home directory
 def install_mallet():
-    if not os.path.exists("/home/dcuser/mallet"):
-        os.makedirs('/home/dcuser/mallet')
+    if not os.path.exists(MALLET_DIR):
+        os.makedirs(MALLET_DIR)
         mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
         mallet_dir = tarfile.open(mallet_zip, "r:gz")
-        mallet_dir.extractall(path="/home/dcuser/mallet")
+        mallet_dir.extractall(path=MALLET_DIR)
         mallet_dir.close()
 
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
-    if not os.path.exists("/home/dcuser/mallet"):
+    if not os.path.exists(MALLET_DIR):
         if not os.path.exists('/media/secure_volume/'):
             print('Installing Mallet ...')
             install_mallet()
@@ -57,7 +59,7 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
 
     # import the workset to MALLET format.
     subprocess.check_call([
-        '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
+        '{}/mallet-2.0.8RC3/bin/mallet'.format(MALLET_DIR),
         'import-dir',
         '--input', path,
         '--output', os.path.join(path, '../corpus.mallet'),
@@ -66,7 +68,7 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
         ])
 
     subprocess.check_call([
-        '/home/dcuser/mallet/mallet-2.0.8RC3/bin/mallet',
+        '{}/mallet-2.0.8RC3/bin/mallet'.format(MALLET_DIR),
         'train-topics',
         '--input', os.path.join(path, '../corpus.mallet'),
         '--num-topics', str(topics),
