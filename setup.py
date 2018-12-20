@@ -37,7 +37,7 @@ def _install_mallet():
     mallet_path = os.path.expanduser('~/mallet')
     if not os.path.exists(mallet_path):
         print('Installing Mallet ...')
-        os.makedirs('/home/dcuser/mallet')
+        os.makedirs(mallet_path)
         try: 
             from urllib.request import urlretrieve
         except ImportError:
