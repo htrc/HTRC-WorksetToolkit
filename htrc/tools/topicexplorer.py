@@ -76,6 +76,10 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
         '-q'
     ])
     subprocess.check_call([
+        'topicexplorer', 'metadata', path,
+        '--htrc'
+    ])
+    subprocess.check_call([
         'topicexplorer', 'launch', path
     ])
 
