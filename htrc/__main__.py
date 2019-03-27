@@ -19,6 +19,7 @@ import htrc.tools.mallet
 from argparse import ArgumentParser
 import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
+from htrc.util.resolve import *
 
 
 def download_parser(parser=None):
@@ -28,25 +29,18 @@ def download_parser(parser=None):
     parser.add_argument("-p", "--password", help="HTRC password")
     parser.add_argument("file", nargs='?', default=sys.stdin,
         help="workset path[s]")
-    parser.add_argument("-f", "--force", action='store_true',
+    parser.add_argument("-f", "--force", action='store_true', 
         help="remove folder if exists")
     parser.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
-    return parser
-
-def pages_parser(parser=None):
-    if parser is None:
-        parser = ArgumentParser()
-    parser.add_argument("file", nargs='?', default=sys.stdin,
-                        help="workset path[s]")
-    parser.add_argument("-f", "--force", action='store_true',
-                        help="remove folder if exists")
-    parser.add_argument("-o", "--output", help="output directory",
-                        default='/media/secure_volume/workset/')
-    parser.add_argument("-c", "--concat", action='store_true',
-                        help="concatenate a volume's pages in to a single file")
+    parser.add_argument("-t", "--token", help="JWT for volumes download.")
+    parser.add_argument("-dh", "--datahost", help="Data API host.")
+    parser.add_argument("-dp", "--dataport", help="Data API port.")
+    parser.add_argument("-de", "--dataepr", help="Data API EPR.")
+    parser.add_argument("-dc", "--datacert", help="Client certificate file for mutual TLS with Data API.")
+    parser.add_argument("-dk", "--datakey", help="Client key file for mutual TLS with Data API.")
     return parser
 
 def add_workset_path(parser=None):
@@ -55,7 +49,7 @@ def add_workset_path(parser=None):
     parser.add_argument("path", nargs='+', help="workset path[s]")
     return parser
 
-
+    
 
 def main():
     parser = ArgumentParser()
@@ -81,12 +75,6 @@ def main():
     download_parser(parser_download)
     parser_download.set_defaults(func='download')
 
-    # Pages Download helper
-    parser_pages = parsers.add_parser('pages',
-                                         help="Download pages of HathiTrust volumes to disk [requires auth]")
-    pages_parser(parser_pages)
-    parser_pages.set_defaults(func='pages')
-
     # Run helper
     parser_run = parsers.add_parser('run', help="Run a built-in algorithm.")
     run_parsers = parser_run.add_subparsers(help="select a command")
@@ -94,11 +82,11 @@ def main():
     parser_mallet = run_parsers.add_parser('mallet')
     htrc.tools.mallet.populate_parser(parser_mallet)
     parser_mallet.set_defaults(run='mallet')
-
+    
     parser_topicexplorer = run_parsers.add_parser('topicexplorer')
     htrc.tools.topicexplorer.populate_parser(parser_topicexplorer)
     parser_topicexplorer.set_defaults(run='topicexplorer')
-
+    
     parser_run.set_defaults(func='run')
 
     args = parser.parse_args()
@@ -125,35 +113,6 @@ def main():
             htrc.tools.mallet.main(args.path, args.k, args.iter)
         if args.run == 'topicexplorer':
             htrc.tools.topicexplorer.main(args.path, args.k, args.iter)
-    elif args.func == 'pages':
-        if os.path.exists(args.output):
-            if args.force or bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
-                shutil.rmtree(args.output)
-                os.makedirs(args.output)
-            else:
-                print("Please choose another output folder and try again.")
-                sys.exit(1)
-
-
-        if args.file == sys.stdin:
-            f = NamedTemporaryFile()
-            for volume in sys.stdin:
-                f.write((volume + '\n').encode('utf-8'))
-            f.flush()
-            args.file = f.name
-
-            try:
-                pages(args)
-            finally:
-                print("Closing temporary file: " + f.name)
-                f.close()
-
-        elif os.path.exists(args.file):
-            pages(args)
-        else:
-            print("Not a valid page ID file : {}".format(
-                args.file))
-
     elif args.func == 'download':
         if os.path.exists(args.output):
             if args.force or bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
@@ -163,45 +122,57 @@ def main():
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
 
-
-        if args.file == sys.stdin:
-            f = NamedTemporaryFile()
-            for volume in sys.stdin:
-                f.write((volume + '\n').encode('utf-8'))
-            f.flush()
-            args.file = f.name
-
-            try:
-                download(args)
-            finally:
-                print("Closing temporary file: " + f.name)
-                f.close()
-
-
-        elif (args.file.endswith('json')
-            or args.file.endswith('jsonld')
-            or args.file.startswith('http://')
-            or args.file.startswith('https://')):
-            volumes = htrc.workset.load(args.file)
-
-            f = NamedTemporaryFile()
-            for volume in volumes:
-                f.write((volume + '\n').encode('utf-8'))
-            f.flush()
-            args.file = f.name
-
-            try:
-                download(args)
-            finally:
-                print("Closing temporary file: " + f.name)
-                f.close()
-
-        elif os.path.exists(args.file):
-            download(args)
-        else:
-            print("Not a valid ID file or workset identifier: {}".format(
-                args.file))
+        try:
+            resolve_and_download(args)
+        except ValueError:
+            print("Invalid identifier:", args.file)
             sys.exit(1)
+
+def resolve_and_download(args):
+    if args.file == sys.stdin:
+        # For use with UNIX pipes
+        download_with_tempfile(args, sys.stdin)
+        return
+
+    elif os.path.exists(args.file):
+        # For use with downloaded workset files - either in JSON or 
+        download(args)
+        return
+
+    elif (args.file.endswith('json')
+        or args.file.endswith('jsonld')
+        or args.file.startswith('http://')
+        or args.file.startswith('https://')):
+        # For use with HTRC Worksets and HT Collection Builder
+        try:
+            volumes = htrc.workset.load(args.file)
+            download_with_tempfile(args, volumes)
+            return
+        except ValueError:
+            # Invalid workset, continue to last block
+            pass
+
+    # Check for valid volume_id
+    try:
+        if parse_volume_id(args.file):
+            volumes = [parse_volume_id(args.file)]
+            download_with_tempfile(args, volumes)
+            return
+        else:
+            raise ValueError("No Volume ID found")
+    except ValueError:
+        pass
+    
+    # Check for valid record id
+    if parse_record_id(args.file):
+        record_id = parse_record_id(args.file)
+        volumes = record_id_to_volume_ids(record_id)
+        download_with_tempfile(args, volumes)
+        return
+    else:
+        # invalid
+        raise ValueError("Not a valid ID file or workset identifier: {}".format(
+                         args.file))
 
 
 def download(args):
@@ -221,22 +192,18 @@ def download(args):
         else:
             raise e
 
-def pages(args):
+def download_with_tempfile(args, volumes):
+    f = NamedTemporaryFile()
+    for volume in volumes:
+        f.write((volume + '\n').encode('utf-8'))
+    f.flush()
+    args.file = f.name
+
     try:
-        htrc.volumes.pages(args)
-    except OSError as e:
-        if not os.path.exists('/media/secure_volume/'):
-            print('Secure volume not mounted. Could not download pages')
-            sys.exit(1)
-        else:
-            print("Could not download pages. {} {}".format(e.strerror, e.filename))
-            sys.exit(1)
-    except RuntimeError as e:
-        if not args.debug:
-            print("Could not download pages. {}".format(str(e)))
-            sys.exit(1)
-        else:
-            raise e
+        download(args)
+    finally:
+        print("Closing temporary file: " + f.name)
+        f.close()
 
 
 if __name__ == '__main__':

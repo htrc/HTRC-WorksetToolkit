@@ -65,7 +65,8 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
     ])
     subprocess.check_call([
         'topicexplorer', 'prep', path,
-        '-q', '--min-word-len', '3', '--lang', 'en'
+        '-q', '--min-word-len', '3', '--lang', 'en',
+        '--high', '30', '--low', '10'
     ])
     subprocess.check_call([
         'topicexplorer', 'train', path,
@@ -73,6 +74,10 @@ def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
         '--iter', str(iterations),
         '--context-type', 'book',
         '-q'
+    ])
+    subprocess.check_call([
+        'topicexplorer', 'metadata', path,
+        '--htrc'
     ])
     subprocess.check_call([
         'topicexplorer', 'launch', path

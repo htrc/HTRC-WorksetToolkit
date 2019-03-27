@@ -39,15 +39,22 @@ def _get_value(section, key, path=None):
         raise EnvironmentError("Config not set for {} {} in {}".format(
             section, key, path))
     
-def get_dataapi_host_port(path=None):
-    host = _get_value('data', 'host', path)
+def get_dataapi_port(path=None):
     port = int(_get_value('data', 'port', path))
-    return (host, port)
+    return (port)
 
+def get_dataapi_host(path=None):
+    host = _get_value('data', 'host', path)
+    return (host)
 
 def get_dataapi_epr(path=None):
     return _get_value('data', 'url', path)
 
+def get_dataapi_cert(path=None):
+    return _get_value('data', 'cert', path)
+
+def get_dataapi_key(path=None):
+    return _get_value('data', 'key', path)
 
 def get_idp_host_port(path=None):
     host = _get_value('idp', 'host', path)
@@ -113,6 +120,29 @@ def save_jwt_token(token, expiration=None, path=None):
         config.write(credential_file)
 
     return token
+
+def remove_jwt_token(path=None):
+    """
+    Removes JWT token from the config file.
+    """
+    # Default to ~/.htrc
+    if path is None:
+        path = DEFAULT_PATH
+
+    # Open and modify existing config file, if it exists.
+    config = ConfigParser(allow_no_value=True)
+    if os.path.exists(path):
+        config.read(path)
+    if not config.has_section('jwt'):
+        config.add_section('jwt')
+    # set token and expiration
+    config.set('jwt', 'token', " ")
+    config.set('jwt', 'expiration', " ")
+
+    with open(path, 'w') as credential_file:
+        config.write(credential_file)
+
+
 def get_credentials(path=None):
     """
     Retrieves the username and password from a config file for the Data API.

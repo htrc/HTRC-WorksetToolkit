@@ -10,7 +10,6 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 """
 from __future__ import print_function
 from future import standard_library
-
 standard_library.install_aliases()
 
 from builtins import input
@@ -33,15 +32,14 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
 from htrc.lib.cli import bool_prompt
+from htrc.util import split_items
 import htrc.config
 
 import logging
 from logging import NullHandler
-
 logging.getLogger(__name__).addHandler(NullHandler())
 
-
-def get_volumes(token, volume_ids, concat=False):
+def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
     """
     Returns volumes from the Data API as a raw zip stream.
 
@@ -50,19 +48,21 @@ def get_volumes(token, volume_ids, concat=False):
     :volume_ids: A list of volume_ids
     :concat: If True, return a single file per volume. If False, return a single
     file per page (default).
+    :host: Data API host
+    :port: Data API port
     """
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
 
-    url = htrc.config.get_dataapi_epr() + "volumes"
+    url = epr + "volumes"
 
     for id in volume_ids:
-        if re.match(pattern=r"\S+\.\S+", string=id):
-            id.replace('+', ':').replace('=', '/')
-        else :
-            print("Invalid volume id " + id + ". Please correct this volume id and try agan")
+        if ("." not in id
+            or " " in id):
+            print("Invalid volume id " + id + ". Please correct this volume id and try again.")
 
-    data = {'volumeIDs': '|'.join(volume_ids)}
+    data = {'volumeIDs': '|'.join(
+        [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
         data['concat'] = 'true'
 
@@ -77,8 +77,9 @@ def get_volumes(token, volume_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    host, port = htrc.config.get_dataapi_host_port()
-    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
+
+
     httpsConnection.request("POST", url, urlencode(data), headers)
 
     response = httpsConnection.getresponse()
@@ -88,9 +89,9 @@ def get_volumes(token, volume_ids, concat=False):
         data = BytesIO()
         bytes_downloaded = 0
         bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength,
-                                      widgets=[progressbar.AnimatedMarker(), '    ',
-                                               progressbar.DataSize(),
-                                               ' (', progressbar.FileTransferSpeed(), ')'])
+            widgets=[progressbar.AnimatedMarker(), '    ',
+                     progressbar.DataSize(),
+                     ' (', progressbar.FileTransferSpeed(), ')'])
 
         while body:
             body = response.read(128)
@@ -124,20 +125,13 @@ def get_pages(token, page_ids, concat=False):
     if not page_ids:
         raise ValueError("page_ids is empty.")
 
-    for id in page_ids:
-        if re.match(pattern=r"\S+\.\S+\[\d+(?:(,\d+))+\]$", string=id):
-            id.replace('+', ':').replace('=', '/')
-        else :
-            print("Invalid page or/and volume id " + id + ". Please correct this volume or/and page id and try agan")
-
-
     url = htrc.config.get_dataapi_epr()
     url += "pages?pageIDs=" + quote_plus('|'.join(page_ids))
     if concat:
         url += "&concat=true"
 
     logging.info("data api URL: ", url)
-
+    
     # Create SSL lookup
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
@@ -145,7 +139,8 @@ def get_pages(token, page_ids, concat=False):
     ctx.verify_mode = ssl.CERT_NONE
 
     # Create connection
-    host, port = htrc.config.get_dataapi_host_port()
+    host = htrc.config.get_dataapi_host()
+    port = htrc.config.get_dataapi_port()
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
 
     headers = {"Authorization": "Bearer " + token}
@@ -166,13 +161,12 @@ def get_pages(token, page_ids, concat=False):
 
     return data
 
-
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
     headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = {"grant_type": "client_credentials",
-            "client_secret": password,
-            "client_id": username}
+    data = { "grant_type": "client_credentials",
+             "client_secret": password,
+             "client_id": username }
     data = urlencode(data)
 
     # create an SSL context
@@ -211,77 +205,62 @@ def get_oauth2_token(username, password):
 
     return token
 
-
 def grep(file_name, pattern):
     print("\nFollowing volume ids are not available.")
     for line in open(file_name):
         if pattern in line:
-            print(line.split()[-1])
-
+            print (line.split()[-1])
 
 def check_error_file(output_dir):
     file_name = "ERROR.err"
 
     if output_dir.endswith("/"):
-        file_path = output_dir + file_name
+        file_path = output_dir+ file_name
     else:
-        file_path = output_dir + "/" + file_name
+        file_path = output_dir+"/"+file_name
 
     if os.path.isfile(file_path):
-        grep(file_path, "KeyNotFoundException")
+        grep(file_path,"KeyNotFoundException")
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False):
+                     config_path=None, token=None, concat=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
     # get token if not specified
     if not token:
-        import htrc.config
         token = htrc.config.get_jwt_token()
+        htrc.config.remove_jwt_token()
 
-    if token is not None:
+    if not host:
+        host= htrc.config.get_dataapi_host()
+
+    if not port:
+        port = htrc.config.get_dataapi_port()
+
+    if not epr:
+        epr = htrc.config.get_dataapi_epr()
+
+    if not cert:
+        cert = htrc.config.get_dataapi_cert()
+
+    if not key:
+        key = htrc.config.get_dataapi_key()
+
+    if any((token, host, port)) is not None:
         logging.info("obtained token: %s\n" % token)
 
         try:
-            data = get_volumes(token, volume_ids, concat)
+            for ids in split_items(volume_ids, 250):
+                data = get_volumes(token, ids, host, port, cert, key, epr, concat)
 
-            myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output_dir)
-            myzip.close()
+                myzip = ZipFile(BytesIO(data))
+                myzip.extractall(output_dir)
+                myzip.close()
 
-            check_error_file(output_dir)
-
-        except socket.error:
-            raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
-
-    else:
-        raise RuntimeError("Failed to obtain jwt token.")
-
-
-def download_pages(page_ids, output_dir, token=None, concat=False):
-    # create output_dir folder, if nonexistant
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
-
-    # get token if not specified
-    if not token:
-        import htrc.config
-        token = htrc.config.get_jwt_token()
-
-    if token is not None:
-        logging.info("obtained token: %s\n" % token)
-
-        try:
-            data = get_pages(token, page_ids, concat)
-
-            myzip = ZipFile(BytesIO(data))
-            myzip.extractall(output_dir)
-            myzip.close()
-
-            check_error_file(output_dir)
+                check_error_file(output_dir)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
@@ -295,12 +274,9 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_volumes(volumeIDs, args.output, args.username, args.password, concat=args.concat)
+    return download_volumes(volumeIDs, args.output,
+        username=args.username, password=args.password,
+        token=args.token, concat=args.concat, host=args.datahost,
+        port=args.dataport, cert=args.datacert, key=args.datakey,
+        epr=args.dataepr)
 
-
-def pages(args):
-    # extract files
-    with open(args.file) as IDfile:
-        pageIDs = [line.strip() for line in IDfile]
-
-    return download_pages(pageIDs, args.output, concat=args.concat)

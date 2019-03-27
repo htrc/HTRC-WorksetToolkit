@@ -15,6 +15,8 @@ from urllib.parse import quote_plus, urlencode
 
 import requests
 
+from htrc.util import split_items
+
 def get_volume_metadata(id, marc=False):
     """
     Retrieve item metadata `from the HathiTrust Bibliographic API`_.
@@ -71,21 +73,86 @@ def safe_volume_metadata(id, marc=False, sleep_time=1):
         logging.error(err)
         return dict()
 
+def get_bulk_metadata(ids, marc=False):
+    """
+    Retrieve item metadata `from the HathiTrust Bibliographic API`_.
+
+    Params:
+    :param ids: HTIDs for the volumes to be retrieved
+    :param marc: Retrieve MARC-XML within JSON return value.
+
+    .. _from the HathiTrust Bibliographic API: https://www.hathitrust.org/bib_api
+    """
+    biblio_api = "https://catalog.hathitrust.org/api/volumes"
+
+    if marc:
+        biblio_api += '/full'
+    else:
+        biblio_api += '/brief'
+
+    query = '|'.join(['htid:' + id for id in ids])
+    url = biblio_api + '/json/' + query
+
+    metadata = dict()
+    try:
+        reader = codecs.getreader('utf-8')
+        raw = json.load(reader(urlopen(url)))
+
+        for id, data in raw.items():
+            id = id.replace('htid:','')
+            if len(data['records']) == 1:
+                for item in data['items']:
+                    if item['htid'] == id:
+                        item_md = data['records'][item['fromRecord']]
+                        item_md.update(item)
+                        metadata[id] = item_md
+            else:
+                metadata[id] = dict()
+    except HTTPError:
+        raise RuntimeError("Could not access HT Bibliography API.")
+
+    return metadata
+
+def safe_bulk_metadata(ids, marc=False, sleep_time=1):
+    """
+    Retrieve bulk item metadata `from the HathiTrust Bibliographic API`_.
+
+    Unlike :method get_bulk_metadata:, this function returns an
+    empty dictionary, rather than an error when metadata is missing.
+
+    Params:
+    :param ids: HTIDs for the volumes to be retrieved
+    :param marc: Retrieve MARC-XML within JSON return value.
+
+    _ https://www.hathitrust.org/bib_api
+    """
+    try:
+        metadata = get_bulk_metadata(ids, marc)
+        if sleep_time:
+            sleep(sleep_time)
+        return metadata
+    except ValueError as err:
+        logging.error(err)
+        return dict()
 
 def get_metadata(ids, output_file=None):
     """
     Retrieves metadata for a folder of folders, where each subfolder is named
     for a HathiTrust ID. This structure is the default structure extracted from
-    a Data API request (:method htrc.volumes.get_volumes:). 
+    a Data API request (:method htrc.volumes.get_volumes:).
     """
-    data = [(id.strip(), safe_volume_metadata(id.strip().replace('+', ':').replace('=', '/'))) for id in ids]
-    data = dict(data)
+    ids = [str.strip(id).replace('+', ':').replace('=', '/') for id in ids] # data cleanup
+
+    metadata = dict()
+    for segment in split_items(ids, 50):
+        items = safe_bulk_metadata(segment)
+        metadata.update(items)
 
     if output_file:
         with open(output_file, 'w') as outfile:
-            json.dump(data, outfile)
+            json.dump(metadata, outfile)
 
-    return data
+    return metadata
 
 def record_metadata(id, sleep_time=1):
     """
