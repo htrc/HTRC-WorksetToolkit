@@ -62,7 +62,7 @@ class TestVolumes(unittest.TestCase):
         https_mock.return_value.getresponse.return_value = response_mock
 
         htrc.volumes.get_volumes('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
-        htrc.volumes.get_pages('1234', self.test_vols)
+        htrc.volumes.get_pages('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/')
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_volumes_and_pages_error(self, https_mock):
@@ -73,14 +73,14 @@ class TestVolumes(unittest.TestCase):
             htrc.volumes.get_volumes('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
 
         with self.assertRaises(EnvironmentError):
-            htrc.volumes.get_pages('1234', self.test_vols)
+            htrc.volumes.get_pages('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/')
 
     def test_get_volumes_and_pages_empty(self):
         with self.assertRaises(ValueError):
             htrc.volumes.get_volumes('1234', [], 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
 
         with self.assertRaises(ValueError):
-            htrc.volumes.get_pages('1234', [])
+            htrc.volumes.get_pages('1234', [], 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
 
     @patch('htrc.volumes.ZipFile')
     @patch('htrc.volumes.get_volumes')

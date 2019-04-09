@@ -112,7 +112,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
     return data
 
 
-def get_pages(token, page_ids, concat=False):
+def get_pages(token, page_ids, host, port, cert, key, epr, concat=False):
     """
     Returns a ZIP file containing specfic pages.
 
@@ -125,31 +125,54 @@ def get_pages(token, page_ids, concat=False):
     if not page_ids:
         raise ValueError("page_ids is empty.")
 
-    url = htrc.config.get_dataapi_epr()
-    url += "pages?pageIDs=" + quote_plus('|'.join(page_ids))
-    if concat:
-        url += "&concat=true"
+    url = epr + "pages"
 
-    logging.info("data api URL: ", url)
-    
+    for id in page_ids:
+        if ("." not in id
+            or " " in id):
+            print("Invalid volume id " + id + ". Please correct this volume id and try again.")
+
+    data = {'pageIDs': '|'.join(
+        [id.replace('+', ':').replace('=', '/') for id in page_ids])}
+
+    if concat:
+        data['concat'] = 'true'
+
+    # Authorization
+    headers = {"Authorization": "Bearer " + token,
+               "Content-type": "application/x-www-form-urlencoded"}
+
+
     # Create SSL lookup
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
 
-    # Create connection
-    host = htrc.config.get_dataapi_host()
-    port = htrc.config.get_dataapi_port()
-    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx)
+    # Retrieve the volumes
+    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
 
-    headers = {"Authorization": "Bearer " + token}
-    httpsConnection.request("GET", url, headers=headers)
+
+    httpsConnection.request("POST", url, urlencode(data), headers)
 
     response = httpsConnection.getresponse()
 
     if response.status is 200:
-        data = response.read()
+        body = True
+        data = BytesIO()
+        bytes_downloaded = 0
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength,
+              widgets=[progressbar.AnimatedMarker(), '    ',
+                                               progressbar.DataSize(),
+                                               ' (', progressbar.FileTransferSpeed(), ')'])
+
+        while body:
+            body = response.read(128)
+            data.write(body)
+            bytes_downloaded += len(body)
+            bar.update(bytes_downloaded)
+
+        data = data.getvalue()
     else:
         logging.debug("Unable to get pages")
         logging.debug("Response Code: ".format(response.status))
@@ -224,7 +247,7 @@ def check_error_file(output_dir):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, host=None, port=None, cert=None, key=None, epr=None):
+                     config_path=None, token=None, concat=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -254,7 +277,10 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
 
         try:
             for ids in split_items(volume_ids, 250):
-                data = get_volumes(token, ids, host, port, cert, key, epr, concat)
+                if pages:
+                    data = get_pages(token, ids, host, port, cert, key, epr, concat)
+                else:
+                    data = get_volumes(token, ids, host, port, cert, key, epr, concat)
 
                 myzip = ZipFile(BytesIO(data))
                 myzip.extractall(output_dir)
@@ -276,7 +302,7 @@ def download(args):
 
     return download_volumes(volumeIDs, args.output,
         username=args.username, password=args.password,
-        token=args.token, concat=args.concat, host=args.datahost,
+        token=args.token, concat=args.concat, pages=args.pages, host=args.datahost,
         port=args.dataport, cert=args.datacert, key=args.datakey,
         epr=args.dataepr)
 
