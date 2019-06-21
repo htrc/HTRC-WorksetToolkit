@@ -9,10 +9,10 @@ import sys
 import atexit
 import tarfile
 
-__version__ = '0.1.49'
+__version__ = '0.1.50'
 
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
-                    'requests', 'argparse==1.1', 'topicexplorer==1.0b224']
+                    'requests', 'argparse==1.1', 'topicexplorer==1.0b225']
 # TODO: migrate to docs confix:, 'sphinx-argparse', 'sphinxcontrib-fulltoc']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
