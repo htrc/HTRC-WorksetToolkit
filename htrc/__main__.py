@@ -35,6 +35,8 @@ def download_parser(parser=None):
         default='/media/secure_volume/workset/')
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
+    parser.add_argument("-m", "--mets", action='store_true',
+                        help="add volume's METS file")
     parser.add_argument("-pg", "--pages",action='store_true',
         help="Download given page numbers of a volumes.")
     parser.add_argument("-t", "--token", help="JWT for volumes download.")
@@ -122,6 +124,11 @@ def main():
                 os.makedirs(args.output)
             else:
                 print("Please choose another output folder and try again.")
+                sys.exit(1)
+
+        if args.pages:
+            if args.mets and args.concat:
+                print ("Cannot set both concat and mets with pages")
                 sys.exit(1)
 
         try:

@@ -39,7 +39,7 @@ import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
+def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, mets=False):
     """
     Returns volumes from the Data API as a raw zip stream.
 
@@ -65,6 +65,9 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
     if concat:
         data['concat'] = 'true'
+
+    if mets:
+        data['mets'] = 'true'
 
     # Authorization
     headers = {"Authorization": "Bearer " + token,
@@ -112,7 +115,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False):
     return data
 
 
-def get_pages(token, page_ids, host, port, cert, key, epr, concat=False):
+def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=False):
     """
     Returns a ZIP file containing specfic pages.
 
@@ -135,8 +138,12 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False):
     data = {'pageIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in page_ids])}
 
-    if concat:
+    if concat and mets:
+        print("Cannot set both concat and mets with pages.")
+    elif concat:
         data['concat'] = 'true'
+    elif mets:
+        data['mets'] = 'true'
 
     # Authorization
     headers = {"Authorization": "Bearer " + token,
@@ -247,7 +254,7 @@ def check_error_file(output_dir):
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
+                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -278,9 +285,12 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         try:
             for ids in split_items(volume_ids, 250):
                 if pages:
-                    data = get_pages(token, ids, host, port, cert, key, epr, concat)
+                    if concat & mets:
+                        raise ValueError("Cannot set both concat and mets with pages.")
+                    else:
+                        data = get_pages(token, ids, host, port, cert, key, epr, concat, mets)
                 else:
-                    data = get_volumes(token, ids, host, port, cert, key, epr, concat)
+                    data = get_volumes(token, ids, host, port, cert, key, epr, concat, mets)
 
                 myzip = ZipFile(BytesIO(data))
                 myzip.extractall(output_dir)
@@ -302,7 +312,7 @@ def download(args):
 
     return download_volumes(volumeIDs, args.output,
         username=args.username, password=args.password,
-        token=args.token, concat=args.concat, pages=args.pages, host=args.datahost,
+        token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
         port=args.dataport, cert=args.datacert, key=args.datakey,
         epr=args.dataepr)
 
