@@ -236,10 +236,18 @@ def get_oauth2_token(username, password):
     return token
 
 def grep(file_name, pattern):
-    print("\nFollowing volume ids are not available.")
+    na_volume = []
     for line in open(file_name):
         if pattern in line:
-            print (line.split()[-1])
+            na_volume.append(line.split()[-1])
+    if len(na_volume) < 100:
+        print("\nFollowing volume ids are not available.")
+        print("\n".join(str(item) for item in na_volume))
+        with open("volume_na.txt", "w") as volume_na:
+            volume_na.write("\n".join(str(item) for item in na_volume))
+    else:
+        if len(na_volume) == 100:
+            print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
 
 def check_error_file(output_dir):
     file_name = "ERROR.err"
