@@ -235,7 +235,7 @@ def get_oauth2_token(username, password):
 
     return token
 
-def grep(file_name, pattern):
+def grep(file_name, output_dir, pattern):
     na_volume = []
     for line in open(file_name):
         if pattern in line:
@@ -243,7 +243,7 @@ def grep(file_name, pattern):
     if len(na_volume) < 100:
         print("\nFollowing volume ids are not available.")
         print("\n".join(str(item) for item in na_volume))
-        with open("volume_na.txt", "w") as volume_na:
+        with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
             volume_na.write("\n".join(str(item) for item in na_volume))
     else:
         if len(na_volume) == 100:
@@ -258,7 +258,7 @@ def check_error_file(output_dir):
         file_path = output_dir+"/"+file_name
 
     if os.path.isfile(file_path):
-        grep(file_path,"KeyNotFoundException")
+        grep(file_path, output_dir, "KeyNotFoundException")
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
