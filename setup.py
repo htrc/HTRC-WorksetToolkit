@@ -9,7 +9,7 @@ import sys
 import atexit
 import tarfile
 
-__version__ = '0.1.52'
+__version__ = '0.1.53'
 
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2',
                     'requests', 'argparse==1.1', 'topicexplorer==1.0b226']
