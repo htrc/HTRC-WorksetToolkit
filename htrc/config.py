@@ -81,19 +81,19 @@ def get_jwt_token(path=None):
         token = _get_value('jwt', 'token', path)
 
         # check expiration date
-        expiration = int(_get_value('jwt', 'expiration', path))
-        if time.time() > expiration:
-            raise RuntimeError("JWT token expired.") 
+        #expiration = int(_get_value('jwt', 'expiration', path))
+        #if time.time() > expiration:
+            #raise RuntimeError("JWT token expired.") 
     except:
         # This should run on either a missing or expired token.
         import htrc.auth
-        token, expiration = htrc.auth.get_jwt_token()
-        htrc.config.save_jwt_token(token, expiration, path)
+        token = htrc.auth.get_jwt_token()
+        htrc.config.save_jwt_token(token, path)
 
 
     return token
 
-def save_jwt_token(token, expiration=None, path=None):
+def save_jwt_token(token, path=None):
     """
     Saves JWT token in the config file.
     """
@@ -102,8 +102,8 @@ def save_jwt_token(token, expiration=None, path=None):
         path = DEFAULT_PATH
 
     # Default to expiration of now - force a new token on next request
-    if expiration is None:
-        expiration = time.time()
+    #if expiration is None:
+        #expiration = time.time()
 
     # Open and modify existing config file, if it exists.
     config = ConfigParser(allow_no_value=True)
@@ -114,7 +114,7 @@ def save_jwt_token(token, expiration=None, path=None):
 
     # set token and expiration
     config.set('jwt', 'token', token)
-    config.set('jwt', 'expiration', expiration)
+    #config.set('jwt', 'expiration', expiration)
 
     with open(path, 'w') as credential_file:
         config.write(credential_file)
@@ -137,7 +137,7 @@ def remove_jwt_token(path=None):
         config.add_section('jwt')
     # set token and expiration
     config.set('jwt', 'token', " ")
-    config.set('jwt', 'expiration', " ")
+    #config.set('jwt', 'expiration', " ")
 
     with open(path, 'w') as credential_file:
         config.write(credential_file)
