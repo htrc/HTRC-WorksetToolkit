@@ -77,19 +77,9 @@ def get_idp_url(path=None):
 
 # Add jwt credential access methods
 def get_jwt_token(path=None):
-    try:
-        token = _get_value('jwt', 'token', path)
 
-        # check expiration date
-        #expiration = int(_get_value('jwt', 'expiration', path))
-        #if time.time() > expiration:
-            #raise RuntimeError("JWT token expired.") 
-    except:
-        # This should run on either a missing or expired token.
-        import htrc.auth
-        token = htrc.auth.get_jwt_token()
-        htrc.config.save_jwt_token(token, path)
-
+    import htrc.auth
+    token = htrc.auth.get_jwt_token()
 
     return token
 
