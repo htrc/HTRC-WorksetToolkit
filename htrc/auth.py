@@ -1,12 +1,12 @@
-from base64 import b64encode
+#from base64 import b64encode
 from getpass import getpass
-import http.client
-import ssl
-import time
+#import http.client
+#import ssl
+#import time
 import subprocess
 import requests
 import requests.auth
-import configparser
+#import configparser
 
 import htrc.config
 
@@ -30,7 +30,7 @@ def get_jwt_token():
     result = result[:-1]
     capsule_ip = result.strip()
     url = url1 + "/" + capsule_id + "/" + capsule_ip
-    r = requests.get(url, verify = False)
+    r = requests.get(url)
 
     data = r.json()
     if 'error' not in data:
