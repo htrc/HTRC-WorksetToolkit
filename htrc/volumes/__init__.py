@@ -12,30 +12,29 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 
-from builtins import input
+#from builtins import input
 
 import http.client
 from io import BytesIO  # used to stream http response into zipfile.
-import json
+#import json
 import logging
 import os.path
 import progressbar
-import re
+#import re
 import socket
 import ssl
-import sys
-from time import sleep
-from urllib.request import urlopen
-from urllib.error import HTTPError
-from urllib.parse import quote_plus, urlencode
-import xml.etree.ElementTree as ET
+#import sys
+#from time import sleep
+#from urllib.request import urlopen
+#from urllib.error import HTTPError
+from urllib.parse import urlencode
+#import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
 
-from htrc.lib.cli import bool_prompt
+#from htrc.lib.cli import bool_prompt
 from htrc.util import split_items
 import htrc.config
 
-import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
@@ -77,7 +76,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    #ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
@@ -154,7 +153,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    #ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
@@ -191,49 +190,49 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     return data
 
-def get_oauth2_token(username, password):
+#def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
-    headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = { "grant_type": "client_credentials",
-             "client_secret": password,
-             "client_id": username }
-    data = urlencode(data)
+    #headers = {"Content-type": "application/x-www-form-urlencoded"}
+    #data = { "grant_type": "client_credentials",
+             #"client_secret": password,
+             #"client_id": username }
+    #data = urlencode(data)
 
     # create an SSL context
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    #ctx = ssl.create_default_context()
+    #ctx.check_hostname = False
+    #ctx.verify_mode = ssl.CERT_NONE
 
     # make sure the request method is POST
-    host, port = htrc.config.get_oauth2_host_port()
-    oauth2port = htrc.config.get_oauth2_port()
-    oauth2EPRurl = htrc.config.get_oauth2_url()
-    httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
-    httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
+    #host, port = htrc.config.get_oauth2_host_port()
+    #oauth2port = htrc.config.get_oauth2_port()
+    #oauth2EPRurl = htrc.config.get_oauth2_url()
+    #httpsConnection = http.client.HTTPSConnection(host, oauth2port, context=ctx)
+    #httpsConnection.request("POST", oauth2EPRurl + "?" + data, "", headers)
 
-    response = httpsConnection.getresponse()
+    #response = httpsConnection.getresponse()
 
     # if response status is OK
-    if response.status == 200:
-        data = response.read().decode('utf8')
+    #if response.status == 200:
+        #data = response.read().decode('utf8')
 
-        jsonData = json.loads(data)
-        logging.info("*** JSON: {}".format(jsonData))
+        #jsonData = json.loads(data)
+        #logging.info("*** JSON: {}".format(jsonData))
 
-        token = jsonData["access_token"]
-        logging.info("*** parsed token: {}".format(token))
+        #token = jsonData["access_token"]
+        #logging.info("*** parsed token: {}".format(token))
 
-    else:
-        logging.debug("Unable to get token")
-        logging.debug("Response Code: {}".format(response.status))
-        logging.debug("Response: {}".format(response.reason))
-        logging.debug(response.read())
-        raise EnvironmentError("Unable to get token.")
+    #else:
+        #logging.debug("Unable to get token")
+        #logging.debug("Response Code: {}".format(response.status))
+        #logging.debug("Response: {}".format(response.reason))
+        #logging.debug(response.read())
+        #raise EnvironmentError("Unable to get token.")
 
-    if httpsConnection is not None:
-        httpsConnection.close()
+    #if httpsConnection is not None:
+        #httpsConnection.close()
 
-    return token
+    #return token
 
 def grep(file_name, output_dir, pattern):
     na_volume = []
