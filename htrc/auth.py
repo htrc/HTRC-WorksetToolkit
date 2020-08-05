@@ -25,7 +25,7 @@ def get_jwt_token():
               
     url1 = htrc.config.get_idp_url()
     capsule_id = htrc.config._get_value("jwt", "capsule_id")
-    result = subprocess.check_output(['hostname', '-s', '-I'])
+    result = subprocess.check_output("hostname -s -I | awk '{print $1}'", shell=True)
     result = result.decode('utf-8')
     result = result[:-1]
     capsule_ip = result.strip()
