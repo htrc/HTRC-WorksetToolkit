@@ -132,17 +132,25 @@ def main():
             else:
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
-        d = os.listdir(args.output)
-        if args.headfoot is True:
-            if len(d) == 0:
-                print("This director is empty")
-            else:
-                htrc.volumes.remove_hf(args.output)
-        if args.headfootcon is True:
-            htrc.volumes.remove_hf_concat(args.output)
+        
+        if args.concat and args.headfoot:
+            print("Cannot set both concat and headfoot")
+            sys.exit(1)
+        if args.concat and args.headfootcon:
+            print("Cannot set both concat and headfootcon")
+            sys.exit(1)
+        if args.headfoot and args.headfootcon:
+            print("Cannot set both headfoot and headfootcon")
+            sys.exit(1)
+        if args.mets and args.headfootcon:
+            print("Cannot set both mets and headfootcon")
+            sys.exit(1)
         if args.pages:
             if args.mets and args.concat:
                 print ("Cannot set both concat and mets with pages")
+                sys.exit(1)
+            if args.mets and args.headfootcon:
+                print("Cannot set both mets and headfootcon with pages")
                 sys.exit(1)
 
         try:
