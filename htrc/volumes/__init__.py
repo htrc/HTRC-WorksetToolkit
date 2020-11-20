@@ -30,7 +30,13 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile  # used to decompress requested zip archives.
-
+from htrc.runningheaders import parse_page_structure
+from htrc.hf_vol_load import load_vol
+import pandas as pd
+import fnmatch
+import glob
+from tqdm import tqdm
+import shutil
 from htrc.lib.cli import bool_prompt
 from htrc.util import split_items
 import htrc.config
@@ -63,6 +69,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
 
     data = {'volumeIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
+      
     if concat:
         data['concat'] = 'true'
 
@@ -260,9 +267,110 @@ def check_error_file(output_dir):
     if os.path.isfile(file_path):
         grep(file_path, output_dir, "KeyNotFoundException")
 
+def remove_hf(output_dir):
+    if __name__ == '__main__':
+        os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
+        removed_hf = os.path.join(output_dir, "removed_hf_files")
+        vol_paths = glob.glob(os.path.join(output_dir,'**'))
+        df = pd.DataFrame()
+    
+
+        for path in tqdm(vol_paths):
+            if os.path.isdir(path):
+                page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
+                n = len(page_paths)
+                num = 1
+    
+                while num <= n:
+                    for pg in page_paths:
+                        parsed_path = str(path).split('/')
+                        clean_path_root = '/'.join(parsed_path)
+                        page_num = str(num).zfill(8)
+                        new_filename = page_num+'.txt'
+                        os.rename(pg, clean_path_root+'/'+new_filename)
+                        num += 1
+    
+                folder = os.path.basename(path)
+                n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
+                pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
+    
+                body = []
+                for n, page in enumerate(pages):
+                    s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
+    
+                    pg_boolean = s + "\n" + "-"*len(s)
+                    pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
+                    #pg_body = page.body if page.has_body else ""
+                    pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
+                
+                    body.append(page.body)
+                
+                    df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
+                    df.sort_values("Volume")
+                    for i, g in df.groupby("Volume"):
+                        g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
+            
+                    count = 1
+                    for item in body:
+                        pg_n = str(count).zfill(8)
+                        filename = '{}.txt'.format(pg_n)
+                        count += 1
+                        with open(os.path.join(clean_path_root, filename), "w") as f_out:
+                            f_out.write('{}\n'.format(item))
+
+def remove_hf_concat(output_dir):
+    if __name__ == '__main__':
+        os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
+        removed_hf = os.path.join(output_dir, "removed_hf_files")
+        vol_paths = glob.glob(os.path.join(output_dir,'**'))
+        df = pd.DataFrame()
+        retain = ["removed_hf_files"]
+    
+
+        for path in tqdm(vol_paths):
+            if os.path.isdir(path):
+                page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
+                n = len(page_paths)
+                num = 1
+    
+                while num <= n:
+                    for pg in page_paths:
+                        parsed_path = str(path).split('/')
+                        clean_path_root = '/'.join(parsed_path)
+                        page_num = str(num).zfill(8)
+                        new_filename = page_num+'.txt'
+                        os.rename(pg, clean_path_root+'/'+new_filename)
+                        num += 1
+    
+                folder = os.path.basename(path)
+                n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
+                pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
+                
+                filename = '{}.txt'.format(folder)
+                body = []
+                for n, page in enumerate(pages):
+                    s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
+    
+                    pg_boolean = s + "\n" + "-"*len(s)
+                    pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
+                    #pg_body = page.body if page.has_body else ""
+                    pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
+                
+                    body.append(page.body)
+                
+                    df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
+                    df.sort_values("Volume")
+                    for i, g in df.groupby("Volume"):
+                        g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
+            
+                    
+                with open(os.path.join(output_dir, filename), "w") as f_out:
+                    f_out.write('\n'.join([str(item) + '\n' for item in body]) + '\n')
+                if folder not in retain:
+                    shutil.rmtree(os.path.join(output_dir, folder))
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
+                     config_path=None, token=None, headfootcon=False, headfoot=False, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -305,7 +413,11 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.close()
 
                 check_error_file(output_dir)
-
+                if headfoot:
+                    remove_hf(output_dir)
+                if headfootcon:
+                    remove_hf_concat(output_dir)
+                
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
 
@@ -320,7 +432,7 @@ def download(args):
 
     return download_volumes(volumeIDs, args.output,
         username=args.username, password=args.password,
-        token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
+        token=args.token, headfoot=args.headfoot, headfootcon=args.headfootcon, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
         port=args.dataport, cert=args.datacert, key=args.datakey,
         epr=args.dataepr)
 
