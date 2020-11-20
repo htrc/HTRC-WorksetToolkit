@@ -268,106 +268,104 @@ def check_error_file(output_dir):
         grep(file_path, output_dir, "KeyNotFoundException")
 
 def remove_hf(output_dir):
-    if __name__ == '__main__':
-        os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
-        removed_hf = os.path.join(output_dir, "removed_hf_files")
-        vol_paths = glob.glob(os.path.join(output_dir,'**'))
-        df = pd.DataFrame()
+    os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
+    removed_hf = os.path.join(output_dir, "removed_hf_files")
+    vol_paths = glob.glob(os.path.join(output_dir,'**'))
+    df = pd.DataFrame()
     
 
-        for path in tqdm(vol_paths):
-            if os.path.isdir(path):
-                page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
-                n = len(page_paths)
-                num = 1
+    for path in tqdm(vol_paths):
+        if os.path.isdir(path):
+            page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
+            n = len(page_paths)
+            num = 1
     
-                while num <= n:
-                    for pg in page_paths:
-                        parsed_path = str(path).split('/')
-                        clean_path_root = '/'.join(parsed_path)
-                        page_num = str(num).zfill(8)
-                        new_filename = page_num+'.txt'
-                        os.rename(pg, clean_path_root+'/'+new_filename)
-                        num += 1
+            while num <= n:
+                for pg in page_paths:
+                    parsed_path = str(path).split('/')
+                    clean_path_root = '/'.join(parsed_path)
+                    page_num = str(num).zfill(8)
+                    new_filename = page_num+'.txt'
+                    os.rename(pg, clean_path_root+'/'+new_filename)
+                    num += 1
     
-                folder = os.path.basename(path)
-                n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
-                pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
+            folder = os.path.basename(path)
+            n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
+            pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
     
-                body = []
-                for n, page in enumerate(pages):
-                    s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
+            body = []
+            for n, page in enumerate(pages):
+                s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
     
-                    pg_boolean = s + "\n" + "-"*len(s)
-                    pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
-                    #pg_body = page.body if page.has_body else ""
-                    pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
+                pg_boolean = s + "\n" + "-"*len(s)
+                pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
+                #pg_body = page.body if page.has_body else ""
+                pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
                 
-                    body.append(page.body)
+                body.append(page.body)
                 
-                    df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
-                    df.sort_values("Volume")
-                    for i, g in df.groupby("Volume"):
-                        g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
+                df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
+                df.sort_values("Volume")
+                for i, g in df.groupby("Volume"):
+                    g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
             
-                    count = 1
-                    for item in body:
-                        pg_n = str(count).zfill(8)
-                        filename = '{}.txt'.format(pg_n)
-                        count += 1
-                        with open(os.path.join(clean_path_root, filename), "w") as f_out:
-                            f_out.write('{}\n'.format(item))
+                count = 1
+                for item in body:
+                    pg_n = str(count).zfill(8)
+                    filename = '{}.txt'.format(pg_n)
+                    count += 1
+                    with open(os.path.join(clean_path_root, filename), "w") as f_out:
+                        f_out.write('{}\n'.format(item))
 
 def remove_hf_concat(output_dir):
-    if __name__ == '__main__':
-        os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
-        removed_hf = os.path.join(output_dir, "removed_hf_files")
-        vol_paths = glob.glob(os.path.join(output_dir,'**'))
-        df = pd.DataFrame()
-        retain = ["removed_hf_files"]
+    os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
+    removed_hf = os.path.join(output_dir, "removed_hf_files")
+    vol_paths = glob.glob(os.path.join(output_dir,'**'))
+    df = pd.DataFrame()
+    retain = ["removed_hf_files"]
     
 
-        for path in tqdm(vol_paths):
-            if os.path.isdir(path):
-                page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
-                n = len(page_paths)
-                num = 1
+    for path in tqdm(vol_paths):
+        if os.path.isdir(path):
+            page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
+            n = len(page_paths)
+            num = 1
     
-                while num <= n:
-                    for pg in page_paths:
-                        parsed_path = str(path).split('/')
-                        clean_path_root = '/'.join(parsed_path)
-                        page_num = str(num).zfill(8)
-                        new_filename = page_num+'.txt'
-                        os.rename(pg, clean_path_root+'/'+new_filename)
-                        num += 1
+            while num <= n:
+                for pg in page_paths:
+                    parsed_path = str(path).split('/')
+                    clean_path_root = '/'.join(parsed_path)
+                    page_num = str(num).zfill(8)
+                    new_filename = page_num+'.txt'
+                    os.rename(pg, clean_path_root+'/'+new_filename)
+                    num += 1
     
-                folder = os.path.basename(path)
-                n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
-                pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
+            folder = os.path.basename(path)
+            n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
+            pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
                 
-                filename = '{}.txt'.format(folder)
-                body = []
-                for n, page in enumerate(pages):
-                    s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
+            filename = '{}.txt'.format(folder)
+            body = []
+            for n, page in enumerate(pages):
+                s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
     
-                    pg_boolean = s + "\n" + "-"*len(s)
-                    pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
-                    #pg_body = page.body if page.has_body else ""
-                    pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
+                pg_boolean = s + "\n" + "-"*len(s)
+                pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
+                #pg_body = page.body if page.has_body else ""
+                pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
                 
-                    body.append(page.body)
+                body.append(page.body)
                 
-                    df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
-                    df.sort_values("Volume")
-                    for i, g in df.groupby("Volume"):
-                        g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
+                df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
+                df.sort_values("Volume")
+                for i, g in df.groupby("Volume"):
+                    g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
             
                     
-                with open(os.path.join(output_dir, filename), "w") as f_out:
-                    f_out.write('\n'.join([str(item) + '\n' for item in body]) + '\n')
-                if folder not in retain:
-                    shutil.rmtree(os.path.join(output_dir, folder))
+            with open(os.path.join(output_dir, filename), "w") as f_out:
+                f_out.write('\n'.join([str(item) + '\n' for item in body]) + '\n')
+            if folder not in retain:
+                shutil.rmtree(os.path.join(output_dir, folder))
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None, token=None, headfootcon=False, headfoot=False, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
@@ -413,10 +411,19 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.close()
 
                 check_error_file(output_dir)
+                d = os.listdir(output_dir)
                 if headfoot:
-                    remove_hf(output_dir)
+                    if len(d) == 0:
+                        print("This directory is empty")
+                        sys.exit(1)
+                    else:
+                        remove_hf(output_dir)
                 if headfootcon:
-                    remove_hf_concat(output_dir)
+                    if len(d) == 0:
+                        print("This directory is empty")
+                        sys.exit(1)
+                    else:
+                        remove_hf_concat(output_dir)
                 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
