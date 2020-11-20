@@ -12,10 +12,12 @@ import shutil
 import sys
 from tempfile import NamedTemporaryFile
 
+
 from htrc.metadata import get_metadata, get_volume_metadata
 import htrc.volumes
 import htrc.workset
 import htrc.tools.mallet
+
 from argparse import ArgumentParser
 import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
@@ -33,6 +35,10 @@ def download_parser(parser=None):
         help="remove folder if exists")
     parser.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
+    parser.add_argument("-hf", "--headfoot", action = 'store_true',
+        help="remove headers and footers from individual pages")
+    parser.add_argument("-hfc", "--headfootcon", action = 'store_true',
+        help="remove headers and footers from individual pages then concatenate pages")
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
     parser.add_argument("-m", "--mets", action='store_true',
@@ -78,7 +84,8 @@ def main():
         help="Download HathiTrust volumes to disk [requires auth]")
     download_parser(parser_download)
     parser_download.set_defaults(func='download')
-
+    
+    
     # Run helper
     parser_run = parsers.add_parser('run', help="Run a built-in algorithm.")
     run_parsers = parser_run.add_subparsers(help="select a command")
@@ -125,7 +132,14 @@ def main():
             else:
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
-
+        d = os.listdir(args.output)
+        if args.headfoot is True:
+            if len(d) == 0:
+                print("This director is empty")
+            else:
+                htrc.volumes.remove_hf(args.output)
+        if args.headfootcon is True:
+            htrc.volumes.remove_hf_concat(args.output)
         if args.pages:
             if args.mets and args.concat:
                 print ("Cannot set both concat and mets with pages")
