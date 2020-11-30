@@ -268,8 +268,8 @@ def check_error_file(output_dir):
         grep(file_path, output_dir, "KeyNotFoundException")
 
 def remove_hf(output_dir):
-    os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
-    removed_hf = os.path.join(output_dir, "removed_hf_files")
+    os.makedirs(os.path.join(output_dir, "removed_hf_data"), exist_ok = True)
+    removed_hf = os.path.join(output_dir, "removed_hf_data")
     vol_paths = glob.glob(os.path.join(output_dir,'**'))
     df = pd.DataFrame()
     
@@ -318,11 +318,12 @@ def remove_hf(output_dir):
                         f_out.write('{}\n'.format(item))
 
 def remove_hf_concat(output_dir):
-    os.makedirs(os.path.join(output_dir, "removed_hf_files"), exist_ok = True)
-    removed_hf = os.path.join(output_dir, "removed_hf_files")
+    os.makedirs(os.path.join(output_dir, "removed_hf_data"), exist_ok = True)
+    removed_hf = os.path.join(output_dir, "removed_hf_data")
     vol_paths = glob.glob(os.path.join(output_dir,'**'))
     df = pd.DataFrame()
-    retain = ["removed_hf_files"]
+    retain = ["removed_hf_data"]
+    rm_txt = "removed_hf_data.txt"
     
 
     for path in tqdm(vol_paths):
@@ -366,7 +367,11 @@ def remove_hf_concat(output_dir):
                 f_out.write('\n'.join([str(item) + '\n' for item in body]) + '\n')
             if folder not in retain:
                 shutil.rmtree(os.path.join(output_dir, folder))
-
+            if os.path.exists(os.path.join(output_dir, rm_txt)):
+                os.remove(os.path.join(output_dir, rm_txt))
+            
+            
+            
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None, token=None, headfootcon=False, headfoot=False, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
