@@ -316,12 +316,16 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.extractall(output_dir)
                 myzip.close()
 
+                na_volume_rights = []
+                na_volume_error = []
                 na_volume = []
                 if htrc.config.get_dataapi_access():
+                    na_volume_rights = grep_error("volume-rights.txt", output_dir, " 3", 0)
                     print("PD Access Only")
-                    na_volume = grep_error("volume-rights.txt", output_dir, " 3", 0)
+                    print(na_volume_rights)
 
-                na_volume = na_volume + grep_error("ERROR.err", output_dir, "KeyNotFoundException", -1)
+                na_volume_error = grep_error("ERROR.err", output_dir, "KeyNotFoundException", -1)
+                na_volume = na_volume_error + na_volume_rights
 
                 if len(na_volume) > 0:
                     with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na: volume_na.write(
