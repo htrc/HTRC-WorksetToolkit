@@ -10,7 +10,6 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 """
 from __future__ import print_function
 from future import standard_library
-
 standard_library.install_aliases()
 
 from builtins import input
@@ -38,9 +37,7 @@ import htrc.config
 
 import logging
 from logging import NullHandler
-
 logging.getLogger(__name__).addHandler(NullHandler())
-
 
 def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, mets=False):
     """
@@ -84,6 +81,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
+
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -151,6 +149,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
     headers = {"Authorization": "Bearer " + token,
                "Content-type": "application/x-www-form-urlencoded"}
 
+
     # Create SSL lookup
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
@@ -159,6 +158,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
+
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -191,13 +191,12 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     return data
 
-
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
     headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = {"grant_type": "client_credentials",
-            "client_secret": password,
-            "client_id": username}
+    data = { "grant_type": "client_credentials",
+             "client_secret": password,
+             "client_id": username }
     data = urlencode(data)
 
     # create an SSL context
@@ -236,45 +235,40 @@ def get_oauth2_token(username, password):
 
     return token
 
-
-def grep_error(file_name, output_dir, pattern, txt_index):
-    if output_dir.endswith("/"):
-        file_path = output_dir + file_name
-    else:
-        file_path = output_dir + "/" + file_name
-
+def grep(file_name, output_dir, pattern, txt_index):
     na_volume = []
+    for line in open(file_name):
+        if pattern in line:
+            na_volume.append(line.split()[txt_index])
+    if 0 < len(na_volume) < 100:
+        print("\nFollowing volume ids are not available. \n Please check volume_not_available.txt for the "
+              "complete list. \nTo check the validity of volumes in your workset or volume id file go to:\n "
+              "https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org "
+              "for assistance.")
+        print("\n".join(str(item) for item in na_volume))
+        with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
+            volume_na.write("\n".join(str(item) for item in na_volume))
+            volume_na.write("\n")
+    else:
+        if len(na_volume) >= 100:
+            print("\nThere are 100 or more unavailable volumes.\n Please check volume_not_available.txt for the "
+                  "complete list. \nTo check the validity of volumes in your workset or volume id file go to:\n "
+                  "https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org "
+                  "for assistance.")
+
+def check_error_file(output_dir,file_name,grep_text,txt_index):
+
+    if output_dir.endswith("/"):
+        file_path = output_dir+ file_name
+    else:
+        file_path = output_dir+"/"+file_name
+
     if os.path.isfile(file_path):
-        for line in open(file_name):
-            if pattern in line:
-                volume_id = line.split()[txt_index]
-                na_volume.append(volume_id)
-    return na_volume
-
-
-# def check_error_file(output_dir,file_name,grep_text,txt_index):
-#
-#     if output_dir.endswith("/"):
-#         file_path = output_dir+ file_name
-#     else:
-#         file_path = output_dir+"/"+file_name
-#
-#     if os.path.isfile(file_path):
-#         grep(file_path, output_dir, grep_text,txt_index)
-#
-#     if len(na_volume) < 100:
-#         print("\nFollowing volume ids are not available.")
-#         print("\n".join(str(item) for item in na_volume))
-#         with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
-#             volume_na.write("\n".join(str(item) for item in na_volume))
-#     else:
-#         if len(na_volume) >= 100:
-#             print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
+        grep(file_path, output_dir, grep_text,txt_index)
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None,
-                     cert=None, key=None, epr=None):
+                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -285,7 +279,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         htrc.config.remove_jwt_token()
 
     if not host:
-        host = htrc.config.get_dataapi_host()
+        host= htrc.config.get_dataapi_host()
 
     if not port:
         port = htrc.config.get_dataapi_port()
@@ -316,37 +310,10 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.extractall(output_dir)
                 myzip.close()
 
-                na_volume_rights = []
-                na_volume_error = []
-                na_volume = []
-                if htrc.config.get_dataapi_access():
-                    na_volume_rights = grep_error("volume-rights.txt", output_dir, " 3", 0)
-                    print("PD Access Only")
-                    print(na_volume_rights)
+                if(htrc.config.get_dataapi_access()):
+                    check_error_file(output_dir,"volume-rights.txt", " 3", 0)
 
-                na_volume_error = grep_error("ERROR.err", output_dir, "KeyNotFoundException", -1)
-                na_volume = na_volume_error + na_volume_rights
-
-                if len(na_volume) > 0:
-                    with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na: volume_na.write(
-                        "\n".join(str(item) for item in na_volume))
-
-                if 0 < len(na_volume) < 100:
-                    print(
-                        "\nFollowing volume ids are not available.\n Please check volume_not_available.txt for the "
-                        "complete list. \nTo check the validity of volumes in your workset or volume id file go to:\n "
-                        "https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org "
-                        "for assistance.")
-                    print("\n".join(str(item) for item in na_volume))
-
-                else:
-                    if len(na_volume) >= 100:
-                        print(
-                            "\nThere are 100 or more unavailable volumes. \n Please check volume_not_available.txt "
-                            "for the complete list. \nTo check the validity of volumes in your workset or volume id "
-                            "file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at "
-                            "htrc-help@hathitrust.org for assistance.")
-
+                check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
@@ -361,7 +328,8 @@ def download(args):
         volumeIDs = [line.strip() for line in IDfile]
 
     return download_volumes(volumeIDs, args.output,
-                            username=args.username, password=args.password,
-                            token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
-                            port=args.dataport, cert=args.datacert, key=args.datakey,
-                            epr=args.dataepr)
+        username=args.username, password=args.password,
+        token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
+        port=args.dataport, cert=args.datacert, key=args.datakey,
+        epr=args.dataepr)
+
