@@ -301,13 +301,16 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.extractall(output_dir)
                 myzip.close()
 
-                
+                na_volumes_all = []
                 if(htrc.config.get_dataapi_access()):
                     na_volumes_rights = check_error_file(output_dir,"volume-rights.txt", " 3", 0)
                     print(na_volumes_rights)
+                    na_volumes_all = na_volumes_rights
 
                 na_volumes_error = check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
                 print(na_volumes_error)
+                na_volumes_all = na_volumes_all + na_volumes_error
+                print(na_volumes_all)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
