@@ -240,31 +240,22 @@ def grep(file_name, output_dir, pattern, txt_index):
     for line in open(file_name):
         if pattern in line:
             na_volume.append(line.split()[txt_index])
-    if 0 < len(na_volume) < 100:
-        print("\nFollowing volume ids are not available. \n Please check volume_not_available.txt for the "
-              "complete list. \nTo check the validity of volumes in your workset or volume id file go to:\n "
-              "https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org "
-              "for assistance.")
-        print("\n".join(str(item) for item in na_volume))
-        with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
-            volume_na.write("\n".join(str(item) for item in na_volume))
-            volume_na.write("\n")
-    else:
-        if len(na_volume) >= 100:
-            print("\nThere are 100 or more unavailable volumes.\n Please check volume_not_available.txt for the "
-                  "complete list. \nTo check the validity of volumes in your workset or volume id file go to:\n "
-                  "https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org "
-                  "for assistance.")
+
+    with open(os.path.join(output_dir, "volume_not_available.txt"), "a") as volume_na:
+        volume_na.write("\n".join(str(item) for item in na_volume))
+        volume_na.write("\n")
+
+    return na_volume
+
 
 def check_error_file(output_dir,file_name,grep_text,txt_index):
-
     if output_dir.endswith("/"):
         file_path = output_dir+ file_name
     else:
         file_path = output_dir+"/"+file_name
 
     if os.path.isfile(file_path):
-        grep(file_path, output_dir, grep_text,txt_index)
+        return (grep(file_path, output_dir, grep_text,txt_index))
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
@@ -310,10 +301,13 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.extractall(output_dir)
                 myzip.close()
 
+                
                 if(htrc.config.get_dataapi_access()):
-                    check_error_file(output_dir,"volume-rights.txt", " 3", 0)
+                    na_volumes_rights = check_error_file(output_dir,"volume-rights.txt", " 3", 0)
+                    print(na_volumes_rights)
 
-                check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
+                na_volumes_error = check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
+                print(na_volumes_error)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
