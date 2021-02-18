@@ -241,10 +241,6 @@ def grep(file_name, output_dir, pattern, txt_index):
         if pattern in line:
             na_volume.append(line.split()[txt_index])
 
-    with open(os.path.join(output_dir, "volume_not_available.txt"), "a") as volume_na:
-        volume_na.write("\n".join(str(item) for item in na_volume))
-        volume_na.write("\n")
-
     return na_volume
 
 
