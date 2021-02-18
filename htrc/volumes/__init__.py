@@ -304,13 +304,29 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 na_volumes_all = []
                 if(htrc.config.get_dataapi_access()):
                     na_volumes_rights = check_error_file(output_dir,"volume-rights.txt", " 3", 0)
-                    print(na_volumes_rights)
                     na_volumes_all = na_volumes_rights
 
                 na_volumes_error = check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
-                print(na_volumes_error)
                 na_volumes_all = na_volumes_all + na_volumes_error
-                print(na_volumes_all)
+
+                if len(na_volumes_all) > 0:
+                    with open(os.path.join(output_dir, "volume_not_available.txt"), "a") as volume_na:
+                        volume_na.write("\n".join(str(item) for item in na_volumes_all))
+
+                if 0 < len(na_volumes_all) < 100:
+                    print("\nFollowing volume ids are not available. \n Please check volume_not_available.txt for the "
+                          "complete list. ")
+                    print("\n".join(str(item) for item in na_volumes_all))
+                else:
+                    if len(na_volumes_all) >= 100:
+                        print("\nThere are 100 or more unavailable volumes.\n Please check volume_not_available.txt "
+                              "for the "
+                              "complete list. \nTo check the validity of volumes in your workset or volume id file go "
+                              "to:\n "
+                              "https://analytics.hathitrust.org/validateworkset \n or email us at "
+                              "htrc-help@hathitrust.org "
+                              "for assistance.")
+
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
