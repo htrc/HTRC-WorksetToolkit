@@ -235,11 +235,11 @@ def get_oauth2_token(username, password):
 
     return token
 
-def grep(file_name, output_dir, pattern):
+def grep(file_name, output_dir, pattern, txt_index):
     na_volume = []
     for line in open(file_name):
         if pattern in line:
-            na_volume.append(line.split()[-1])
+            na_volume.append(line.split()[txt_index])
     if len(na_volume) < 100:
         print("\nFollowing volume ids are not available.")
         print("\n".join(str(item) for item in na_volume))
@@ -249,7 +249,7 @@ def grep(file_name, output_dir, pattern):
         if len(na_volume) == 100:
             print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
 
-def check_error_file(output_dir,file_name,grep_text):
+def check_error_file(output_dir,file_name,grep_text,txt_index):
 
     if output_dir.endswith("/"):
         file_path = output_dir+ file_name
@@ -257,7 +257,7 @@ def check_error_file(output_dir,file_name,grep_text):
         file_path = output_dir+"/"+file_name
 
     if os.path.isfile(file_path):
-        grep(file_path, output_dir, grep_text)
+        grep(file_path, output_dir, grep_text,txt_index)
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
@@ -304,9 +304,9 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.close()
 
                 if(htrc.config.get_dataapi_access()):
-                    check_error_file(output_dir,"volume-rights.txt", " 3")
+                    check_error_file(output_dir,"volume-rights.txt", " 3", 0)
 
-                check_error_file(output_dir,"ERROR.err","KeyNotFoundException")
+                check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
