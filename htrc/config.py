@@ -56,6 +56,9 @@ def get_dataapi_cert(path=None):
 def get_dataapi_key(path=None):
     return _get_value('data', 'key', path)
 
+def get_dataapi_access(path=None):
+    return _get_value('data', 'pd_only', path)
+
 def get_idp_host_port(path=None):
     host = _get_value('idp', 'host', path)
     port = _get_value('idp', 'port', path)

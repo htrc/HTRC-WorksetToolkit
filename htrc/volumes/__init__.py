@@ -249,8 +249,7 @@ def grep(file_name, output_dir, pattern):
         if len(na_volume) == 100:
             print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
 
-def check_error_file(output_dir):
-    file_name = "ERROR.err"
+def check_error_file(output_dir,file_name,grep_text):
 
     if output_dir.endswith("/"):
         file_path = output_dir+ file_name
@@ -258,7 +257,7 @@ def check_error_file(output_dir):
         file_path = output_dir+"/"+file_name
 
     if os.path.isfile(file_path):
-        grep(file_path, output_dir, "KeyNotFoundException")
+        grep(file_path, output_dir, grep_text)
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
@@ -304,7 +303,10 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.extractall(output_dir)
                 myzip.close()
 
-                check_error_file(output_dir)
+                if(htrc.config.get_dataapi_access()):
+                    check_error_file(output_dir,"volume-rights.txt", " 3")
+
+                check_error_file(output_dir,"ERROR.err","KeyNotFoundException")
 
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
