@@ -10,6 +10,7 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 """
 from __future__ import print_function
 from future import standard_library
+
 standard_library.install_aliases()
 
 from builtins import input
@@ -37,7 +38,9 @@ import htrc.config
 
 import logging
 from logging import NullHandler
+
 logging.getLogger(__name__).addHandler(NullHandler())
+
 
 def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, mets=False):
     """
@@ -81,7 +84,6 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
-
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -149,7 +151,6 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
     headers = {"Authorization": "Bearer " + token,
                "Content-type": "application/x-www-form-urlencoded"}
 
-
     # Create SSL lookup
     # TODO: Fix SSL cert verification
     ctx = ssl.create_default_context()
@@ -158,7 +159,6 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     # Retrieve the volumes
     httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
-
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -191,12 +191,13 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     return data
 
+
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
     headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = { "grant_type": "client_credentials",
-             "client_secret": password,
-             "client_id": username }
+    data = {"grant_type": "client_credentials",
+            "client_secret": password,
+            "client_id": username}
     data = urlencode(data)
 
     # create an SSL context
@@ -235,27 +236,35 @@ def get_oauth2_token(username, password):
 
     return token
 
-def grep(file_name, output_dir, pattern, txt_index):
+
+def grep_error(file_name, output_dir, pattern, txt_index):
     na_volume = []
-    for line in open(file_name):
-        if pattern in line:
-            na_volume.append(line.split()[txt_index])
+    if output_dir.endswith("/"):
+        file_path = output_dir + file_name
+    else:
+        file_path = output_dir + "/" + file_name
+
+    if os.path.isfile(file_path):
+        for line in open(file_name):
+            if pattern in line:
+                na_volume.append(line.split()[txt_index])
 
     return na_volume
 
 
-def check_error_file(output_dir,file_name,grep_text,txt_index):
-    if output_dir.endswith("/"):
-        file_path = output_dir+ file_name
-    else:
-        file_path = output_dir+"/"+file_name
-
-    if os.path.isfile(file_path):
-        return (grep(file_path, output_dir, grep_text,txt_index))
+# def check_error_file(output_dir, file_name, grep_text, txt_index):
+#     if output_dir.endswith("/"):
+#         file_path = output_dir + file_name
+#     else:
+#         file_path = output_dir + "/" + file_name
+#
+#     if os.path.isfile(file_path):
+#         return grep(file_path, output_dir, grep_text, txt_index)
 
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
+                     config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None,
+                     cert=None, key=None, epr=None):
     # create output_dir folder, if nonexistant
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -266,7 +275,7 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
         htrc.config.remove_jwt_token()
 
     if not host:
-        host= htrc.config.get_dataapi_host()
+        host = htrc.config.get_dataapi_host()
 
     if not port:
         port = htrc.config.get_dataapi_port()
@@ -299,10 +308,10 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
 
                 na_volumes_all = []
                 if htrc.config.get_dataapi_access() == "true":
-                    na_volumes_rights = check_error_file(output_dir,"volume-rights.txt", " 3", 0)
+                    na_volumes_rights = grep_error("volume-rights.txt", output_dir, " 3", 0)
                     na_volumes_all = na_volumes_rights
 
-                na_volumes_error = check_error_file(output_dir,"volume-rights.txt", " unavailable", 0)
+                na_volumes_error = grep_error("volume-rights.txt", output_dir, " unavailable", 0)
 
                 if len(na_volumes_error) > 0:
                     na_volumes_all = na_volumes_all + na_volumes_error
@@ -340,8 +349,7 @@ def download(args):
         volumeIDs = [line.strip() for line in IDfile]
 
     return download_volumes(volumeIDs, args.output,
-        username=args.username, password=args.password,
-        token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
-        port=args.dataport, cert=args.datacert, key=args.datakey,
-        epr=args.dataepr)
-
+                            username=args.username, password=args.password,
+                            token=args.token, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
+                            port=args.dataport, cert=args.datacert, key=args.datakey,
+                            epr=args.dataepr)
