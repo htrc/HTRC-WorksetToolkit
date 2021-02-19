@@ -298,15 +298,17 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
                 myzip.close()
 
                 na_volumes_all = []
-                if(htrc.config.get_dataapi_access()):
+                if htrc.config.get_dataapi_access() == "true":
                     na_volumes_rights = check_error_file(output_dir,"volume-rights.txt", " 3", 0)
                     na_volumes_all = na_volumes_rights
 
-                na_volumes_error = check_error_file(output_dir,"ERROR.err","KeyNotFoundException", -1)
-                na_volumes_all = na_volumes_all + na_volumes_error
+                na_volumes_error = check_error_file(output_dir,"volume-rights.txt", " unavailable", 0)
+
+                if len(na_volumes_error) > 0:
+                    na_volumes_all = na_volumes_all + na_volumes_error
 
                 if len(na_volumes_all) > 0:
-                    with open(os.path.join(output_dir, "volume_not_available.txt"), "a") as volume_na:
+                    with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
                         volume_na.write("\n".join(str(item) for item in na_volumes_all))
 
                 if 0 < len(na_volumes_all) < 100:
@@ -325,7 +327,8 @@ def download_volumes(volume_ids, output_dir, username=None, password=None,
 
 
         except socket.error:
-            raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
+            raise RuntimeError("HTRC Data API time out. Check your inode usage if downloading a large workset. "
+                               "Contact HTRC for further help.")
 
     else:
         raise RuntimeError("Failed to obtain jwt token.")
