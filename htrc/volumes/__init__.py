@@ -245,22 +245,11 @@ def grep_error(file_name, output_dir, pattern, txt_index):
         file_path = output_dir + "/" + file_name
 
     if os.path.isfile(file_path):
-        for line in open(file_name):
+        for line in open(file_path):
             if pattern in line:
                 na_volume.append(line.split()[txt_index])
 
     return na_volume
-
-
-# def check_error_file(output_dir, file_name, grep_text, txt_index):
-#     if output_dir.endswith("/"):
-#         file_path = output_dir + file_name
-#     else:
-#         file_path = output_dir + "/" + file_name
-#
-#     if os.path.isfile(file_path):
-#         return grep(file_path, output_dir, grep_text, txt_index)
-
 
 def download_volumes(volume_ids, output_dir, username=None, password=None,
                      config_path=None, token=None, concat=False, mets=False, pages=False, host=None, port=None,
