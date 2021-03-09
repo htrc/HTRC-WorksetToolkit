@@ -17,3 +17,5 @@ htrc.egg-info
 .coverage
 htmlcov/
 .eggs
+ssl-cert-trust
+venv/
