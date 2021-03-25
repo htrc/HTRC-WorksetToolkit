@@ -9,43 +9,36 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 `htrc.mock.volumes` contains Patch objects for testing workflows.
 """
 from __future__ import print_function
+
 from future import standard_library
+
+from htrc.models import HtrcPage
+
 standard_library.install_aliases()
 
-from builtins import input
-
 import http.client
-from io import BytesIO  # used to stream http response into zipfile.
+from io import BytesIO, TextIOWrapper
 import json
-import logging
 import os.path
 import progressbar
-import re
 import socket
 import ssl
-import sys
-from time import sleep
-from urllib.request import urlopen
-from urllib.error import HTTPError
-from urllib.parse import quote_plus, urlencode
-import xml.etree.ElementTree as ET
+from urllib.parse import urlencode
 from zipfile import ZipFile  # used to decompress requested zip archives.
-from htrc.runningheaders import parse_page_structure
-from htrc.hf_vol_load import load_vol
-import pandas as pd
-import fnmatch
-import glob
 from tqdm import tqdm
-import shutil
-from htrc.lib.cli import bool_prompt
+from htrc.runningheaders import parse_page_structure
+from functools import partial
+import pandas as pd
 from htrc.util import split_items
 import htrc.config
+import multiprocessing
 
 import logging
 from logging import NullHandler
 logging.getLogger(__name__).addHandler(NullHandler())
 
-def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, mets=False):
+
+def get_volumes(data_api_config: htrc.config.HtrcDataApiConfig, volume_ids, concat=False, mets=False, buffer_size=128):
     """
     Returns volumes from the Data API as a raw zip stream.
 
@@ -60,7 +53,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
     if not volume_ids:
         raise ValueError("volume_ids is empty.")
 
-    url = epr + "volumes"
+    url = data_api_config.epr + "volumes"
 
     for id in volume_ids:
         if ("." not in id
@@ -77,7 +70,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
         data['mets'] = 'true'
 
     # Authorization
-    headers = {"Authorization": "Bearer " + token,
+    headers = {"Authorization": "Bearer " + data_api_config.token,
                "Content-type": "application/x-www-form-urlencoded"}
 
     # Create SSL lookup
@@ -87,8 +80,12 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
-
+    httpsConnection = http.client.HTTPSConnection(
+        data_api_config.host,
+        data_api_config.port,
+        context=ctx,
+        key_file=data_api_config.key,
+        cert_file=data_api_config.cert)
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -104,7 +101,7 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
                      ' (', progressbar.FileTransferSpeed(), ')'])
 
         while body:
-            body = response.read(128)
+            body = response.read(buffer_size)
             data.write(body)
             bytes_downloaded += len(body)
             bar.update(bytes_downloaded)
@@ -122,12 +119,12 @@ def get_volumes(token, volume_ids, host, port, cert, key, epr, concat=False, met
     return data
 
 
-def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=False):
+def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=False, mets=False, buffer_size=128):
     """
     Returns a ZIP file containing specfic pages.
 
     Parameters:
-    :token: An OAuth2 token for the app.
+    :data_api_config: The configuration data of the DataAPI endpoint.
     :volume_ids: A list of volume_ids
     :concat: If True, return a single file per volume. If False, return a single
     file per page (default).
@@ -135,7 +132,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
     if not page_ids:
         raise ValueError("page_ids is empty.")
 
-    url = epr + "pages"
+    url = data_api_config.epr + "pages"
 
     for id in page_ids:
         if ("." not in id
@@ -153,7 +150,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
         data['mets'] = 'true'
 
     # Authorization
-    headers = {"Authorization": "Bearer " + token,
+    headers = {"Authorization": "Bearer " + data_api_config.token,
                "Content-type": "application/x-www-form-urlencoded"}
 
 
@@ -164,8 +161,13 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
     ctx.verify_mode = ssl.CERT_NONE
 
     # Retrieve the volumes
-    httpsConnection = http.client.HTTPSConnection(host, port, context=ctx, key_file=key, cert_file=cert)
-
+    httpsConnection = http.client.HTTPSConnection(
+        data_api_config.host,
+        data_api_config.port,
+        context=ctx,
+        key_file=data_api_config.key,
+        cert_file=data_api_config.cert
+    )
 
     httpsConnection.request("POST", url, urlencode(data), headers)
 
@@ -181,7 +183,7 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
                                                ' (', progressbar.FileTransferSpeed(), ')'])
 
         while body:
-            body = response.read(128)
+            body = response.read(buffer_size)
             data.write(body)
             bytes_downloaded += len(body)
             bar.update(bytes_downloaded)
@@ -198,12 +200,13 @@ def get_pages(token, page_ids, host, port, cert, key, epr, concat=False, mets=Fa
 
     return data
 
+
 def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
     headers = {"Content-type": "application/x-www-form-urlencoded"}
-    data = { "grant_type": "client_credentials",
-             "client_secret": password,
-             "client_id": username }
+    data = {"grant_type": "client_credentials",
+            "client_secret": password,
+            "client_id": username}
     data = urlencode(data)
 
     # create an SSL context
@@ -235,12 +238,13 @@ def get_oauth2_token(username, password):
         logging.debug("Response Code: {}".format(response.status))
         logging.debug("Response: {}".format(response.reason))
         logging.debug(response.read())
-        raise EnvironmentError("Unable to get token.")
+        raise EnvironmentError("Unable to get the token.")
 
     if httpsConnection is not None:
         httpsConnection.close()
 
     return token
+
 
 def grep(file_name, output_dir, pattern):
     na_volume = []
@@ -248,7 +252,7 @@ def grep(file_name, output_dir, pattern):
         if pattern in line:
             na_volume.append(line.split()[-1])
     if len(na_volume) < 100:
-        print("\nFollowing volume ids are not available.")
+        print("\nThe following volume ids are not available:")
         print("\n".join(str(item) for item in na_volume))
         with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
             volume_na.write("\n".join(str(item) for item in na_volume))
@@ -256,185 +260,154 @@ def grep(file_name, output_dir, pattern):
         if len(na_volume) == 100:
             print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
 
+
 def check_error_file(output_dir):
     file_name = "ERROR.err"
 
     if output_dir.endswith("/"):
-        file_path = output_dir+ file_name
+        file_path = output_dir + file_name
     else:
-        file_path = output_dir+"/"+file_name
+        file_path = output_dir + "/" + file_name
 
     if os.path.isfile(file_path):
         grep(file_path, output_dir, "KeyNotFoundException")
 
-def remove_hf(output_dir):
-    os.makedirs(os.path.join(output_dir, "removed_hf_data"), exist_ok = True)
-    removed_hf = os.path.join(output_dir, "removed_hf_data")
-    vol_paths = glob.glob(os.path.join(output_dir,'**'))
-    df = pd.DataFrame()
-    
 
-    for path in tqdm(vol_paths):
-        if os.path.isdir(path):
-            page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
-            n = len(page_paths)
-            num = 1
-    
-            while num <= n:
-                for pg in page_paths:
-                    parsed_path = str(path).split('/')
-                    clean_path_root = '/'.join(parsed_path)
-                    page_num = str(num).zfill(8)
-                    new_filename = page_num+'.txt'
-                    os.rename(pg, clean_path_root+'/'+new_filename)
-                    num += 1
-    
-            folder = os.path.basename(path)
-            n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
-            pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
-    
-            body = []
-            for n, page in enumerate(pages):
-                s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
-    
-                pg_boolean = s + "\n" + "-"*len(s)
-                pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
-                #pg_body = page.body if page.has_body else ""
-                pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
-                
-                body.append(page.body)
-                
-                df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
-                df.sort_values("Volume")
-                for i, g in df.groupby("Volume"):
-                    g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
-            
-                count = 1
-                for item in body:
-                    pg_n = str(count).zfill(8)
-                    filename = '{}.txt'.format(pg_n)
-                    count += 1
-                    with open(os.path.join(clean_path_root, filename), "w") as f_out:
-                        f_out.write('{}\n'.format(item))
+def _to_htrc_page(page_file, zip):
+    with TextIOWrapper(BytesIO(zip.read(page_file)), encoding='utf-8') as page:
+        return HtrcPage([line.rstrip() for line in page.readlines()])
 
-def remove_hf_concat(output_dir):
-    os.makedirs(os.path.join(output_dir, "removed_hf_data"), exist_ok = True)
-    removed_hf = os.path.join(output_dir, "removed_hf_data")
-    vol_paths = glob.glob(os.path.join(output_dir,'**'))
-    df = pd.DataFrame()
-    retain = ["removed_hf_data"]
-    rm_txt = "removed_hf_data.txt"
-    
 
-    for path in tqdm(vol_paths):
-        if os.path.isdir(path):
-            page_paths = sorted(glob.glob(os.path.join(path, '**', '*.txt'), recursive=True))
-            n = len(page_paths)
-            num = 1
-    
-            while num <= n:
-                for pg in page_paths:
-                    parsed_path = str(path).split('/')
-                    clean_path_root = '/'.join(parsed_path)
-                    page_num = str(num).zfill(8)
-                    new_filename = page_num+'.txt'
-                    os.rename(pg, clean_path_root+'/'+new_filename)
-                    num += 1
-    
-            folder = os.path.basename(path)
-            n_pgs = len(fnmatch.filter(os.listdir(path), "*.txt"))
-            pages = parse_page_structure(load_vol(path, num_pages=n_pgs))
-                
-            filename = '{}.txt'.format(folder)
-            body = []
-            for n, page in enumerate(pages):
-                s = "\nPage {} (has_header: {}, has_body: {}, has_footer: {})".format(n+1, page.has_header, page.has_body, page.has_footer)
-    
-                pg_boolean = s + "\n" + "-"*len(s)
-                pg_header = "Header:\n{}".format(page.header if page.has_header else "N/A")
-                #pg_body = page.body if page.has_body else ""
-                pg_footer = "Footer:\n{}".format(page.footer if page.has_footer else "N/A")
-                
-                body.append(page.body)
-                
-                df = df.append({"Volume":folder, "Page Info":pg_boolean, "Header":pg_header, "Footer":pg_footer}, ignore_index = True)
-                df.sort_values("Volume")
-                for i, g in df.groupby("Volume"):
-                    g.to_csv(os.path.join(removed_hf, "removed_hf_data_{}.csv".format(i)))
-            
-                    
-            with open(os.path.join(output_dir, filename), "w") as f_out:
-                f_out.write('\n'.join([str(item) + '\n' for item in body]) + '\n')
-            if folder not in retain:
-                shutil.rmtree(os.path.join(output_dir, folder))
-            if os.path.exists(os.path.join(output_dir, rm_txt)):
-                os.remove(os.path.join(output_dir, rm_txt))
-            
-            
-            
-def download_volumes(volume_ids, output_dir, username=None, password=None,
-                     config_path=None, token=None, headfootcon=False, headfoot=False, concat=False, mets=False, pages=False, host=None, port=None, cert=None, key=None, epr=None):
-    # create output_dir folder, if nonexistant
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
+def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=False,
+                     remove_headers_footers=False, hf_window_size=6, hf_min_similarity=0.7, save_removed_hf=True,
+                     parallelism=multiprocessing.cpu_count(), batch_size=250, data_api_config=None):
+    if not 0 < parallelism <= multiprocessing.cpu_count():
+        raise ValueError("Invalid parallelism level specified")
 
-    # get token if not specified
-    if not token:
-        token = htrc.config.get_jwt_token()
-        htrc.config.remove_jwt_token()
+    remove_hf_fun = partial(
+        _remove_headers_footers_and_save,
+        concat=concat,
+        hf_min_similarity=hf_min_similarity,
+        hf_window_size=hf_window_size,
+        save_removed_hf=save_removed_hf,
+        output_dir=output_dir
+    )
 
-    if not host:
-        host= htrc.config.get_dataapi_host()
+    volume_ids = list(set(volume_ids))  # ensure unique volume ids
+    num_vols = len(volume_ids)
 
-    if not port:
-        port = htrc.config.get_dataapi_port()
+    data_api_config = data_api_config or htrc.config.HtrcDataApiConfig()
 
-    if not epr:
-        epr = htrc.config.get_dataapi_epr()
+    os.makedirs(output_dir, exist_ok=True)
 
-    if not cert:
-        cert = htrc.config.get_dataapi_cert()
-
-    if not key:
-        key = htrc.config.get_dataapi_key()
-
-    if any((token, host, port)) is not None:
-        logging.info("obtained token: %s\n" % token)
+    if any((data_api_config.token, data_api_config.host, data_api_config.port)) is not None:
+        logging.info("obtained token: %s\n" % data_api_config.token)
 
         try:
-            for ids in split_items(volume_ids, 250):
-                if pages:
-                    if concat & mets:
-                        raise ValueError("Cannot set both concat and mets with pages.")
+            errors = []
+            rights = []
+
+            with tqdm(total=num_vols) as progress, multiprocessing.Pool(processes=parallelism) as pool:
+                for ids in split_items(volume_ids, batch_size):
+                    if pages:
+                        if concat and mets:
+                            raise ValueError("Cannot set both concat and mets with pages.")
+                        else:
+                            data = get_pages(data_api_config, ids, concat and not remove_headers_footers, mets)
                     else:
-                        data = get_pages(token, ids, host, port, cert, key, epr, concat, mets)
-                else:
-                    data = get_volumes(token, ids, host, port, cert, key, epr, concat, mets)
+                        data = get_volumes(data_api_config, ids, concat and not remove_headers_footers, mets)
 
-                myzip = ZipFile(BytesIO(data))
-                myzip.extractall(output_dir)
-                myzip.close()
+                    volumes = []
 
+                    with ZipFile(BytesIO(data)) as vols_zip:
+                        zip_list = vols_zip.namelist()
+                        if 'ERROR.err' in zip_list:
+                            errors.append(vols_zip.read('ERROR.err').decode('utf-8'))
+                            zip_list.remove('ERROR.err')
+                        if 'volume-rights.txt' in zip_list:
+                            rights_data = vols_zip.read('volume-rights.txt').decode('utf-8')
+                            zip_list.remove('volume-rights.txt')
+                            if not rights:
+                                rights.append(rights_data)
+                            else:
+                                # due to the format in which 'volume-rights.txt' is created, we have to skip
+                                # the first 4 lines which make up the header of the file, to extract only the
+                                # actual volume rights data for accumulation
+                                rights.append(''.join(rights_data.splitlines(keepends=True)[4:]))
+
+                        zip_volume_paths = [zip_vol_path for zip_vol_path in zip_list if zip_vol_path.endswith('/')]
+                        num_vols_in_zip = len(zip_volume_paths)
+
+                        if not remove_headers_footers:
+                            vols_zip.extractall(output_dir, members=zip_list)
+                            progress.update(num_vols_in_zip)
+                        else:
+                            for zip_vol_path in zip_volume_paths:
+                                sorted_vol_zip_page_paths = sorted(zip_page_path for zip_page_path in zip_list if zip_page_path.startswith(zip_vol_path) and not zip_page_path.endswith('/'))
+                                vol_pages = [_to_htrc_page(page_path, vols_zip) for page_path in sorted_vol_zip_page_paths]
+                                volumes.append((zip_vol_path, sorted_vol_zip_page_paths, vol_pages))
+
+                    del data, vols_zip
+
+                    num_missing = batch_size - num_vols_in_zip if num_vols >= batch_size else num_vols - num_vols_in_zip
+                    progress.update(num_missing)  # update progress bar state to include the missing volumes also
+
+                    # `volumes` will be empty if `remove_headers_footers=False` since the ZIP was extracted
+                    # without further processing
+                    if volumes:
+                        for _ in pool.imap_unordered(remove_hf_fun, volumes):
+                            progress.update()
+
+            if errors:
+                with open(os.path.join(output_dir, 'ERROR.err'), 'w') as err_file:
+                    err_file.write(''.join(errors))
                 check_error_file(output_dir)
-                d = os.listdir(output_dir)
-                if headfoot:
-                    if len(d) == 0:
-                        print("This directory is empty")
-                        sys.exit(1)
-                    else:
-                        remove_hf(output_dir)
-                if headfootcon:
-                    if len(d) == 0:
-                        print("This directory is empty")
-                        sys.exit(1)
-                    else:
-                        remove_hf_concat(output_dir)
-                
+
+            if rights:
+                with open(os.path.join(output_dir, 'volume-rights.txt'), 'w') as rights_file:
+                    rights_file.write(''.join(rights))
+
         except socket.error:
             raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
 
     else:
-        raise RuntimeError("Failed to obtain jwt token.")
+        raise RuntimeError("Failed to obtain the JWT token.")
+
+
+def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_window_size, save_removed_hf, output_dir):
+    zip_vol_path, sorted_vol_zip_page_paths, vol_pages = vol_data
+    clean_volid = zip_vol_path[:-1]
+
+    vol_pages = parse_page_structure(vol_pages, window_size=hf_window_size, min_similarity_ratio=hf_min_similarity)
+    pages_body = (page.body for page in vol_pages)
+
+    if concat:
+        with open(os.path.join(output_dir, clean_volid + '.txt'), 'w', encoding='utf-8') as vol_file:
+            vol_file.write('\n'.join(pages_body))
+    else:
+        vol_path = os.path.join(output_dir, zip_vol_path)
+        os.mkdir(vol_path)
+        for vol_page_path, page_body in zip(sorted_vol_zip_page_paths, pages_body):
+            with open(os.path.join(output_dir, vol_page_path), 'w', encoding='utf-8') as page_file:
+                page_file.write(page_body)
+
+    if save_removed_hf:
+        # save the removed headers/footers for user inspection
+        removed_hf = []
+        for vol_page_path, vol_page in zip(sorted_vol_zip_page_paths, vol_pages):
+            if not (vol_page.has_header or vol_page.has_footer):
+                # skip reporting pages that don't have an identified header or footer
+                continue
+            _, page_name = os.path.split(vol_page_path)
+            page_name, _ = os.path.splitext(page_name)
+            removed_hf.append({'page': page_name, 'header': vol_page.header, 'footer': vol_page.footer})
+
+        if concat:
+            removed_hf_filename = os.path.join(output_dir, clean_volid + '_removed_hf.csv')
+        else:
+            removed_hf_filename = os.path.join(output_dir, clean_volid, 'removed_hf.csv')
+
+        pd.DataFrame(removed_hf, columns=['page', 'header', 'footer']).to_csv(removed_hf_filename, index=False)
 
 
 def download(args):
@@ -442,9 +415,23 @@ def download(args):
     with open(args.file) as IDfile:
         volumeIDs = [line.strip() for line in IDfile]
 
-    return download_volumes(volumeIDs, args.output,
-        username=args.username, password=args.password,
-        token=args.token, headfoot=args.headfoot, headfootcon=args.headfootcon, concat=args.concat, mets=args.mets, pages=args.pages, host=args.datahost,
-        port=args.dataport, cert=args.datacert, key=args.datakey,
-        epr=args.dataepr)
+    data_api_config = htrc.config.HtrcDataApiConfig(
+        token=args.token,
+        host=args.datahost,
+        port=args.dataport,
+        epr=args.dataepr,
+        cert=args.datacert,
+        key=args.datakey
+    )
 
+    return download_volumes(volumeIDs, args.output,
+                            remove_headers_footers=args.remove_headers_footers or args.remove_headers_footers_and_concat,
+                            concat=args.concat or args.remove_headers_footers_and_concat,
+                            mets=args.mets,
+                            pages=args.pages,
+                            hf_window_size=args.window_size,
+                            hf_min_similarity=args.min_similarity_ratio,
+                            parallelism=args.parallelism,
+                            batch_size=args.batch_size,
+                            save_removed_hf=args.save_removed_hf,
+                            data_api_config=data_api_config)

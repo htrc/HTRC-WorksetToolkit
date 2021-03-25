@@ -1,13 +1,11 @@
-from base64 import b64encode
-from getpass import getpass
-import http.client
-import ssl
 import time
+from getpass import getpass
 
 import requests
 import requests.auth
 
 import htrc.config
+
 
 def get_jwt_token():
     # Currently we just store one common jwt token locally at .htrc file for simplicity
@@ -17,10 +15,10 @@ def get_jwt_token():
     client_id, client_secret = htrc.config.get_credentials()
 
     auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
-    data = { "grant_type": "password",
-             "username": username,
-             "password": password,
-             "scope" : "openid"}
+    data = {"grant_type": "password",
+            "username": username,
+            "password": password,
+            "scope": "openid"}
 
     url = htrc.config.get_idp_url()
     r = requests.post(url, data=data, auth=auth)
@@ -34,6 +32,7 @@ def get_jwt_token():
         return get_jwt_token()
     else:
         raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
+
 
 def credential_prompt():
     """

@@ -60,27 +60,53 @@ class TestVolumes(unittest.TestCase):
         response_mock.read.return_value =\
             ''.encode('utf8')
         https_mock.return_value.getresponse.return_value = response_mock
+        data_api_config = htrc.config.HtrcDataApiConfig(
+            token='1234',
+            host='data-host',
+            port=443,
+            epr='/',
+            cert='/home/client-certs/client.pem',
+            key='/home/client-certs/client.pem'
+        )
 
-        htrc.volumes.get_volumes('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
-        htrc.volumes.get_pages('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/')
+        htrc.volumes.get_volumes(data_api_config, self.test_vols)
+        htrc.volumes.get_pages(data_api_config, self.test_vols)
 
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_get_volumes_and_pages_error(self, https_mock):
         response_mock = Mock(status=500)
         https_mock.return_value.getresponse.return_value = response_mock
 
-        with self.assertRaises(EnvironmentError):
-            htrc.volumes.get_volumes('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
+        data_api_config = htrc.config.HtrcDataApiConfig(
+            token='1234',
+            host='data-host',
+            port=443,
+            epr='/',
+            cert='/home/client-certs/client.pem',
+            key='/home/client-certs/client.pem'
+        )
 
         with self.assertRaises(EnvironmentError):
-            htrc.volumes.get_pages('1234', self.test_vols, 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/')
+            htrc.volumes.get_volumes(data_api_config, self.test_vols)
+
+        with self.assertRaises(EnvironmentError):
+            htrc.volumes.get_pages(data_api_config, self.test_vols)
 
     def test_get_volumes_and_pages_empty(self):
-        with self.assertRaises(ValueError):
-            htrc.volumes.get_volumes('1234', [], 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
+        data_api_config = htrc.config.HtrcDataApiConfig(
+            token='1234',
+            host='data-host',
+            port=443,
+            epr='/',
+            cert='/home/client-certs/client.pem',
+            key='/home/client-certs/client.pem'
+        )
 
         with self.assertRaises(ValueError):
-            htrc.volumes.get_pages('1234', [], 'data-host', '443', '/home/client-certs/client.pem', '/home/client-certs/client.pem', '/' )
+            htrc.volumes.get_volumes(data_api_config, [])
+
+        with self.assertRaises(ValueError):
+            htrc.volumes.get_pages(data_api_config, [])
 
     @patch('htrc.volumes.ZipFile')
     @patch('htrc.volumes.get_volumes')
@@ -93,14 +119,21 @@ class TestVolumes(unittest.TestCase):
         oauth2_mock.return_value = 'a1b2c3d4e5'
         volumes_mock.return_value = b''
 
-        htrc.volumes.download_volumes(self.test_vols, self.output_path,
-            username='1234', password='1234', token='1234')
+        data_api_config = htrc.config.HtrcDataApiConfig(
+            token='1234',
+            host='data-host',
+            port=443,
+            epr='/',
+            cert='/home/client-certs/client.pem',
+            key='/home/client-certs/client.pem'
+        )
+
+        htrc.volumes.download_volumes(self.test_vols, self.output_path, data_api_config=data_api_config)
 
         # test directory creation
         import shutil
         shutil.rmtree(self.output_path)
-        htrc.volumes.download_volumes(self.test_vols, self.output_path,
-            username='1234', password='1234', token='1234')
+        htrc.volumes.download_volumes(self.test_vols, self.output_path, data_api_config=data_api_config)
 
     # TODO: Fix this test for case where config file exists, but creds not set
     """
@@ -131,6 +164,7 @@ class TestVolumes(unittest.TestCase):
 
     def test_download(self):
         pass
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestVolumes)
 unittest.TextTestRunner(verbosity=2).run(suite)
