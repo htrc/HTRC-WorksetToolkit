@@ -19,6 +19,7 @@ def install_mallet():
         mallet_dir.extractall(path=MALLET_DIR)
         mallet_dir.close()
 
+
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset/'):
     if not os.path.exists(MALLET_DIR):
         if not os.path.exists('/media/secure_volume/'):

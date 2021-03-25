@@ -4,6 +4,7 @@ import math
 
 from .resolve import ORG_CODES
 
+
 def split_items(seq, split_size):
     """
     Returns a generator that returns portions of `seq` up to `split_size`.
@@ -13,7 +14,7 @@ def split_items(seq, split_size):
     :param split_size: The maximum size of each split.
     """
     full_segments = int(math.floor(len(seq) / split_size))
-    for i in range(1,full_segments+1):
-        yield seq[(i-1)*split_size:i*split_size]
+    for i in range(1, full_segments + 1):
+        yield seq[(i - 1) * split_size:i * split_size]
     if (full_segments * split_size) < len(seq):
-        yield seq[full_segments*split_size:]
+        yield seq[full_segments * split_size:]
