@@ -433,4 +433,5 @@ def download(args):
                             hf_min_similarity=args.min_similarity_ratio,
                             parallelism=args.parallelism,
                             batch_size=args.batch_size,
+                            save_removed_hf=args.save_removed_hf,
                             data_api_config=data_api_config)

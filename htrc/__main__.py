@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 from future import standard_library
 standard_library.install_aliases()
 
-import json
 import os
 import os.path
 import shutil
@@ -30,15 +29,15 @@ def download_parser(parser=None):
     parser.add_argument("-u", "--username", help="HTRC username")
     parser.add_argument("-p", "--password", help="HTRC password")
     parser.add_argument("file", nargs='?', default=sys.stdin,
-        help="workset path[s]")
+        help="Workset path[s]")
     parser.add_argument("-f", "--force", action='store_true', 
-        help="remove folder if exists")
-    parser.add_argument("-o", "--output", help="output directory",
+        help="Remove folder if exists")
+    parser.add_argument("-o", "--output", help="Output directory",
         default='/media/secure_volume/workset/')
     parser.add_argument("-hf", "--remove-headers-footers", action='store_true',
-        help="remove headers and footers from individual pages")
+        help="Remove headers and footers from individual pages")
     parser.add_argument("-hfc", "--remove-headers-footers-and-concat", action='store_true',
-        help="remove headers and footers from individual pages then concatenate pages")
+        help="Remove headers and footers from individual pages then concatenate pages")
     parser.add_argument("-w", "--window-size", required=False, type=int, metavar="N", default=6,
                         help="How many pages ahead does the header/footer extractor algorithm look to find potential "
                              "matching headers/footers (higher value gives potentially more accurate results on lower "
@@ -48,14 +47,16 @@ def download_parser(parser=None):
                              "algorithm to declare that two headers are considered 'the same' (the higher the value, up "
                              "to a max of 1.0, the more strict the matching has to be; lower values allow for more "
                              "fuzziness to account for OCR errors)")
+    parser.add_argument("-s", "--save-removed-hf", action='store_true',
+                        help="Save a report of the removed headers and footers for each page for inspection")
     parser.add_argument("--parallelism", required=False, type=int, metavar="N", default=os.cpu_count(),
                         help="The max number of concurrent tasks to start when downloading or removing headers/footers")
     parser.add_argument("--batch-size", required=False, type=int, metavar="N", default=250,
                         help="The max number of volumes to download at a time from DataAPI")
     parser.add_argument("-c", "--concat", action='store_true',
-        help="concatenate a volume's pages in to a single file")
+        help="Concatenate a volume's pages in to a single file")
     parser.add_argument("-m", "--mets", action='store_true',
-                        help="add volume's METS file")
+                        help="Add volume's METS file")
     parser.add_argument("-pg", "--pages",action='store_true',
         help="Download given page numbers of a volumes.")
     parser.add_argument("-t", "--token", help="JWT for volumes download.")
@@ -70,13 +71,13 @@ def download_parser(parser=None):
 def add_workset_path(parser=None):
     if parser is None:
         parser = ArgumentParser()
-    parser.add_argument("path", nargs='+', help="workset path[s]")
+    parser.add_argument("path", nargs='+', help="Workset path[s]")
     return parser
 
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('-d', '--debug', help="print long debug messages",
+    parser.add_argument('-d', '--debug', help="Print long debug messages",
                         action='store_true')
     parsers = parser.add_subparsers(help="select a command")
 
@@ -101,7 +102,7 @@ def main():
     
     # Run helper
     parser_run = parsers.add_parser('run', help="Run a built-in algorithm.")
-    run_parsers = parser_run.add_subparsers(help="select a command")
+    run_parsers = parser_run.add_subparsers(help="Select a command")
 
     parser_mallet = run_parsers.add_parser('mallet')
     htrc.tools.mallet.populate_parser(parser_mallet)
