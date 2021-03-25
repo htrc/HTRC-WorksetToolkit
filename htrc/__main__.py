@@ -7,11 +7,11 @@ from future import standard_library
 standard_library.install_aliases()
 
 import json
-import os, os.path
+import os
+import os.path
 import shutil
 import sys
 from tempfile import NamedTemporaryFile
-
 
 from htrc.metadata import get_metadata, get_volume_metadata
 import htrc.volumes
@@ -35,10 +35,23 @@ def download_parser(parser=None):
         help="remove folder if exists")
     parser.add_argument("-o", "--output", help="output directory",
         default='/media/secure_volume/workset/')
-    parser.add_argument("-hf", "--headfoot", action = 'store_true',
+    parser.add_argument("-hf", "--remove-headers-footers", action='store_true',
         help="remove headers and footers from individual pages")
-    parser.add_argument("-hfc", "--headfootcon", action = 'store_true',
+    parser.add_argument("-hfc", "--remove-headers-footers-and-concat", action='store_true',
         help="remove headers and footers from individual pages then concatenate pages")
+    parser.add_argument("-w", "--window-size", required=False, type=int, metavar="N", default=6,
+                        help="How many pages ahead does the header/footer extractor algorithm look to find potential "
+                             "matching headers/footers (higher value gives potentially more accurate results on lower "
+                             "quality OCR volumes at the expense of runtime)")
+    parser.add_argument("-msr", "--min-similarity-ratio", required=False, type=float, metavar="N", default=0.7,
+                        help="The minimum string similarity ratio required for the Levenshtein distance fuzzy-matching "
+                             "algorithm to declare that two headers are considered 'the same' (the higher the value, up "
+                             "to a max of 1.0, the more strict the matching has to be; lower values allow for more "
+                             "fuzziness to account for OCR errors)")
+    parser.add_argument("--parallelism", required=False, type=int, metavar="N", default=os.cpu_count(),
+                        help="The max number of concurrent tasks to start when downloading or removing headers/footers")
+    parser.add_argument("--batch-size", required=False, type=int, metavar="N", default=250,
+                        help="The max number of volumes to download at a time from DataAPI")
     parser.add_argument("-c", "--concat", action='store_true',
         help="concatenate a volume's pages in to a single file")
     parser.add_argument("-m", "--mets", action='store_true',
@@ -53,13 +66,13 @@ def download_parser(parser=None):
     parser.add_argument("-dk", "--datakey", help="Client key file for mutual TLS with Data API.")
     return parser
 
+
 def add_workset_path(parser=None):
     if parser is None:
         parser = ArgumentParser()
     parser.add_argument("path", nargs='+', help="workset path[s]")
     return parser
 
-    
 
 def main():
     parser = ArgumentParser()
@@ -133,24 +146,24 @@ def main():
                 print("Please choose another output folder and try again.")
                 sys.exit(1)
         
-        if args.concat and args.headfoot:
-            print("Cannot set both concat and headfoot")
+        if args.concat and args.remove_headers_footers:
+            print("Cannot set both concat and remove-headers-footers")
             sys.exit(1)
-        if args.concat and args.headfootcon:
-            print("Cannot set both concat and headfootcon")
+        if args.concat and args.remove_headers_footers_and_concat:
+            print("Cannot set both concat and remove-headers-footers-and-concat")
             sys.exit(1)
-        if args.headfoot and args.headfootcon:
-            print("Cannot set both headfoot and headfootcon")
+        if args.remove_headers_footers and args.remove_headers_footers_and_concat:
+            print("Cannot set both remove_headers_footers and remove_headers_footers_and_concat")
             sys.exit(1)
-        if args.mets and args.headfootcon:
-            print("Cannot set both mets and headfootcon")
+        if args.mets and args.remove_headers_footers_and_concat:
+            print("Cannot set both mets and remove_headers_footers_and_concat")
             sys.exit(1)
         if args.pages:
             if args.mets and args.concat:
-                print ("Cannot set both concat and mets with pages")
+                print("Cannot set both concat and mets with pages")
                 sys.exit(1)
-            if args.mets and args.headfootcon:
-                print("Cannot set both mets and headfootcon with pages")
+            if args.mets and args.remove_headers_footers_and_concat:
+                print("Cannot set both mets and remove_headers_footers_and_concat with pages")
                 sys.exit(1)
 
         try:
@@ -158,6 +171,7 @@ def main():
         except ValueError:
             print("Invalid identifier:", args.file)
             sys.exit(1)
+
 
 def resolve_and_download(args):
     if args.file == sys.stdin:
@@ -222,6 +236,7 @@ def download(args):
             sys.exit(1)
         else:
             raise e
+
 
 def download_with_tempfile(args, volumes):
     f = NamedTemporaryFile()
