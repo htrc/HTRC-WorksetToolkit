@@ -35,9 +35,9 @@ def download_parser(parser=None):
     parser.add_argument("-o", "--output", help="Output directory",
         default='/media/secure_volume/workset/')
     parser.add_argument("-hf", "--remove-headers-footers", action='store_true',
-        help="Remove headers and footers from individual pages")
+        help="Remove headers and footers from individual pages and save in a separate csv file for inspection")
     parser.add_argument("-hfc", "--remove-headers-footers-and-concat", action='store_true',
-        help="Remove headers and footers from individual pages then concatenate pages")
+        help="Remove headers and footers from individual pages and save in a separate csv file for inspection then concatenate pages")
     parser.add_argument("-w", "--window-size", required=False, type=int, metavar="N", default=6,
                         help="How many pages ahead does the header/footer extractor algorithm look to find potential "
                              "matching headers/footers (higher value gives potentially more accurate results on lower "
@@ -47,8 +47,8 @@ def download_parser(parser=None):
                              "algorithm to declare that two headers are considered 'the same' (the higher the value, up "
                              "to a max of 1.0, the more strict the matching has to be; lower values allow for more "
                              "fuzziness to account for OCR errors)")
-    parser.add_argument("-s", "--save-removed-hf", action='store_true',
-                        help="Save a report of the removed headers and footers for each page for inspection")
+    parser.add_argument("-s", "--skip-removed-hf", action='store_true',
+                        help="Skip creating a saved report of the removed headers and footers for each page for inspection")
     parser.add_argument("--parallelism", required=False, type=int, metavar="N", default=os.cpu_count(),
                         help="The max number of concurrent tasks to start when downloading or removing headers/footers")
     parser.add_argument("--batch-size", required=False, type=int, metavar="N", default=250,
