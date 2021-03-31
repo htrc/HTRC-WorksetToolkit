@@ -279,7 +279,7 @@ def _to_htrc_page(page_file, zip):
 
 
 def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=False,
-                     remove_headers_footers=False, hf_window_size=6, hf_min_similarity=0.7, save_removed_hf=True,
+                     remove_headers_footers=False, hf_window_size=6, hf_min_similarity=0.7, skip_removed_hf=False,
                      parallelism=multiprocessing.cpu_count(), batch_size=250, data_api_config=None):
     if not 0 < parallelism <= multiprocessing.cpu_count():
         raise ValueError("Invalid parallelism level specified")
@@ -289,7 +289,7 @@ def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=Fal
         concat=concat,
         hf_min_similarity=hf_min_similarity,
         hf_window_size=hf_window_size,
-        save_removed_hf=save_removed_hf,
+        skip_removed_hf=skip_removed_hf,
         output_dir=output_dir
     )
 
@@ -374,25 +374,34 @@ def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=Fal
         raise RuntimeError("Failed to obtain the JWT token.")
 
 
-def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_window_size, save_removed_hf, output_dir):
+def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_window_size, skip_removed_hf, output_dir):
     zip_vol_path, sorted_vol_zip_page_paths, vol_pages = vol_data
     clean_volid = zip_vol_path[:-1]
 
     vol_pages = parse_page_structure(vol_pages, window_size=hf_window_size, min_similarity_ratio=hf_min_similarity)
     pages_body = (page.body for page in vol_pages)
-
-    if concat:
-        with open(os.path.join(output_dir, clean_volid + '.txt'), 'w', encoding='utf-8') as vol_file:
-            vol_file.write('\n'.join(pages_body))
+    # save the removed headers/footers for user inspection
+    if skip_removed_hf:
+        if concat:
+            with open(os.path.join(output_dir, clean_volid + '.txt'), 'w', encoding='utf-8') as vol_file:
+                vol_file.write('\n'.join(pages_body))
+        else:
+            vol_path = os.path.join(output_dir, zip_vol_path)
+            os.mkdir(vol_path)
+            for vol_page_path, page_body in zip(sorted_vol_zip_page_paths, pages_body):
+                with open(os.path.join(output_dir, vol_page_path), 'w', encoding='utf-8') as page_file:
+                    page_file.write(page_body)
     else:
-        vol_path = os.path.join(output_dir, zip_vol_path)
-        os.mkdir(vol_path)
-        for vol_page_path, page_body in zip(sorted_vol_zip_page_paths, pages_body):
-            with open(os.path.join(output_dir, vol_page_path), 'w', encoding='utf-8') as page_file:
-                page_file.write(page_body)
-
-    if save_removed_hf:
-        # save the removed headers/footers for user inspection
+        if concat:
+            with open(os.path.join(output_dir, clean_volid + '.txt'), 'w', encoding='utf-8') as vol_file:
+                vol_file.write('\n'.join(pages_body))
+        else:
+            vol_path = os.path.join(output_dir, zip_vol_path)
+            os.mkdir(vol_path)
+            for vol_page_path, page_body in zip(sorted_vol_zip_page_paths, pages_body):
+                with open(os.path.join(output_dir, vol_page_path), 'w', encoding='utf-8') as page_file:
+                    page_file.write(page_body)
+    
         removed_hf = []
         for vol_page_path, vol_page in zip(sorted_vol_zip_page_paths, vol_pages):
             if not (vol_page.has_header or vol_page.has_footer):
@@ -408,6 +417,7 @@ def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_win
             removed_hf_filename = os.path.join(output_dir, clean_volid, 'removed_hf.csv')
 
         pd.DataFrame(removed_hf, columns=['page', 'header', 'footer']).to_csv(removed_hf_filename, index=False)
+        
 
 
 def download(args):
@@ -433,5 +443,5 @@ def download(args):
                             hf_min_similarity=args.min_similarity_ratio,
                             parallelism=args.parallelism,
                             batch_size=args.batch_size,
-                            save_removed_hf=args.save_removed_hf,
+                            skip_removed_hf=args.skip_removed_hf,
                             data_api_config=data_api_config)
