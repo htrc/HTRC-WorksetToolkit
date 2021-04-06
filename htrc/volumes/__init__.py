@@ -368,11 +368,11 @@ def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=Fal
                 with open(os.path.join(output_dir, 'volumes_not_available.txt'), 'w') as volumes_na:
                     volumes_na.write("\n".join(str(item) for item in na_volumes_all))
 
-	            if num_na < 100:
-	                print("\nThe following volume ids are not available. \n Please check volumes_not_available.txt for the "
-	                      "complete list. ")
-	                print('\n'.join(str(item) for item in na_volumes_all))
-	            else:
+                if num_na < 100:
+                    print("\nThe following volume ids are not available. \n Please check volumes_not_available.txt "
+                          "for the complete list. ")
+                    print('\n'.join(str(item) for item in na_volumes_all))
+                else:
                     print("\nThere are {:,} unavailable volumes.\n Please check volumes_not_available.txt "
                           "for the "
                           "complete list. \nTo check the validity of volumes in your workset or volume id file go "
