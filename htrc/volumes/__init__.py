@@ -432,7 +432,6 @@ def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_win
             removed_hf_filename = os.path.join(output_dir, clean_volid, 'removed_hf.csv')
 
         pd.DataFrame(removed_hf, columns=['page', 'header', 'footer']).to_csv(removed_hf_filename, index=False)
-        
 
 
 def download(args):
