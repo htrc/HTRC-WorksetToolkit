@@ -9,12 +9,11 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 `htrc.mock.volumes` contains Patch objects for testing workflows.
 """
 from __future__ import print_function
-
 from future import standard_library
 
-from htrc.models import HtrcPage
-
 standard_library.install_aliases()
+
+from htrc.models import HtrcPage
 
 import http.client
 from io import BytesIO, TextIOWrapper
@@ -35,6 +34,7 @@ import multiprocessing
 
 import logging
 from logging import NullHandler
+
 logging.getLogger(__name__).addHandler(NullHandler())
 
 
@@ -57,7 +57,7 @@ def get_volumes(data_api_config: htrc.config.HtrcDataApiConfig, volume_ids, conc
 
     for id in volume_ids:
         if ("." not in id
-            or " " in id):
+                or " " in id):
             print("Invalid volume id " + id + ". Please correct this volume id and try again.")
 
     data = {'volumeIDs': '|'.join(
@@ -96,9 +96,9 @@ def get_volumes(data_api_config: htrc.config.HtrcDataApiConfig, volume_ids, conc
         data = BytesIO()
         bytes_downloaded = 0
         bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength,
-            widgets=[progressbar.AnimatedMarker(), '    ',
-                     progressbar.DataSize(),
-                     ' (', progressbar.FileTransferSpeed(), ')'])
+                                      widgets=[progressbar.AnimatedMarker(), '    ',
+                                               progressbar.DataSize(),
+                                               ' (', progressbar.FileTransferSpeed(), ')'])
 
         while body:
             body = response.read(buffer_size)
@@ -136,7 +136,7 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
 
     for id in page_ids:
         if ("." not in id
-            or " " in id):
+                or " " in id):
             print("Invalid volume id " + id + ". Please correct this volume id and try again.")
 
     data = {'pageIDs': '|'.join(
@@ -152,7 +152,6 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
     # Authorization
     headers = {"Authorization": "Bearer " + data_api_config.token,
                "Content-type": "application/x-www-form-urlencoded"}
-
 
     # Create SSL lookup
     # TODO: Fix SSL cert verification
@@ -178,7 +177,7 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
         data = BytesIO()
         bytes_downloaded = 0
         bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength,
-              widgets=[progressbar.AnimatedMarker(), '    ',
+                                      widgets=[progressbar.AnimatedMarker(), '    ',
                                                progressbar.DataSize(),
                                                ' (', progressbar.FileTransferSpeed(), ')'])
 
@@ -246,31 +245,19 @@ def get_oauth2_token(username, password):
     return token
 
 
-def grep(file_name, output_dir, pattern):
+def grep_error(file_name, output_dir, pattern, txt_index):
     na_volume = []
-    for line in open(file_name):
-        if pattern in line:
-            na_volume.append(line.split()[-1])
-    if len(na_volume) < 100:
-        print("\nThe following volume ids are not available:")
-        print("\n".join(str(item) for item in na_volume))
-        with open(os.path.join(output_dir, "volume_not_available.txt"), "w") as volume_na:
-            volume_na.write("\n".join(str(item) for item in na_volume))
-    else:
-        if len(na_volume) == 100:
-            print("\nThere are 100 or more unavailable volumes.\nTo check the validity of volumes in your workset or volume id file go to:\n https://analytics.hathitrust.org/validateworkset \n or email us at htrc-help@hathitrust.org for assistance.")
-
-
-def check_error_file(output_dir):
-    file_name = "ERROR.err"
-
     if output_dir.endswith("/"):
         file_path = output_dir + file_name
     else:
         file_path = output_dir + "/" + file_name
 
     if os.path.isfile(file_path):
-        grep(file_path, output_dir, "KeyNotFoundException")
+        for line in open(file_path):
+            if pattern in line:
+                na_volume.append(line.split()[txt_index])
+
+    return na_volume
 
 
 def _to_htrc_page(page_file, zip):
@@ -358,17 +345,45 @@ def download_volumes(volume_ids, output_dir, concat=False, mets=False, pages=Fal
                         for _ in pool.imap_unordered(remove_hf_fun, volumes):
                             progress.update()
 
+            na_volumes_all = []
+
             if errors:
                 with open(os.path.join(output_dir, 'ERROR.err'), 'w') as err_file:
                     err_file.write(''.join(errors))
-                check_error_file(output_dir)
+
+                na_volumes_error = grep_error('ERROR.err', output_dir, 'KeyNotFoundException', -1)
+                na_volumes_all.extend(na_volumes_error)
 
             if rights:
                 with open(os.path.join(output_dir, 'volume-rights.txt'), 'w') as rights_file:
                     rights_file.write(''.join(rights))
 
+                if htrc.config.get_dataapi_access() == "true":
+                    na_volumes_rights = grep_error('volume-rights.txt', output_dir, ' 3', 0)
+                    na_volumes_all.extend(na_volumes_rights)
+
+            num_na = len(na_volumes_all)
+
+            if num_na > 0:
+                with open(os.path.join(output_dir, 'volumes_not_available.txt'), 'w') as volumes_na:
+                    volumes_na.write("\n".join(str(item) for item in na_volumes_all))
+
+	            if num_na < 100:
+	                print("\nThe following volume ids are not available. \n Please check volumes_not_available.txt for the "
+	                      "complete list. ")
+	                print('\n'.join(str(item) for item in na_volumes_all))
+	            else:
+                    print("\nThere are {:,} unavailable volumes.\n Please check volumes_not_available.txt "
+                          "for the "
+                          "complete list. \nTo check the validity of volumes in your workset or volume id file go "
+                          "to:\n "
+                          "https://analytics.hathitrust.org/validateworkset \n or email us at "
+                          "htrc-help@hathitrust.org "
+                          "for assistance.".format(num_na))
+
         except socket.error:
-            raise RuntimeError("Data API request timeout. Is your Data Capsule in Secure Mode?")
+            raise RuntimeError("HTRC Data API time out. Check your inode usage if downloading a large workset. "
+                               "Contact HTRC for further help.")
 
     else:
         raise RuntimeError("Failed to obtain the JWT token.")
@@ -445,3 +460,4 @@ def download(args):
                             batch_size=args.batch_size,
                             skip_removed_hf=args.skip_removed_hf,
                             data_api_config=data_api_config)
+

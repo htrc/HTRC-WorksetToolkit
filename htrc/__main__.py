@@ -115,6 +115,9 @@ def main():
     parser_run.set_defaults(func='run')
 
     args = parser.parse_args()
+    if 'func' not in args:
+        parser.print_help()
+        sys.exit(1)
 
     if args.func in ['metadata', 'export']:
         volumes = []
@@ -134,6 +137,9 @@ def main():
             metadata = get_metadata(volumes)
             print(json.dumps(metadata))
     elif args.func == 'run':
+        if 'run' not in args:
+            parser_run.print_help()
+            sys.exit(1)
         if args.run == 'mallet':
             htrc.tools.mallet.main(args.path, args.k, args.iter)
         if args.run == 'topicexplorer':
