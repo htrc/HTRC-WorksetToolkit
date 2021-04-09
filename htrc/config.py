@@ -6,17 +6,13 @@ Contains the configuration parser object.
 """
 from future import standard_library
 standard_library.install_aliases()
-from builtins import input
-
+from typing import Optional
 from configparser import RawConfigParser as ConfigParser, NoSectionError
 from codecs import open
-from getpass import getpass
 import logging
 import os.path
 import shutil
 import time
-
-from htrc.lib.cli import bool_prompt
 
 DEFAULT_PATH = os.path.expanduser('~')
 DEFAULT_PATH = os.path.join(DEFAULT_PATH, '.htrc')
@@ -25,6 +21,25 @@ if not os.path.exists(DEFAULT_PATH):
     DEFAULT_FILE = os.path.join(DEFAULT_FILE, '.htrc.default')
     logging.info("Copying default config file to home directory.")
     shutil.copyfile(DEFAULT_FILE, DEFAULT_PATH)
+
+
+class HtrcDataApiConfig:
+    def __init__(self,
+                 token: Optional[str] = None,
+                 host: Optional[str] = None,
+                 port: Optional[int] = None,
+                 epr: Optional[str] = None,
+                 cert: Optional[str] = None,
+                 key: Optional[str] = None) -> None:
+        super().__init__()
+
+        self.token = token or get_jwt_token(save_new_token=False)
+        self.host = host or get_dataapi_host()
+        self.port = port or get_dataapi_port()
+        self.epr = epr or get_dataapi_epr()
+        self.cert = cert or get_dataapi_cert()
+        self.key = key or get_dataapi_key()
+
 
 def _get_value(section, key, path=None):
     if path is None:
@@ -38,26 +53,33 @@ def _get_value(section, key, path=None):
     except NoSectionError:
         raise EnvironmentError("Config not set for {} {} in {}".format(
             section, key, path))
-    
+
+
 def get_dataapi_port(path=None):
     port = int(_get_value('data', 'port', path))
     return (port)
+
 
 def get_dataapi_host(path=None):
     host = _get_value('data', 'host', path)
     return (host)
 
+
 def get_dataapi_epr(path=None):
     return _get_value('data', 'url', path)
+
 
 def get_dataapi_cert(path=None):
     return _get_value('data', 'cert', path)
 
+
 def get_dataapi_key(path=None):
     return _get_value('data', 'key', path)
 
+
 def get_dataapi_access(path=None):
     return _get_value('data', 'pd_only', path)
+
 
 def get_idp_host_port(path=None):
     host = _get_value('idp', 'host', path)
@@ -65,8 +87,10 @@ def get_idp_host_port(path=None):
 
     return (host, port)
 
+
 def get_idp_path(path=None):
     return _get_value('idp', 'url')
+
 
 def get_idp_url(path=None):
     host, port = get_idp_host_port(path)
@@ -79,22 +103,25 @@ def get_idp_url(path=None):
 
 
 # Add jwt credential access methods
-def get_jwt_token(path=None):
+def get_jwt_token(path=None, save_new_token=True):
     try:
         token = _get_value('jwt', 'token', path)
 
         # check expiration date
         expiration = int(_get_value('jwt', 'expiration', path))
         if time.time() > expiration:
+            import htrc
+            htrc.config.remove_jwt_token()
             raise RuntimeError("JWT token expired.") 
     except:
         # This should run on either a missing or expired token.
         import htrc.auth
         token, expiration = htrc.auth.get_jwt_token()
-        htrc.config.save_jwt_token(token, expiration, path)
-
+        if save_new_token:
+            htrc.config.save_jwt_token(token, expiration, path)
 
     return token
+
 
 def save_jwt_token(token, expiration=None, path=None):
     """
@@ -123,6 +150,7 @@ def save_jwt_token(token, expiration=None, path=None):
         config.write(credential_file)
 
     return token
+
 
 def remove_jwt_token(path=None):
     """
@@ -161,8 +189,10 @@ def get_credentials(path=None):
 
     return (client_id, client_secret)
 
+
 def populate_parser(parser):
     return parser
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser

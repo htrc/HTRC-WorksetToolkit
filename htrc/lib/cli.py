@@ -1,4 +1,6 @@
 from builtins import input
+
+
 def bool_prompt(prompt_str, default=None):
     if default is True:
         default = 'y'

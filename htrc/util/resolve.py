@@ -94,29 +94,31 @@ def parse_volume_id(string):
     Organization codes for the volumes can be found in ORG_CODES.
     '''
 
-    # First extract the volume ID from a URL, fallbck to assume string.
+    # First extract the volume ID from a URL, fallback to assume string.
     parsed_url = urlparse(string)
     if parsed_url.netloc == 'hdl.handle.net':
         # Parse the Handle ID, ex:
         # https://hdl.handle.net/2027/uc2.ark:/13960/fk92805m1s'
         # Note that if the Handle URL contains page info, this is discarded.
-        id = parsed_url.path.replace('/2027/', '')
+        htid = parsed_url.path.replace('/2027/', '')
 
     elif parsed_url.netloc == 'babel.hathitrust.org':
         # Parse the HT Digital Library URL, ex:
         # https://babel.hathitrust.org/cgi/pt?id=uc2.ark:/13960/fk92805m1s;view=1up;seq=7
         if parsed_url.query:
-            id = parse_qs(parsed_url.query).get('id', None)
-            if id is not None:
-                id = id[0]
+            htid = parse_qs(parsed_url.query).get('id', None)
+            if htid is not None:
+                htid = htid[0]
+                if ';' in htid:
+                    htid = htid.split(';')[0]
 
     else:
-        id = string
+        htid = string
 
     # Validate ID against ORG_CODES. 
-    # Won't guarantee volume existance, but is a sanity check.
-    if id and any(id.startswith(org) for org in ORG_CODES):
-        return id
+    # Won't guarantee volume existence, but it is a sanity check.
+    if htid and any(htid.startswith(org) for org in ORG_CODES):
+        return htid
     else: 
         raise ValueError("Invalid Organization Code in HathiTrust ID")
 

@@ -42,6 +42,9 @@ class TestResolve(unittest.TestCase):
         id = resolve.parse_volume_id('https://babel.hathitrust.org/cgi/pt?id=uc2.ark:/13960/fk92805m1s;view=1up;seq=7')
         self.assertEqual(id, 'uc2.ark:/13960/fk92805m1s')
 
+        id = resolve.parse_volume_id('https://babel.hathitrust.org/cgi/pt?id=uc2.ark:/13960/fk92805m1s&view=1up&seq=7')
+        self.assertEqual(id, 'uc2.ark:/13960/fk92805m1s')
+
         id = resolve.parse_volume_id('uc2.ark:/13960/fk92805m1s')
         self.assertEqual(id, 'uc2.ark:/13960/fk92805m1s')
 

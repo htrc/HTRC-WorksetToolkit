@@ -1,6 +1,6 @@
 HTRC Workset Toolkit
 ======================
-The HTRC Workset Toolkit povides a command line interface for interacting with 
+The HTRC Workset Toolkit povides a command line interface for interacting with
 and analyzing volumes in the HathiTrust Digital Library:
 
 - Volume Download (``htrc download``)
@@ -11,7 +11,7 @@ and analyzing volumes in the HathiTrust Digital Library:
 Workset Path
 --------------
 
-Each of these commands takes a *workset path*. Valid types of workset paths 
+Each of these commands takes a *workset path*. Valid types of workset paths
 and examples of each are:
 
 ==================================  ==============================================================================
@@ -71,7 +71,7 @@ download`_, the
 
 Topic Modeling
 ''''''''''''''''
-There are two implementations of LDA topic modeling supported by the 
+There are two implementations of LDA topic modeling supported by the
 
 
 Arguments
@@ -113,6 +113,35 @@ Following are the use cases and examples of ``htrc`` commands inside the HTRC Da
 * Download volumes to specific location with concatenation option - (This will concatenate all the pages of the volume into one txt file.) :
 
     ``htrc download /home/dcuser/HTRC/htrc-id -o /media/secure_volume/my-workset -c``
+
+* Download specific pages from a single volume :
+
+    ``htrc download -pg coo.31924089593846[5,10,15,20,25,30]``
+
+* Download volumes and then extract headers/footers from the volumes :
+
+    ``htrc download -hf /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from the volume pages then concatenate the pages - (This will concatenate all the pages of the volume into one txt file.) :
+
+    ``htrc download -hfc /home/dcuser/HTRC/htrc-id``
+    
+* Download volumes, extract headers/footers from the volumes, skip downloading the .csv files containing removed headers and footers :
+
+    ``htrc download -hf -s /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from volumes, change window of pages in extractor algorithm (The default is 6, lower numbers increase speed, but are less accurate) :
+
+    ``htrc download -hf -w 3 /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from volumes, change minimum similarity rate for lines on pages to be considered a header or footer (Default is .7 or 70%, so if a line is 70% the same as other lines on other pages within the window of pages it is labeled a header or footer and removed) :
+
+    ``htrc download -hf -msr .9 /home/dcuser/HTRC/htrc-id``
+    
+* Download volumes, extract headers/footers from volumes, change the max number of concurrent tasks (note that the only options are 1 or 2):
+
+    ``htrc download -hf --parallelism 2 /home/dcuser/HTRC/htrc-id``
+    
 
 |
 +---------------------------------+-----------------------------------------------+
@@ -246,7 +275,3 @@ Following are the use cases and examples of ``htrc`` commands inside the HTRC Da
 * Run topicexplorer on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).
 
    ``htrc topicexplorer /home/dcuser/unzipped_volumes -k 20``
-
-
-
-
