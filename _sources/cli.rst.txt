@@ -114,6 +114,30 @@ Following are the use cases and examples of ``htrc`` commands inside the HTRC Da
 
     ``htrc download /home/dcuser/HTRC/htrc-id -o /media/secure_volume/my-workset -c``
 
+* Download volumes and then extract headers/footers from the volumes :
+
+    ``htrc download -hf /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from the volume pages then concatenate the pages - (This will concatenate all the pages of the volume into one txt file.) :
+
+    ``htrc download -hfc /home/dcuser/HTRC/htrc-id``
+    
+* Download volumes, extract headers/footers from the volumes, skip downloading the .csv files containing removed headers and footers :
+
+    ``htrc download -hf -s /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from volumes, change window of pages in extractor algorithm (The default is 6, lower numbers increase speed, but are less accurate) :
+
+    ``htrc download -hf -w 3 /home/dcuser/HTRC/htrc-id``
+
+* Download volumes, extract headers/footers from volumes, change minimum similarity rate for lines on pages to be considered a header or footer (Default is .7 or 70%, so if a line is 70% the same as other lines on other pages within the window of pages it is labeled a header or footer and removed) :
+
+    ``htrc download -hf -msr .9 /home/dcuser/HTRC/htrc-id``
+    
+* Download volumes, extract headers/footers from volumes, change the max number of concurrent tasks (note that the only options are 1 or 2):
+
+    ``htrc download -hf --parallelism 2 /home/dcuser/HTRC/htrc-id``
+
 |
 +---------------------------------+-----------------------------------------------+
 | command: ``htrc metadata``      | capsule mode: **secure** and **maintenance**  |
