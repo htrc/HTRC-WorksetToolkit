@@ -1,26 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>HTRC Workset Toolkit Development Library &#8212; HTRC Workset Toolkit 1.0.0b1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.0.0b1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="HTRC Python SDK Tips" href="tips.html" />
@@ -31,13 +22,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="htrc-workset-toolkit-development-library">
@@ -57,13 +49,13 @@ mode, network access is restricted to the HTRC Data API and some HTDL
 resources, allowing text and image data to be downloaded to the Capsule.</p>
 <p>Any changes made on the non-secure volumes are reverted when leaving secure
 mode, so persistent code changes must occur in maintenance mode. The SDK
-addresses these connectivity issues with the <code class="docutils literal"><span class="pre">htrc.mock</span></code> library.</p>
+addresses these connectivity issues with the <code class="docutils literal notranslate"><span class="pre">htrc.mock</span></code> library.</p>
 <div class="section" id="mock-testing">
 <h3>Mock Testing<a class="headerlink" href="#mock-testing" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Mock_object">Mock testing</a> uses simulated objects or functions to mimic the behavior
 of real code in controlled ways.</p>
 <p>The HTRC Workset Toolkit implements a mock of the Data API access layer in
-<code class="docutils literal"><span class="pre">htrc.mock.volumes</span></code>. The Data API server is only accessible via a Capsule
+<code class="docutils literal notranslate"><span class="pre">htrc.mock.volumes</span></code>. The Data API server is only accessible via a Capsule
 in secure mode. By implementing a function with the same call signature
 that returns the same data types, workflows that rely on the Data API can be
 tested either in Capsule maintenance mode or on a user’s own computer.</p>
@@ -71,7 +63,7 @@ tested either in Capsule maintenance mode or on a user’s own computer.</p>
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">__debug__</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">__debug__</span><span class="p">:</span>
     <span class="c1"># This code will execute when running `python script.py`</span>
     <span class="kn">import</span> <span class="nn">htrc.mock.volumes</span> <span class="k">as</span> <span class="nn">volumes</span>
 <span class="k">else</span><span class="p">:</span>
@@ -87,19 +79,19 @@ tested either in Capsule maintenance mode or on a user’s own computer.</p>
 <span class="n">volumes</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">volume_ids</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This script leverages use of the <code class="docutils literal"><span class="pre">python</span> <span class="pre">-O</span></code> switch, which controls the
-<code class="docutils literal"><span class="pre">__debug__</span></code> global variable:</p>
+<p>This script leverages use of the <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-O</span></code> switch, which controls the
+<code class="docutils literal notranslate"><span class="pre">__debug__</span></code> global variable:</p>
 <blockquote>
 <div><ul class="simple">
-<li>When run in the development environment, which does not have secure
-access to the Data API, the program is run with <code class="docutils literal"><span class="pre">python</span> <span class="pre">script.py</span></code>,
-setting <code class="docutils literal"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">True</span></code>. This means that <code class="docutils literal"><span class="pre">volumes.download(volume_ids,</span>
-<span class="pre">output_dir)</span></code> utilizes the function <code class="docutils literal"><span class="pre">htrc.mock.volumes.download(volume_ids,</span>
-<span class="pre">output_dir)</span></code>.</li>
-<li>When run in secure mode of the data capsule, the program is executed with
-<code class="docutils literal"><span class="pre">python</span> <span class="pre">-O</span> <span class="pre">script.py</span></code>, setting <code class="docutils literal"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">False</span></code>. The statement
-<code class="docutils literal"><span class="pre">volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code> utilizes the function
-<code class="docutils literal"><span class="pre">htrc.mock.volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code>.</li>
+<li><p>When run in the development environment, which does not have secure
+access to the Data API, the program is run with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">script.py</span></code>,
+setting <code class="docutils literal notranslate"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">True</span></code>. This means that <code class="docutils literal notranslate"><span class="pre">volumes.download(volume_ids,</span>
+<span class="pre">output_dir)</span></code> utilizes the function <code class="docutils literal notranslate"><span class="pre">htrc.mock.volumes.download(volume_ids,</span>
+<span class="pre">output_dir)</span></code>.</p></li>
+<li><p>When run in secure mode of the data capsule, the program is executed with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-O</span> <span class="pre">script.py</span></code>, setting <code class="docutils literal notranslate"><span class="pre">__debug__</span> <span class="pre">=</span> <span class="pre">False</span></code>. The statement
+<code class="docutils literal notranslate"><span class="pre">volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code> utilizes the function
+<code class="docutils literal notranslate"><span class="pre">htrc.mock.volumes.download(volume_ids,</span> <span class="pre">output_dir)</span></code>.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -110,8 +102,17 @@ setting <code class="docutils literal"><span class="pre">__debug__</span> <span 
 <div class="section" id="module-htrc.metadata">
 <span id="htrc-metadata"></span><h2><cite>htrc.metadata</cite><a class="headerlink" href="#module-htrc.metadata" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="htrc.metadata.get_bulk_metadata">
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">get_bulk_metadata</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">marc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_bulk_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_bulk_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
+<p>Params:
+:param ids: HTIDs for the volumes to be retrieved
+:param marc: Retrieve MARC-XML within JSON return value.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="htrc.metadata.get_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">get_metadata</code><span class="sig-paren">(</span><em>ids</em>, <em>output_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">get_metadata</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">output_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves metadata for a folder of folders, where each subfolder is named
 for a HathiTrust ID. This structure is the default structure extracted from
 a Data API request (:method htrc.volumes.get_volumes:).</p>
@@ -119,7 +120,7 @@ a Data API request (:method htrc.volumes.get_volumes:).</p>
 
 <dl class="function">
 <dt id="htrc.metadata.get_volume_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">get_volume_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>marc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_volume_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">get_volume_metadata</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">marc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#get_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.get_volume_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
 <p>Params:
 :param id: HTID for the volume to be retrieved
@@ -128,13 +129,25 @@ a Data API request (:method htrc.volumes.get_volumes:).</p>
 
 <dl class="function">
 <dt id="htrc.metadata.record_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">record_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#record_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.record_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">record_metadata</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#record_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.record_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve metadata for a HathiTrust Record.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="htrc.metadata.safe_bulk_metadata">
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">safe_bulk_metadata</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">marc=False</em>, <em class="sig-param">sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#safe_bulk_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.safe_bulk_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve bulk item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
+<p>Unlike :method get_bulk_metadata:, this function returns an
+empty dictionary, rather than an error when metadata is missing.</p>
+<p>Params:
+:param ids: HTIDs for the volumes to be retrieved
+:param marc: Retrieve MARC-XML within JSON return value.</p>
+<p>_ <a class="reference external" href="https://www.hathitrust.org/bib_api">https://www.hathitrust.org/bib_api</a></p>
+</dd></dl>
+
+<dl class="function">
 <dt id="htrc.metadata.safe_volume_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">safe_volume_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>marc=False</em>, <em>sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#safe_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.safe_volume_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">safe_volume_metadata</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">marc=False</em>, <em class="sig-param">sleep_time=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#safe_volume_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.safe_volume_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve item metadata <a class="reference external" href="https://www.hathitrust.org/bib_api">from the HathiTrust Bibliographic API</a>.</p>
 <p>Unlike :method volume_metadata:, this function returns an empty dictionary,
 rather than an error when metadata is missing.</p>
@@ -146,7 +159,7 @@ rather than an error when metadata is missing.</p>
 
 <dl class="function">
 <dt id="htrc.metadata.volume_solr_metadata">
-<code class="descclassname">htrc.metadata.</code><code class="descname">volume_solr_metadata</code><span class="sig-paren">(</span><em>id</em>, <em>sleep_time=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#volume_solr_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.volume_solr_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.metadata.</code><code class="sig-name descname">volume_solr_metadata</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">sleep_time=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/metadata.html#volume_solr_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.metadata.volume_solr_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve metadata from HTRC Solr API.</p>
 <p>The HTRC Solr instance is used only for certain extracted features 
 unavailable in the main HathiTrust Bibliographic API. If you are a
@@ -165,7 +178,7 @@ The download functions will return a sample zip file.</p>
 <p>See the core documentation for an example of how to use this library.</p>
 <dl class="function">
 <dt id="htrc.mock.volumes.credentials_from_config">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">credentials_from_config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#credentials_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.credentials_from_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.mock.volumes.</code><code class="sig-name descname">credentials_from_config</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#credentials_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.credentials_from_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves the username and password from a config file for the Data API.
 DOES NOT raise an EnvironmentError if path is invalid.
 See also: credential_prompt</p>
@@ -173,13 +186,13 @@ See also: credential_prompt</p>
 
 <dl class="function">
 <dt id="htrc.mock.volumes.get_oauth2_token">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_oauth2_token</code><span class="sig-paren">(</span><em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_oauth2_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_oauth2_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.mock.volumes.</code><code class="sig-name descname">get_oauth2_token</code><span class="sig-paren">(</span><em class="sig-param">username</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_oauth2_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_oauth2_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a sample token for oauth2</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="htrc.mock.volumes.get_pages">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_pages</code><span class="sig-paren">(</span><em>token</em>, <em>page_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.mock.volumes.</code><code class="sig-name descname">get_pages</code><span class="sig-paren">(</span><em class="sig-param">token</em>, <em class="sig-param">page_ids</em>, <em class="sig-param">concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a ZIP file containing specfic pages.</p>
 <p>Parameters:
 :token: An OAuth2 token for the app.
@@ -190,7 +203,7 @@ file per page (default).</p>
 
 <dl class="function">
 <dt id="htrc.mock.volumes.get_volumes">
-<code class="descclassname">htrc.mock.volumes.</code><code class="descname">get_volumes</code><span class="sig-paren">(</span><em>token</em>, <em>volume_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.mock.volumes.</code><code class="sig-name descname">get_volumes</code><span class="sig-paren">(</span><em class="sig-param">token</em>, <em class="sig-param">volume_ids</em>, <em class="sig-param">concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/mock/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.mock.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns volumes from the Data API as a raw zip stream.</p>
 <p>Parameters:
 :token: An OAuth2 token for the app.
@@ -210,10 +223,10 @@ executed from an HTRC Data Capsule in Secure Mode. The module
 <cite>htrc.mock.volumes</cite> contains Patch objects for testing workflows.</p>
 <dl class="function">
 <dt id="htrc.volumes.get_pages">
-<code class="descclassname">htrc.volumes.</code><code class="descname">get_pages</code><span class="sig-paren">(</span><em>token</em>, <em>page_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.volumes.</code><code class="sig-name descname">get_pages</code><span class="sig-paren">(</span><em class="sig-param">data_api_config: htrc.config.HtrcDataApiConfig</em>, <em class="sig-param">page_ids</em>, <em class="sig-param">concat=False</em>, <em class="sig-param">mets=False</em>, <em class="sig-param">buffer_size=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_pages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a ZIP file containing specfic pages.</p>
 <p>Parameters:
-:token: An OAuth2 token for the app.
+:data_api_config: The configuration data of the DataAPI endpoint.
 :volume_ids: A list of volume_ids
 :concat: If True, return a single file per volume. If False, return a single
 file per page (default).</p>
@@ -221,29 +234,56 @@ file per page (default).</p>
 
 <dl class="function">
 <dt id="htrc.volumes.get_volumes">
-<code class="descclassname">htrc.volumes.</code><code class="descname">get_volumes</code><span class="sig-paren">(</span><em>token</em>, <em>volume_ids</em>, <em>concat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">htrc.volumes.</code><code class="sig-name descname">get_volumes</code><span class="sig-paren">(</span><em class="sig-param">data_api_config: htrc.config.HtrcDataApiConfig</em>, <em class="sig-param">volume_ids</em>, <em class="sig-param">concat=False</em>, <em class="sig-param">mets=False</em>, <em class="sig-param">buffer_size=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/volumes.html#get_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.volumes.get_volumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns volumes from the Data API as a raw zip stream.</p>
 <p>Parameters:
 :token: An OAuth2 token for the app.
 :volume_ids: A list of volume_ids
 :concat: If True, return a single file per volume. If False, return a single
-file per page (default).</p>
+file per page (default).
+:host: Data API host
+:port: Data API port</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-htrc.util">
 <span id="htrc-util"></span><h2><cite>htrc.util</cite><a class="headerlink" href="#module-htrc.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="htrc.util.split_items">
+<code class="sig-prename descclassname">htrc.util.</code><code class="sig-name descname">split_items</code><span class="sig-paren">(</span><em class="sig-param">seq</em>, <em class="sig-param">split_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htrc/util.html#split_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htrc.util.split_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that returns portions of <cite>seq</cite> up to <cite>split_size</cite>.
+Useful when chunking requests to bulk endpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> – A sequence to split.</p></li>
+<li><p><strong>split_size</strong> – The maximum size of each split.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul class="current">
+<h1 class="logo"><a href="index.html">HTRC Workset Toolkit</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Workset Toolkit</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTRC Workset Toolkit Development Library</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#htrc-data-capsule-service">HTRC Data Capsule Service</a><ul>
@@ -263,6 +303,7 @@ file per page (default).</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tips.html">HTRC Python SDK Tips</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -272,23 +313,24 @@ file per page (default).</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/sdk.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -297,8 +339,8 @@ file per page (default).</p>
       &copy;2017, HathiTrust Research Center (Jaimie Murdock).
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/sdk.rst.txt"

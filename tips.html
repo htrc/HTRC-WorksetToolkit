@@ -1,26 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>HTRC Python SDK Tips &#8212; HTRC Workset Toolkit 1.0.0b1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.0.0b1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="HTRC Workset Toolkit Development Library" href="sdk.html" />
@@ -30,13 +21,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="htrc-python-sdk-tips">
@@ -44,10 +36,10 @@
 <p>This document contains a number of tips for using the CLI and SDK in conjunction
 with other tools.</p>
 <div class="section" id="pretty-print-of-json-data-using-jq">
-<h2>Pretty-print of JSON data using <code class="docutils literal"><span class="pre">jq</span></code><a class="headerlink" href="#pretty-print-of-json-data-using-jq" title="Permalink to this headline">¶</a></h2>
-<p>The command line tool <code class="docutils literal"><span class="pre">jq</span></code> is very powerful when combined with the <code class="docutils literal"><span class="pre">htrc</span>
+<h2>Pretty-print of JSON data using <code class="docutils literal notranslate"><span class="pre">jq</span></code><a class="headerlink" href="#pretty-print-of-json-data-using-jq" title="Permalink to this headline">¶</a></h2>
+<p>The command line tool <code class="docutils literal notranslate"><span class="pre">jq</span></code> is very powerful when combined with the <code class="docutils literal notranslate"><span class="pre">htrc</span>
 <span class="pre">metadata</span></code> command, as it can be used to quickly query documents:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">htrc</span> <span class="n">metadata</span> <span class="n">mdp</span><span class="o">.</span><span class="mi">39015078560078</span> <span class="o">|</span> <span class="n">jq</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">htrc</span> <span class="n">metadata</span> <span class="n">mdp</span><span class="o">.</span><span class="mi">39015078560078</span> <span class="o">|</span> <span class="n">jq</span>
 </pre></div>
 </div>
 </div>
@@ -55,19 +47,30 @@ with other tools.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul class="current">
+<h1 class="logo"><a href="index.html">HTRC Workset Toolkit</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cli.html">HTRC Workset Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sdk.html">HTRC Workset Toolkit Development Library</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTRC Python SDK Tips</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pretty-print-of-json-data-using-jq">Pretty-print of JSON data using <code class="docutils literal"><span class="pre">jq</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pretty-print-of-json-data-using-jq">Pretty-print of JSON data using <code class="docutils literal notranslate"><span class="pre">jq</span></code></a></li>
 </ul>
 </li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -76,23 +79,24 @@ with other tools.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/tips.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -101,8 +105,8 @@ with other tools.</p>
       &copy;2017, HathiTrust Research Center (Jaimie Murdock).
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/tips.rst.txt"
