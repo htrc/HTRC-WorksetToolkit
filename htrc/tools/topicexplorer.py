@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
 
+
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):
     if os.path.exists("/media/secure_volume"):
         # If in secure mode, downlaod the volumes from data api

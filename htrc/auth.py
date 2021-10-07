@@ -10,6 +10,7 @@ import requests.auth
 
 import htrc.config
 
+
 def get_jwt_token():
     # Currently we just store one common jwt token locally at .htrc file for simplicity
     # Expect to add POST method to query unique jwt token with the combo of username and password
@@ -22,7 +23,7 @@ def get_jwt_token():
              #"username": username,
              #"password": password,
              #"scope" : "openid"}
-              
+
     url1 = htrc.config.get_idp_url()
     capsule_id = htrc.config._get_value("jwt", "capsule_id")
     result = subprocess.check_output("hostname -s -I | awk '{print $1}'", shell=True)
