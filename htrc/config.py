@@ -33,7 +33,7 @@ class HtrcDataApiConfig:
                  key: Optional[str] = None) -> None:
         super().__init__()
 
-        self.token = token or get_jwt_token(save_new_token=False)
+        self.token = token or get_jwt_token()
         self.host = host or get_dataapi_host()
         self.port = port or get_dataapi_port()
         self.epr = epr or get_dataapi_epr()
