@@ -13,15 +13,16 @@ from future import standard_library
 
 standard_library.install_aliases()
 
+
 #from builtins import input
 from htrc.models import HtrcPage
 
 import http.client
 from io import BytesIO, TextIOWrapper
 import json
-import logging
 import os.path
 import progressbar
+
 #import re
 import socket
 import ssl
@@ -37,7 +38,6 @@ from tqdm import tqdm
 from htrc.runningheaders import parse_page_structure
 from functools import partial
 import pandas as pd
-
 #from htrc.lib.cli import bool_prompt
 from htrc.util import split_items
 import htrc.config
@@ -73,6 +73,7 @@ def get_volumes(data_api_config: htrc.config.HtrcDataApiConfig, volume_ids, conc
 
     data = {'volumeIDs': '|'.join(
         [id.replace('+', ':').replace('=', '/') for id in volume_ids])}
+
 
     if concat:
         data['concat'] = 'true'
@@ -210,6 +211,7 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
 
     return data
 
+
 #def get_oauth2_token(username, password):
     # make sure to set the request content-type as application/x-www-form-urlencoded
     #headers = {"Content-type": "application/x-www-form-urlencoded"}
@@ -242,6 +244,7 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
         #token = jsonData["access_token"]
         #logging.info("*** parsed token: {}".format(token))
 
+
     #else:
         #logging.debug("Unable to get token")
         #logging.debug("Response Code: {}".format(response.status))
@@ -252,7 +255,9 @@ def get_pages(data_api_config: htrc.config.HtrcDataApiConfig, page_ids, concat=F
     #if httpsConnection is not None:
         #httpsConnection.close()
 
+
     #return token
+
 
 
 def grep_error(file_name, output_dir, pattern, txt_index):
@@ -266,6 +271,9 @@ def grep_error(file_name, output_dir, pattern, txt_index):
         for line in open(file_path):
             if pattern in line:
                 na_volume.append(line.split()[txt_index])
+
+    return na_volume
+
 
     return na_volume
 
@@ -426,6 +434,8 @@ def _remove_headers_footers_and_save(vol_data, concat, hf_min_similarity, hf_win
             for vol_page_path, page_body in zip(sorted_vol_zip_page_paths, pages_body):
                 with open(os.path.join(output_dir, vol_page_path), 'w', encoding='utf-8') as page_file:
                     page_file.write(page_body)
+
+
 
         removed_hf = []
         for vol_page_path, vol_page in zip(sorted_vol_zip_page_paths, vol_pages):

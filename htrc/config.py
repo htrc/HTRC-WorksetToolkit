@@ -111,6 +111,7 @@ def get_jwt_token(path=None):
     return token
 
 def save_jwt_token(token, path=None):
+
     """
     Saves JWT token in the config file.
     """

@@ -4,6 +4,7 @@ from getpass import getpass
 #import ssl
 #import time
 import subprocess
+
 import requests
 import requests.auth
 #import configparser
@@ -42,6 +43,7 @@ def get_jwt_token():
         return get_jwt_token()
     else:
         raise RuntimeError("JWT token retrieval failed: {}".format(data['error']))
+
 
 def credential_prompt():
     """
