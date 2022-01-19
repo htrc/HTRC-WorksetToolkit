@@ -33,7 +33,7 @@ class HtrcDataApiConfig:
                  key: Optional[str] = None) -> None:
         super().__init__()
 
-        self.token = token or get_jwt_token(save_new_token=False)
+        self.token = token or get_jwt_token()
         self.host = host or get_dataapi_host()
         self.port = port or get_dataapi_port()
         self.epr = epr or get_dataapi_epr()
@@ -103,27 +103,15 @@ def get_idp_url(path=None):
 
 
 # Add jwt credential access methods
-def get_jwt_token(path=None, save_new_token=True):
-    try:
-        token = _get_value('jwt', 'token', path)
+def get_jwt_token(path=None):
 
-        # check expiration date
-        expiration = int(_get_value('jwt', 'expiration', path))
-        if time.time() > expiration:
-            import htrc
-            htrc.config.remove_jwt_token()
-            raise RuntimeError("JWT token expired.") 
-    except:
-        # This should run on either a missing or expired token.
-        import htrc.auth
-        token, expiration = htrc.auth.get_jwt_token()
-        if save_new_token:
-            htrc.config.save_jwt_token(token, expiration, path)
+    import htrc.auth
+    token = htrc.auth.get_jwt_token()
 
     return token
 
+def save_jwt_token(token, path=None):
 
-def save_jwt_token(token, expiration=None, path=None):
     """
     Saves JWT token in the config file.
     """
@@ -132,8 +120,8 @@ def save_jwt_token(token, expiration=None, path=None):
         path = DEFAULT_PATH
 
     # Default to expiration of now - force a new token on next request
-    if expiration is None:
-        expiration = time.time()
+    #if expiration is None:
+        #expiration = time.time()
 
     # Open and modify existing config file, if it exists.
     config = ConfigParser(allow_no_value=True)
@@ -144,7 +132,7 @@ def save_jwt_token(token, expiration=None, path=None):
 
     # set token and expiration
     config.set('jwt', 'token', token)
-    config.set('jwt', 'expiration', expiration)
+    #config.set('jwt', 'expiration', expiration)
 
     with open(path, 'w') as credential_file:
         config.write(credential_file)
@@ -168,7 +156,7 @@ def remove_jwt_token(path=None):
         config.add_section('jwt')
     # set token and expiration
     config.set('jwt', 'token', " ")
-    config.set('jwt', 'expiration', " ")
+    #config.set('jwt', 'expiration', " ")
 
     with open(path, 'w') as credential_file:
         config.write(credential_file)
