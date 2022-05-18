@@ -110,7 +110,9 @@ class TestVolumes(unittest.TestCase):
 
     @patch('htrc.volumes.ZipFile')
     @patch('htrc.volumes.get_volumes')
-    @patch('htrc.volumes.get_oauth2_token')
+    # test is looking for oauth2 tokens. looks like we made a jump to jwt but not seeing tests for those.
+    # revised code to point towards mock.volumes.get_oauth2_token as a hot fix - 5/22 dan
+    @patch('htrc.mock.volumes.get_oauth2_token')
     @patch('htrc.volumes.http.client.HTTPSConnection')
     def test_download_volumes(self, https_mock, oauth2_mock, volumes_mock,
                               zip_mock):
