@@ -18,7 +18,7 @@ import htrc.workset
 import htrc.tools.mallet
 
 from argparse import ArgumentParser
-import htrc.tools.topicexplorer
+# import htrc.tools.topicexplorer
 from htrc.lib.cli import bool_prompt
 from htrc.util.resolve import *
 
@@ -108,9 +108,9 @@ def main():
     htrc.tools.mallet.populate_parser(parser_mallet)
     parser_mallet.set_defaults(run='mallet')
     
-    parser_topicexplorer = run_parsers.add_parser('topicexplorer')
-    htrc.tools.topicexplorer.populate_parser(parser_topicexplorer)
-    parser_topicexplorer.set_defaults(run='topicexplorer')
+    # parser_topicexplorer = run_parsers.add_parser('topicexplorer')
+    # htrc.tools.topicexplorer.populate_parser(parser_topicexplorer)
+    # parser_topicexplorer.set_defaults(run='topicexplorer')
     
     parser_run.set_defaults(func='run')
 
@@ -142,8 +142,8 @@ def main():
             sys.exit(1)
         if args.run == 'mallet':
             htrc.tools.mallet.main(args.path, args.k, args.iter)
-        if args.run == 'topicexplorer':
-            htrc.tools.topicexplorer.main(args.path, args.k, args.iter)
+        # if args.run == 'topicexplorer':
+        #     htrc.tools.topicexplorer.main(args.path, args.k, args.iter)
     elif args.func == 'download':
         if os.path.exists(args.output):
             if args.force or bool_prompt('Folder {} exists. Delete?'.format(args.output), default=False):
