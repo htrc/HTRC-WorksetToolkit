@@ -5,6 +5,7 @@ from tempfile import NamedTemporaryFile
 
 from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
+import sys
 
 
 def main(path, topics, iterations, output_dir='/media/secure_volume/workset'):

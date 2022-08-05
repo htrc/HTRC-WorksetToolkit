@@ -3,7 +3,7 @@ import os, os.path
 import subprocess
 import sys
 import tarfile
-import wget
+import urllib.request
 
 from htrc.volumes import download_volumes
 from htrc.workset import path_to_volumes
@@ -14,7 +14,7 @@ MALLET_DIR = os.path.expanduser('~/mallet')
 def install_mallet():
     if not os.path.exists(MALLET_DIR):
         os.makedirs(MALLET_DIR)
-        mallet_zip = wget.download('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
+        mallet_zip = urllib.request.urlopen('http://mallet.cs.umass.edu/dist/mallet-2.0.8RC3.tar.gz')
         mallet_dir = tarfile.open(mallet_zip, "r:gz")
         mallet_dir.extractall(path=MALLET_DIR)
         mallet_dir.close()

@@ -81,12 +81,6 @@ Arguments
    :func: populate_parser
    :prog: htrc run mallet
 
-.. argparse::
-   :module: htrc.tools.topicexplorer
-   :func: populate_parser
-   :prog: htrc run topicexplorer
-
-
 Use Cases and Examples
 --------------------------------------------
 
@@ -248,30 +242,3 @@ Following are the use cases and examples of ``htrc`` commands inside the HTRC Da
 * Run mallet on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).
 
     ``htrc mallet /home/dcuser/unzipped_volumes -k 20``
-
-
-|
-+---------------------------------------------+------------------------------------------+
-| command: ``htrc run topicexplorer``         |    capsule mode: **secure**              |
-+---------------------------------------------+------------------------------------------+
-
-* Run topicexplorer on already downloaded volumes :
-
-   ``htrc run topicexplorer /media/secure_volume/workset -k 20``
-
-* Run topicexplorer on volume id list :
-
-   ``htrc run topicexplorer /home/dcuser/HTRC/htrc-id -k 20``
-
-* Run topicexplorer on hathi collection :
-
-   ``htrc run topicexplorer "https://babel.hathitrust.org/cgi/mb?a=listis&c=1853042514" -k 20``
-
-|
-+--------------------------------------------------+-------------------------------------+
-| command: ``htrc run topicexplorer``              |   capsule mode: **maintenance**     |
-+--------------------------------------------------+-------------------------------------+
-
-* Run topicexplorer on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).
-
-   ``htrc topicexplorer /home/dcuser/unzipped_volumes -k 20``

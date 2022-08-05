@@ -10,10 +10,10 @@ import atexit
 import tarfile
 
 
-__version__ = '0.1.58'
+__version__ = '0.1.59'
 
 # Installing Cython indepdently bc of numpy version. Pinning packages bc of python3.6
-install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2==3.55.0', 'pandas==1.1.5','requests', 'argparse==1.1', 'Cython','tqdm==4.46.0', 'wget']
+install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2==3.55.0', 'pandas==1.1.5','requests', 'argparse==1.1', 'Cython','tqdm==4.46.0']
 # TODO: migrate to docs confix:, 'sphinx-argparse', 'sphinxcontrib-fulltoc']
 if sys.version_info.major == 2:
     install_requires.append('configparser')
