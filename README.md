@@ -72,6 +72,7 @@ In order to update PyPI, you will need owner permissions, which are currently he
    ```
 2. Run `python setup.py sdist upload` to upload the tarball.
 3. Run `python setup.py bdist_egg upload` to upload the egg file.
+(If `upload` command doesn't work use `twine upload dist/*`)
 
 ## Documentation
 For usage instructions and documentation please see: [https://htrc.github.io/HTRC-WorksetToolkit/]
