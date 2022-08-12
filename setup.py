@@ -10,7 +10,7 @@ import atexit
 import tarfile
 
 
-__version__ = '0.1.59'
+__version__ = '0.1.58b0'
 
 # Installing Cython indepdently bc of numpy version. Pinning packages bc of python3.6
 install_requires = ['PyLD', 'future', 'prov', 'unicodecsv', 'progressbar2==3.55.0', 'pandas==1.1.5','requests', 'argparse==1.1', 'Cython','tqdm==4.46.0']
