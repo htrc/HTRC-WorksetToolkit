@@ -1,0 +1,15 @@
+/.idea/
+/build/
+/dist/
+/docs/
+/htrc/
+/htrc/hf_utils/
+/htrc/lib/
+/htrc/metadata/
+/htrc/models/
+/htrc/runningheaders/
+/htrc/tools/
+/htrc/util/
+/htrc/volumes/
+/htrc/workset/
+/htrc.egg-info/

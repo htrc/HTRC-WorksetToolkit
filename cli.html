@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>HTRC Workset Toolkit &#8212; HTRC Workset Toolkit 1.0.0b1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="HTRC Workset Toolkit Development Library" href="sdk.html" />
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="htrc-workset-toolkit">
+  <section id="htrc-workset-toolkit">
 <h1>HTRC Workset Toolkit<a class="headerlink" href="#htrc-workset-toolkit" title="Permalink to this headline">¶</a></h1>
 <p>The HTRC Workset Toolkit povides a command line interface for interacting with
 and analyzing volumes in the HathiTrust Digital Library:</p>
@@ -42,7 +43,7 @@ and analyzing volumes in the HathiTrust Digital Library:</p>
 <li><p>Pre-built Analysis Workflows (<code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span></code>)</p></li>
 <li><p>Export of volume lists (<code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">export</span></code>)</p></li>
 </ul>
-<div class="section" id="workset-path">
+<section id="workset-path">
 <h2>Workset Path<a class="headerlink" href="#workset-path" title="Permalink to this headline">¶</a></h2>
 <p>Each of these commands takes a <em>workset path</em>. Valid types of workset paths
 and examples of each are:</p>
@@ -80,8 +81,8 @@ and examples of each are:</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="volume-download">
+</section>
+<section id="volume-download">
 <h2>Volume Download<a class="headerlink" href="#volume-download" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">download</span></code> command retrieves volumes from the <a class="reference external" href="https://wiki.htrc.illinois.edu/display/COM/HTRC+Data+API+Users+Guide">HTRC Data API</a>
 to the secure mode of the <a class="reference internal" href="sdk.html#htrc-data-capsule-service"><span class="std std-ref">HTRC Data Capsule Service</span></a>.</p>
@@ -90,25 +91,21 @@ to the secure mode of the <a class="reference internal" href="sdk.html#htrc-data
 <p>This command will return an error when run on a non-HTRC computer or on a
 Capsule running in maintenance mode.</p>
 </div>
-<div class="section" id="arguments">
+<section id="arguments">
 <h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">download</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">hf</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">hfc</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">msr</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="n">parallelism</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">batch</span><span class="o">-</span><span class="n">size</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">m</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">pg</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">TOKEN</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dh</span> <span class="n">DATAHOST</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dp</span> <span class="n">DATAPORT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">de</span> <span class="n">DATAEPR</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">-</span><span class="n">dc</span> <span class="n">DATACERT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dk</span> <span class="n">DATAKEY</span><span class="p">]</span>
-                     <span class="p">[</span><span class="n">file</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">download</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">hf</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">hfc</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">msr</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">parallelism</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">batch</span><span class="o">-</span><span class="n">size</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">m</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">pg</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">TOKEN</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dh</span> <span class="n">DATAHOST</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dp</span> <span class="n">DATAPORT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">de</span> <span class="n">DATAEPR</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dc</span> <span class="n">DATACERT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">dk</span> <span class="n">DATAKEY</span><span class="p">]</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="section" id="Positional Arguments">
+<section id="Positional Arguments">
 <h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
 <dl class="option-list">
 <dt><kbd>file</kbd></dt>
 <dd><p>Workset path[s]</p>
-<p>Default: &lt;_io.TextIOWrapper name=’&lt;stdin&gt;’ mode=’r’ encoding=’UTF-8’&gt;</p>
+<p>Default: &lt;_io.TextIOWrapper name=’&lt;stdin&gt;’ mode=’r’ encoding=’utf-8’&gt;</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="Named Arguments">
+</section>
+<section id="Named Arguments">
 <h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
 <dl class="option-list">
 <dt><kbd>-f, --force</kbd></dt>
@@ -141,7 +138,7 @@ Capsule running in maintenance mode.</p>
 </dd>
 <dt><kbd>--parallelism</kbd></dt>
 <dd><p>The max number of concurrent tasks to start when downloading or removing headers/footers</p>
-<p>Default: 8</p>
+<p>Default: 10</p>
 </dd>
 <dt><kbd>--batch-size</kbd></dt>
 <dd><p>The max number of volumes to download at a time from DataAPI</p>
@@ -178,51 +175,50 @@ Capsule running in maintenance mode.</p>
 <dd><p>Client key file for mutual TLS with Data API.</p>
 </dd>
 </dl>
-</div>
-</div>
-</div>
-<div class="section" id="bibliographic-api-access">
+</section>
+</section>
+</section>
+<section id="bibliographic-api-access">
 <h2>Bibliographic API Access<a class="headerlink" href="#bibliographic-api-access" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">metadata</span></code> retrieves metadata from the <a class="reference external" href="https://www.hathitrust.org/bib_api">HathiTrust Bibliographic API</a>.
 This command has no limitations on which computer or network executes it.</p>
-<div class="section" id="id1">
+<section id="id1">
 <h3>Arguments<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">metadata</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">path</span> <span class="p">[</span><span class="n">path</span> <span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="section" id="Positional Arguments">
+<section id="Positional Arguments">
 <h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
 <dl class="option-list">
 <dt><kbd>path</kbd></dt>
 <dd><p>Workset path[s]</p>
 </dd>
 </dl>
-</div>
-</div>
-</div>
-<div class="section" id="analysis-workflows">
+</section>
+</section>
+</section>
+<section id="analysis-workflows">
 <h2>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h2>
 <p>The HTRC Workset Toolkit also provides the command line tool <code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span></code>. Like <a class="reference internal" href="#volume-download">volume
 download</a>, the</p>
-<div class="section" id="topic-modeling">
+<section id="topic-modeling">
 <h3>Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permalink to this headline">¶</a></h3>
 <p>There are two implementations of LDA topic modeling supported by the</p>
-</div>
-<div class="section" id="id2">
+</section>
+<section id="id2">
 <h3>Arguments<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">mallet</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">workset</span><span class="o">-</span><span class="n">path</span> <span class="n">WORKSET_PATH</span><span class="p">]</span>
-                       <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">mallet</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">workset</span><span class="o">-</span><span class="n">path</span> <span class="n">WORKSET_PATH</span><span class="p">]</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="section" id="Positional Arguments">
+<section id="Positional Arguments">
 <h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
 <dl class="option-list">
 <dt><kbd>path</kbd></dt>
 <dd><p>Default: “/media/secure_volume/workset/”</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="Named Arguments">
+</section>
+<section id="Named Arguments">
 <h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
 <dl class="option-list">
 <dt><kbd>-k</kbd></dt>
@@ -237,39 +233,10 @@ download</a>, the</p>
 <p>Default: “/media/secure_volume/workset/”</p>
 </dd>
 </dl>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">htrc</span> <span class="n">run</span> <span class="n">topicexplorer</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">k</span> <span class="n">K</span> <span class="p">[</span><span class="n">K</span> <span class="o">...</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">iter</span> <span class="n">ITER</span><span class="p">]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="n">workset</span><span class="o">-</span><span class="n">path</span> <span class="n">WORKSET_PATH</span><span class="p">]</span>
-                              <span class="p">[</span><span class="n">path</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="section" id="Positional Arguments">
-<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h4>
-<dl class="option-list">
-<dt><kbd>path</kbd></dt>
-<dd><p>Default: “/media/secure_volume/workset”</p>
-</dd>
-</dl>
-</div>
-<div class="section" id="Named Arguments">
-<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h4>
-<dl class="option-list">
-<dt><kbd>-k</kbd></dt>
-<dd><p>number of topics</p>
-</dd>
-<dt><kbd>--iter</kbd></dt>
-<dd><p>number of iterations</p>
-<p>Default: 200</p>
-</dd>
-<dt><kbd>--workset-path</kbd></dt>
-<dd><p>Location to store workset download.</p>
-<p>Default: “/media/secure_volume/workset”</p>
-</dd>
-</dl>
-</div>
-</div>
-</div>
-<div class="section" id="use-cases-and-examples">
+</section>
+</section>
+</section>
+<section id="use-cases-and-examples">
 <h2>Use Cases and Examples<a class="headerlink" href="#use-cases-and-examples" title="Permalink to this headline">¶</a></h2>
 <p>Following are the use cases and examples of <code class="docutils literal notranslate"><span class="pre">htrc</span></code> commands inside the HTRC Data Capsule.</p>
 <table class="docutils align-default">
@@ -508,60 +475,8 @@ volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.
 </div></blockquote>
 </li>
 </ul>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 52%" />
-<col style="width: 48%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p>command: <code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span></code></p></td>
-<td><p>capsule mode: <strong>secure</strong></p></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><p>Run topicexplorer on already downloaded volumes :</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">/media/secure_volume/workset</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
-</div></blockquote>
-</li>
-<li><p>Run topicexplorer on volume id list :</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">/home/dcuser/HTRC/htrc-id</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
-</div></blockquote>
-</li>
-<li><p>Run topicexplorer on hathi collection :</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span> <span class="pre">&quot;https://babel.hathitrust.org/cgi/mb?a=listis&amp;c=1853042514&quot;</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
-</div></blockquote>
-</li>
-</ul>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 57%" />
-<col style="width: 43%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p>command: <code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">run</span> <span class="pre">topicexplorer</span></code></p></td>
-<td><p>capsule mode: <strong>maintenance</strong></p></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><p>Run topicexplorer on already downloaded volume - (Sample volumes are available in capsules created with ubuntu-16-04-with-sample-volumes image. Those sample volumes are available as zip files. Please unzip before use them because the metadata function gets volume ids from volume directory names).</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">htrc</span> <span class="pre">topicexplorer</span> <span class="pre">/home/dcuser/unzipped_volumes</span> <span class="pre">-k</span> <span class="pre">20</span></code></p>
-</div></blockquote>
-</li>
-</ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -603,8 +518,6 @@ volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.
 <li class="toctree-l3"><a class="reference internal" href="#id2">Arguments</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
 </ul>
 </li>
 </ul>
@@ -629,7 +542,7 @@ volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -651,7 +564,7 @@ volume 1 of <a class="reference external" href="https://hdl.handle.net/2027/mdp.
       &copy;2017, HathiTrust Research Center (Jaimie Murdock).
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
