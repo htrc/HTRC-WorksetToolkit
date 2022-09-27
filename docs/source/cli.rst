@@ -30,7 +30,7 @@ Local volumes file                  ``/home/dcuser/Downloads/collections.txt``
 
 Volume Download
 --------------------
-The ``htrc download`` command retrieves volumes from the `HTRC Data API`_
+The ``htrc download`` command retrieves volumes from the HTRC Data API
 to the secure mode of the :ref:`HTRC Data Capsule Service`.
 
 .. note::
